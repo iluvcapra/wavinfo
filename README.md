@@ -11,7 +11,7 @@ production metadata.
 
 * Broadcast-WAVE metadata, compliant with [EBU Tech 3285v2 (2011)][ebu], though other versions are easy to implement. This includes the [SMPTE 330M:2011 Unique Material Identifier (UMID)][smpte_330m2011] for the file, if it exists. 
 * [iXML production recorder metadata][ixml], including project, scene, and take tags, recorder notes and file family information.
-* The format chunk is also parsed, so you can access the basic sample rate and channel count information.
+* The format is also parsed, so you can access the basic sample rate and channel count information.
 
 This module is presently under construction and not sutiable for production at this time.
 
