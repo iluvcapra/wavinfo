@@ -4,38 +4,40 @@ class WavIXMLFormat:
     """
     iXML recorder metadata, as defined by iXML 2.0
     """
-    def __init__(xml):
+    def __init__(self, xml):
         self.source = xml
         self.parsed = ET.fromstring(xml)
 
-    def _get_text_value(xpath):
-        root = self.parsed.getroot()
-        e = root.find("//BWFXML/" + xpath)
-        if e:
+    def _get_text_value(self, xpath):
+        print("xpath",xpath)
+        print("search", "./" + xpath)
+        e = self.parsed.find("./" + xpath)
+        print("result was", e)
+        if e is not None:
             return e.text
     
     @property
     def project(self):
-        return _get_text_value("PROJECT")
+        return self._get_text_value("PROJECT")
         
     @property
     def scene(self):
-        return _get_text_value("SCECE")
+        return self._get_text_value("SCENE")
 
     @property
     def take(self):
-        return _get_text_value("TAKE")
+        return self._get_text_value("TAKE")
 
     @property
     def tape(self):
-        return _get_text_value("TAPE")
+        return self._get_text_value("TAPE")
 
     @property
     def family_uid(self):
-        return _get_text_value("FILE_SET/FAMILY_UID")
+        return self._get_text_value("FILE_SET/FAMILY_UID")
 
     @property
     def family_name(self):
-        return _get_text_value("FILE_SET/FAMILY_NAME")
+        return self._get_text_value("FILE_SET/FAMILY_NAME")
 
 
