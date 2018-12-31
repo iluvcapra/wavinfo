@@ -6,9 +6,7 @@ from .wave_ixml_reader import WavIXMLFormat
 
 from collections import namedtuple
 
-
 ListChunkDescriptor = namedtuple('ListChunk' , 'signature children')
-
 
 class ChunkDescriptor(namedtuple('Chunk', 'ident start length') ):
     def read_data(self, from_stream):
@@ -47,15 +45,6 @@ def parse_chunk(stream):
         start = stream.tell()
         stream.seek(displacement,1)
         return ChunkDescriptor(ident=ident, start=start, length=size)
-
-
-
-WavInfoFormat = namedtuple("WavInfoFormat",'audio_format channel_count sample_rate byte_rate block_align bits_per_sample')
-
-WavBextFormat = namedtuple("WavBextFormat",'description originator originator_ref ' + 
-    'originator_date originator_time time_reference version umid ' + 
-    'loudness_value loudness_range max_true_peak max_momentary_loudness max_shortterm_loudness ' +
-    'coding_history')
 
 
 
