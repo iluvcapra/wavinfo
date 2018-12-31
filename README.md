@@ -9,8 +9,11 @@ production metadata.
 
 `wavinfo` reads:
 
-* Broadcast-WAVE metadata, compliant with EBU Tech 3285v2 (2011), though other versions are easy to implement. This includes the 
-  SMPTE Universal Media Identifier (UMID) for the file, if it exists. 
-* iXML production recorder metadata, including project, scene, and take tags, recorder notes and file family information.
+* Broadcast-WAVE metadata, compliant with [EBU Tech 3285v2 (2011)][ebu], though other versions are easy to implement. This includes the [SMPTE 330M:2011 Unique Material Identifier (UMID)][smpte_330m2011] for the file, if it exists. 
+* [iXML production recorder metadata][ixml], including project, scene, and take tags, recorder notes and file family information.
 
 This module is presently under construction and not sutiable for production at this time.
+
+[ebu]:https://tech.ebu.ch/docs/tech/tech3285.pdf
+[smpte_330m2011]:http://standards.smpte.org/content/978-1-61482-678-1/st-330-2011/SEC1.abstract
+[ixml]:http://www.ixml.info
