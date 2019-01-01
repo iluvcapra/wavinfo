@@ -1,6 +1,7 @@
 import os.path
 import json
 import subprocess
+from subprocess import PIPE
 
 from unittest import TestCase
 
@@ -13,7 +14,7 @@ def ffprobe(path):
 
     arguments = [ FFPROBE , "-of", "json" , "-show_format", "-show_streams", path ]
 
-    process = subprocess.run(arguments, stdin=None, capture_output=True)
+    process = subprocess.run(arguments, stdin=None, stdout=PIPE, stderr=PIPE)
 
     if process.returncode == 0:
         return json.loads(process.stdout)
