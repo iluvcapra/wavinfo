@@ -3,9 +3,9 @@ import struct
 
 from collections import namedtuple
 
-ListChunkDescriptor = namedtuple('ListChunk' , 'signature children')
+ListChunkDescriptor = namedtuple('ListChunkDescriptor' , 'signature children')
 
-class ChunkDescriptor(namedtuple('Chunk', 'ident start length') ):
+class ChunkDescriptor(namedtuple('ChunkDescriptor', 'ident start length') ):
     def read_data(self, from_stream):
         from_stream.seek(self.start)
         return from_stream.read(self.length)

@@ -2,7 +2,7 @@ import struct
 
 from collections import namedtuple
 
-from .wave_parser import parse_chunk
+from .wave_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 from .wave_ixml_reader import WavIXMLFormat
 
 WavDataDescriptor = namedtuple('WavDataDescriptor','byte_count frame_count')
@@ -37,10 +37,12 @@ class WavInfoReader():
 
     def _find_chunk_data(self, ident, from_stream, default_none=False):
         chunk_descriptor = None
+        top_chunks = (chunk for chunk in self.main_list if type(chunk) is ChunkDescriptor)
+
         if default_none:
-            chunk_descriptor =next((chunk for chunk in self.main_list if chunk.ident == ident),None)
+            chunk_descriptor = next((chunk for chunk in top_chunks if chunk.ident == ident),None)
         else:
-            chunk_descriptor = next((chunk for chunk in self.main_list if chunk.ident == ident))
+            chunk_descriptor = next((chunk for chunk in top_chunks if chunk.ident == ident))
 
         if chunk_descriptor:
             return chunk_descriptor.read_data(from_stream)
