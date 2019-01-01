@@ -15,7 +15,7 @@ production metadata.
 
 In progress:
 * [SMPTE 330M __UMID__ Unique Materials Identifier][smpte_330m2011].
-** iXML `STEINBERG` sound library attributes.
+* iXML `STEINBERG` sound library attributes.
 * Most of the common __RIFF INFO__ metadata fields.
 * Pro Tools __embedded regions__.
 
