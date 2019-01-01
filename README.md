@@ -9,10 +9,13 @@ production metadata.
 
 `wavinfo` reads:
 
-* [SMPTE 330M __UMID__ Unique Materials Identifier][smpte_330m2011].
 * __Broadcast-WAVE__ metadata, compliant with [EBU Tech 3285v2 (2011)][ebu], including embedded program loudness and coding history, if extant.
 * [__iXML__ production recorder metadata][ixml], including project, scene, and take tags, recorder notes and file family information.
 * The __wav format__ is also parsed, so you can access the basic sample rate and channel count information.
+
+In progress:
+* [SMPTE 330M __UMID__ Unique Materials Identifier][smpte_330m2011].
+** iXML `STEINBERG` sound library attributes.
 * Most of the common __RIFF INFO__ metadata fields.
 * Pro Tools __embedded regions__.
 
