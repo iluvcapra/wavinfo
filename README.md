@@ -110,7 +110,6 @@ print("iXML File Family UID:", info.ixml.family_uid)
     iXML Tape: 18Y12M31
     iXML File Family Name: None
     iXML File Family UID: USSDVGR1112089007124001008206300
-    A=PCM,F=48000,W=24,M=stereo,R=48000,T=2 Ch
     
 
 
