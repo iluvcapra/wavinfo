@@ -3,8 +3,6 @@ python:
     - "3.6"
     - "3.5"
     - "3.4"
-    - "3.3"
-    - "3.2"
 script:
     - "python3 setup.py test"
 before_install:
