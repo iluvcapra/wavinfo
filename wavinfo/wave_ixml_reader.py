@@ -9,10 +9,7 @@ class WavIXMLFormat:
         self.parsed = ET.fromstring(xml)
 
     def _get_text_value(self, xpath):
-        print("xpath",xpath)
-        print("search", "./" + xpath)
         e = self.parsed.find("./" + xpath)
-        print("result was", e)
         if e is not None:
             return e.text
     

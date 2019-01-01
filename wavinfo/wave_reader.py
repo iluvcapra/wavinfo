@@ -2,8 +2,10 @@ import struct
 
 from collections import namedtuple
 
-WavDataDescriptor = namedtuple('WavDataDescriptor','byte_count frame_count')
+from .wave_parser import parse_chunk
+from .wave_ixml_reader import WavIXMLFormat
 
+WavDataDescriptor = namedtuple('WavDataDescriptor','byte_count frame_count')
 
 WavInfoFormat = namedtuple("WavInfoFormat",'audio_format channel_count sample_rate byte_rate block_align bits_per_sample')
 
@@ -27,11 +29,11 @@ class WavInfoReader():
             self.main_list = chunks.children
             f.seek(0)
             
-            self.fmt    = self._get_format(self.main_list,f)
-            self.bext   = self._get_bext(self.main_list,f)
-            self.ixml   = self._get_ixml(self.main_list,f)
+            self.fmt    = self._get_format(f)
+            self.bext   = self._get_bext(f)
+            self.ixml   = self._get_ixml(f)
 
-            self.data   = delf._describe_data(self.main_list,f)
+            self.data   = self._describe_data(f)
 
     def _find_chunk_data(self, ident, from_stream, default_none=False):
         chunk_descriptor = None
@@ -49,12 +51,13 @@ class WavInfoReader():
     def _describe_data(self,f):
         data_chunk = next(c for c in self.main_list if c.ident == b'data')
 
-        return WavDataDescriptor(byte_count= data_chunk.length, frame_count= data_chunk.length / self.fmt.block_align)
+        return WavDataDescriptor(byte_count= data_chunk.length, 
+                frame_count= int(data_chunk.length / self.fmt.block_align))
         
 
 
-    def _get_format(self,chunks,f):
-        fmt_data = se._find_chunk_data(b'fmt ',f)
+    def _get_format(self,f):
+        fmt_data = self._find_chunk_data(b'fmt ',f)
         
         # The format chunk is
         # audio_format    U16
@@ -63,7 +66,7 @@ class WavInfoReader():
         # byte_rate       U32   == SampleRate * NumChannels * BitsPerSample/8
         # block_align     U16   == NumChannels * BitsPerSample/8
         # bits_per_sampl  U16
-        packstring = "<HHIIHH",
+        packstring = "<HHIIHH"
         rest_starts = struct.calcsize(packstring)
         
         unpacked = struct.unpack(packstring, fmt_data[:rest_starts])
@@ -82,9 +85,9 @@ class WavInfoReader():
                     bits_per_sample = unpacked[5]
                     )
 
-    def _get_bext(self,chunks,f):
+    def _get_bext(self,f):
 
-        bext_data = self._find_chunk_data(b'bext',f,default_none=True
+        bext_data = self._find_chunk_data(b'bext',f,default_none=True)
 
         # description[256]      
         # originator[32]
@@ -104,7 +107,7 @@ class WavInfoReader():
         # maxshorttermloudness S16 (LUFS*100)
         # reserved[180]
         # codinghistory []
-        if bext_data == None:
+        if bext_data is None:
             return None
 
         packstring = "<256s"+ "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + "hhhhh" + "180s"
@@ -128,10 +131,10 @@ class WavInfoReader():
                 coding_history = bext_data[rest_starts:].decode('ascii').rstrip(' \t\r\n\0')
                 )
 
-    def _get_ixml(self,chunks,f):
+    def _get_ixml(self,f):
 
         ixml_data = self._find_chunk_data(b'iXML',f,default_none=True)
-        if ixml_data == None:
+        if ixml_data is None:
             return None
 
         ixml_string = ixml_data.decode('utf-8')

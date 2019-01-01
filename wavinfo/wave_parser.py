@@ -1,9 +1,6 @@
 
 import struct
 
-
-from .wave_ixml_reader import WavIXMLFormat
-
 from collections import namedtuple
 
 ListChunkDescriptor = namedtuple('ListChunk' , 'signature children')
