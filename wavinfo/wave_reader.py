@@ -9,8 +9,8 @@ WavDataDescriptor = namedtuple('WavDataDescriptor','byte_count frame_count')
 
 WavInfoFormat = namedtuple("WavInfoFormat",'audio_format channel_count sample_rate byte_rate block_align bits_per_sample')
 
-WavBextFormat = namedtuple("WavBextFormat",'description originator originator_ref ' + 
-    'originator_date originator_time time_reference version umid ' + 
+WavBextFormat = namedtuple("WavBextFormat",'description originator originator_ref ' +
+    'originator_date originator_time time_reference version umid ' +
     'loudness_value loudness_range max_true_peak max_momentary_loudness max_shortterm_loudness ' +
     'coding_history')
 
@@ -25,10 +25,10 @@ class WavInfoReader():
     def __init__(self, path):
         with open(path, 'rb') as f:
             chunks = parse_chunk(f)
-            
+
             self.main_list = chunks.children
             f.seek(0)
-            
+
             self.fmt    = self._get_format(f)
             self.bext   = self._get_bext(f)
             self.ixml   = self._get_ixml(f)
@@ -53,14 +53,14 @@ class WavInfoReader():
     def _describe_data(self,f):
         data_chunk = next(c for c in self.main_list if c.ident == b'data')
 
-        return WavDataDescriptor(byte_count= data_chunk.length, 
+        return WavDataDescriptor(byte_count= data_chunk.length,
                 frame_count= int(data_chunk.length / self.fmt.block_align))
-        
+
 
 
     def _get_format(self,f):
         fmt_data = self._find_chunk_data(b'fmt ',f)
-        
+
         # The format chunk is
         # audio_format    U16
         # channel_count   U16
@@ -70,9 +70,9 @@ class WavInfoReader():
         # bits_per_sampl  U16
         packstring = "<HHIIHH"
         rest_starts = struct.calcsize(packstring)
-        
+
         unpacked = struct.unpack(packstring, fmt_data[:rest_starts])
-        
+
         #0x0001	WAVE_FORMAT_PCM	PCM
         #0x0003	WAVE_FORMAT_IEEE_FLOAT	IEEE float
         #0x0006	WAVE_FORMAT_ALAW	8-bit ITU-T G.711 A-law
@@ -91,7 +91,7 @@ class WavInfoReader():
 
         bext_data = self._find_chunk_data(b'bext',f,default_none=True)
 
-        # description[256]      
+        # description[256]
         # originator[32]
         # originatorref[32]
         # originatordate[10]   "YYYY:MM:DD"
@@ -100,7 +100,7 @@ class WavInfoReader():
         # hightimeref U32
         # version U16
         # umid[64]
-        # 
+        #
         # EBU 3285 fields
         # loudnessvalue S16    (in LUFS*100)
         # loudnessrange S16    (in LUFS*100)
@@ -113,10 +113,10 @@ class WavInfoReader():
             return None
 
         packstring = "<256s"+ "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + "hhhhh" + "180s"
-        
+
         rest_starts = struct.calcsize(packstring)
         unpacked = struct.unpack(packstring, bext_data[:rest_starts])
-        
+
         return WavBextFormat(description=unpacked[0].decode('ascii').rstrip('\0'),
                 originator      = unpacked[1].decode('ascii').rstrip('\0'),
                 originator_ref  = unpacked[2].decode('ascii').rstrip('\0'),
@@ -125,11 +125,11 @@ class WavInfoReader():
                 time_reference  = unpacked[5],
                 version         = unpacked[6],
                 umid            = unpacked[7],
-                loudness_value  = unpacked[8],
-                loudness_range  = unpacked[9],
-                max_true_peak   = unpacked[10],
-                max_momentary_loudness = unpacked[11],
-                max_shortterm_loudness = unpacked[12],
+                loudness_value  = unpacked[8] / 100.0,
+                loudness_range  = unpacked[9] / 100.0,
+                max_true_peak   = unpacked[10] / 100.0,
+                max_momentary_loudness = unpacked[11] / 100.0,
+                max_shortterm_loudness = unpacked[12] / 100.0,
                 coding_history = bext_data[rest_starts:].decode('ascii').rstrip('\0')
                 )
 
@@ -141,8 +141,8 @@ class WavInfoReader():
 
         ixml_string = ixml_data.decode('utf-8')
         return WavIXMLFormat(ixml_string)
-        
 
 
-        
+
+
 
