@@ -117,11 +117,11 @@ class WavInfoReader():
         rest_starts = struct.calcsize(packstring)
         unpacked = struct.unpack(packstring, bext_data[:rest_starts])
         
-        return WavBextFormat(description=unpacked[0].decode('ascii').rstrip(' \t\r\n\0'),
-                originator      = unpacked[1].decode('ascii').rstrip(' \t\r\n\0'),
-                originator_ref  = unpacked[2].decode('ascii').rstrip(' \t\r\n\0'),
-                originator_date = unpacked[3].decode('ascii').rstrip(' \t\r\n\0'),
-                originator_time = unpacked[4].decode('ascii').rstrip(' \t\r\n\0'),
+        return WavBextFormat(description=unpacked[0].decode('ascii').rstrip('\0'),
+                originator      = unpacked[1].decode('ascii').rstrip('\0'),
+                originator_ref  = unpacked[2].decode('ascii').rstrip('\0'),
+                originator_date = unpacked[3].decode('ascii'),
+                originator_time = unpacked[4].decode('ascii'),
                 time_reference  = unpacked[5],
                 version         = unpacked[6],
                 umid            = unpacked[7],
@@ -130,7 +130,7 @@ class WavInfoReader():
                 max_true_peak   = unpacked[10],
                 max_momentary_loudness = unpacked[11],
                 max_shortterm_loudness = unpacked[12],
-                coding_history = bext_data[rest_starts:].decode('ascii').rstrip(' \t\r\n\0')
+                coding_history = bext_data[rest_starts:].decode('ascii').rstrip('\0')
                 )
 
     def _get_ixml(self,f):
