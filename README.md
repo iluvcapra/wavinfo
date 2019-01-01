@@ -14,7 +14,7 @@ production metadata.
 * The __wav format__ is also parsed, so you can access the basic sample rate and channel count information.
 
 In progress:
-* [SMPTE 330M __UMID__ Unique Materials Identifier][smpte_330m2011].
+* [SMPTE 330M __UMID__][smpte_330m2011] Unique Materials Identifier.
 * iXML `STEINBERG` sound library attributes.
 * Most of the common __RIFF INFO__ metadata fields.
 * Pro Tools __embedded regions__.
