@@ -11,14 +11,17 @@ class WavBextReader:
         # lowtimeref U32
         # hightimeref U32
         # version U16
+        #
+        # V1 field
         # umid[64]
         #
-        # EBU 3285 fields
+        # V2 fields
         # loudnessvalue S16    (in LUFS*100)
         # loudnessrange S16    (in LUFS*100)
         # maxtruepeak   S16    (in dbTB*100)
         # maxmomentaryloudness S16 (LUFS*100)
         # maxshorttermloudness S16 (LUFS*100)
+        #
         # reserved[180]
         # codinghistory []
         if bext_data is None:
