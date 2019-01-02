@@ -56,17 +56,17 @@ class WavBextReader:
         self.max_momentary_loudness  = None
         self.max_shortterm_loudness  = None
         self.coding_history  = sanatize_bytes(bext_data[rest_starts:])
-        
+
         if self.version > 0:
             self.umid = unpacked[7]
 
         if self.version > 1:
-            self.loudness_value          = unpacked[8] / 100.0,
+            self.loudness_value          = unpacked[8] / 100.0
             self.loudness_range          = unpacked[9] / 100.0
             self.max_true_peak           = unpacked[10] / 100.0
             self.max_momentary_loudness  = unpacked[11] / 100.0
             self.max_shortterm_loudness  = unpacked[12] / 100.0
-           
+
 
     def to_dict(self):
         return {'description':      self.description,
