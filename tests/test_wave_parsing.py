@@ -71,7 +71,7 @@ class TestWaveInfo(TestCase):
             if 'originator_reference' in ffprobe_info['format']['tags']:
                 self.assertEqual( info.bext.originator_ref, ffprobe_info['format']['tags']['originator_reference']  )
             else:
-                self.assertEqual( info.bext.originator_ref, None)
+                self.assertEqual( info.bext.originator_ref, '')
 
             # these don't always reflect the bext info
             #self.assertEqual( info.bext.originator_date, ffprobe_info['format']['tags']['date']  )
@@ -79,12 +79,9 @@ class TestWaveInfo(TestCase):
             self.assertEqual( info.bext.time_reference, int(ffprobe_info['format']['tags']['time_reference'])  )
 
             if 'coding_history' in ffprobe_info['format']['tags']:
-                if len(ffprobe_info['format']['tags']['coding_history']) > 0:
-                    self.assertEqual( info.bext.coding_history, ffprobe_info['format']['tags']['coding_history']  )
-                else:
-                    self.assertEqual( info.bext.coding_history, None )
+                self.assertEqual( info.bext.coding_history, ffprobe_info['format']['tags']['coding_history']  )
             else:
-                self.assertEqual( info.bext.coding_history, None )
+                self.assertEqual( info.bext.coding_history, '' )
 
     def test_ixml(self):
         expected = {'A101_4.WAV': {'project' : 'BMH', 'scene': 'A101', 'take': '4',

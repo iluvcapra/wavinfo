@@ -125,10 +125,26 @@ class WavInfoReader():
                 trimmed = bytes
 
             decoded = trimmed.decode(encoding)
-            if len(decoded) > 0:
-                return decoded
-            else:
-                return None
+            return decoded
+
+        bext_version = unpacked[6]
+        if bext_version > 0:
+            umid = unpacked[6]
+        else:
+            umid = None
+
+        if bext_version > 1:
+             loudness_value         = unpacked[8] / 100.0,
+             loudness_range         = unpacked[9] / 100.0
+             max_true_peak          = unpacked[10] / 100.0
+             max_momentary_loudness = unpacked[11] / 100.0
+             max_shortterm_loudness = unpacked[12] / 100.0
+        else:
+            loudness_value          = None
+            loudness_range          = None
+            max_true_peak           = None
+            max_momentary_loudness  = None
+            max_shortterm_loudness  = None
 
         return WavBextFormat(description=sanatize_bytes(unpacked[0]),
                 originator      = sanatize_bytes(unpacked[1]),
@@ -137,12 +153,12 @@ class WavInfoReader():
                 originator_time = sanatize_bytes(unpacked[4]),
                 time_reference  = unpacked[5],
                 version         = unpacked[6],
-                umid            = unpacked[7],
-                loudness_value  = unpacked[8] / 100.0,
-                loudness_range  = unpacked[9] / 100.0,
-                max_true_peak   = unpacked[10] / 100.0,
-                max_momentary_loudness = unpacked[11] / 100.0,
-                max_shortterm_loudness = unpacked[12] / 100.0,
+                umid            = umid,
+                loudness_value  = loudness_value,
+                loudness_range  = loudness_range,
+                max_true_peak   = max_true_peak,
+                max_momentary_loudness = max_momentary_loudness,
+                max_shortterm_loudness = max_shortterm_loudness,
                 coding_history = sanatize_bytes(bext_data[rest_starts:])
                 )
 
