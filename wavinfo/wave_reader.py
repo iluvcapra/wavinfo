@@ -87,7 +87,7 @@ class WavInfoReader():
                     bits_per_sample = unpacked[5]
                     )
 
-    def _get_bext(self,f):
+    def _get_bext(self,f,encoding='ascii'):
 
         bext_data = self._find_chunk_data(b'bext',f,default_none=True)
 
@@ -117,11 +117,24 @@ class WavInfoReader():
         rest_starts = struct.calcsize(packstring)
         unpacked = struct.unpack(packstring, bext_data[:rest_starts])
 
-        return WavBextFormat(description=unpacked[0].decode('ascii').rstrip('\0'),
-                originator      = unpacked[1].decode('ascii').rstrip('\0'),
-                originator_ref  = unpacked[2].decode('ascii').rstrip('\0'),
-                originator_date = unpacked[3].decode('ascii'),
-                originator_time = unpacked[4].decode('ascii'),
+        def sanatize_bytes(bytes):
+            first_null = next( (index for index, byte in enumerate(bytes) if byte == 0 ), None )
+            if first_null is not None:
+                trimmed = bytes[:first_null]
+            else:
+                trimmed = bytes
+
+            decoded = trimmed.decode(encoding)
+            if len(decoded) > 0:
+                return decoded
+            else:
+                return None
+
+        return WavBextFormat(description=sanatize_bytes(unpacked[0]),
+                originator      = sanatize_bytes(unpacked[1]),
+                originator_ref  = sanatize_bytes(unpacked[2]),
+                originator_date = sanatize_bytes(unpacked[3]),
+                originator_time = sanatize_bytes(unpacked[4]),
                 time_reference  = unpacked[5],
                 version         = unpacked[6],
                 umid            = unpacked[7],
@@ -130,7 +143,7 @@ class WavInfoReader():
                 max_true_peak   = unpacked[10] / 100.0,
                 max_momentary_loudness = unpacked[11] / 100.0,
                 max_shortterm_loudness = unpacked[12] / 100.0,
-                coding_history = bext_data[rest_starts:].decode('ascii').rstrip('\0')
+                coding_history = sanatize_bytes(bext_data[rest_starts:])
                 )
 
     def _get_ixml(self,f):

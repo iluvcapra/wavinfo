@@ -29,7 +29,7 @@ class TestWaveInfo(TestCase):
         for dirpath, dirnames, filenames in os.walk('tests/test_files'):
             for filename in filenames:
                 name, ext = os.path.splitext(filename)
-                if ext == '.wav':
+                if ext in ['.wav','.WAV']:
                     yield os.path.join(dirpath, filename)
 
 
@@ -68,13 +68,23 @@ class TestWaveInfo(TestCase):
 
             self.assertEqual( info.bext.description, ffprobe_info['format']['tags']['comment']  )
             self.assertEqual( info.bext.originator, ffprobe_info['format']['tags']['encoded_by']  )
-            self.assertEqual( info.bext.originator_ref, ffprobe_info['format']['tags']['originator_reference']  )
+            if 'originator_reference' in ffprobe_info['format']['tags']:
+                self.assertEqual( info.bext.originator_ref, ffprobe_info['format']['tags']['originator_reference']  )
+            else:
+                self.assertEqual( info.bext.originator_ref, None)
 
             # these don't always reflect the bext info
             #self.assertEqual( info.bext.originator_date, ffprobe_info['format']['tags']['date']  )
             #self.assertEqual( info.bext.originator_time, ffprobe_info['format']['tags']['creation_time']  )
             self.assertEqual( info.bext.time_reference, int(ffprobe_info['format']['tags']['time_reference'])  )
-            self.assertEqual( info.bext.coding_history, ffprobe_info['format']['tags']['coding_history']  )
+
+            if 'coding_history' in ffprobe_info['format']['tags']:
+                if len(ffprobe_info['format']['tags']['coding_history']) > 0:
+                    self.assertEqual( info.bext.coding_history, ffprobe_info['format']['tags']['coding_history']  )
+                else:
+                    self.assertEqual( info.bext.coding_history, None )
+            else:
+                self.assertEqual( info.bext.coding_history, None )
 
     def test_ixml(self):
         expected = {'A101_4.WAV': {'project' : 'BMH', 'scene': 'A101', 'take': '4',
