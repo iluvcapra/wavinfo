@@ -118,7 +118,7 @@ class WavInfoReader():
         if ixml_data is None:
             return None
 
-        ixml_string = ixml_data.decode('utf-8')
+        ixml_string = ixml_data
         return WavIXMLFormat(ixml_string)
 
 
