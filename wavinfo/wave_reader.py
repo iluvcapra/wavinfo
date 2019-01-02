@@ -2,7 +2,7 @@ import struct
 
 from collections import namedtuple
 
-from .wave_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
+from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 from .wave_ixml_reader import WavIXMLFormat
 from .wave_bext_reader import WavBextReader
 from .wave_info_reader import WavInfoChunkReader

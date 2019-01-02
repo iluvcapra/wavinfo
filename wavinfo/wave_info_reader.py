@@ -1,5 +1,5 @@
 
-from .wave_parser import parse_chunk, ListChunkDescriptor
+from .riff_parser import parse_chunk, ListChunkDescriptor
 
 class WavInfoChunkReader:
 
