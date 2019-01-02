@@ -138,8 +138,17 @@ print("iXML File Family UID:", info.ixml.family_uid)
 ### INFO Metadata
 
 INFO Metadata is a standard method for saving tagged text data in a WAV or AVI
-file.
+file. INFO fields are often read by the file explorer and host OS, and used in 
+music library software.
 
+```python
+bullet_path = '../tests/test_files/BULLET Impact Plastic LCD TV Screen Shatter Debris 2x.wav'
 
+bullet = WavInfoReader(bullet_path)
+```
+
+    print("INFO Artist:",    bullet.info.artist)
+    print("INFO Copyright:", bullet.info.copyright)
+    print("INFO Comment:",   bullet.info.comment)
 
 
