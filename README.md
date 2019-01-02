@@ -42,9 +42,7 @@ info = WavInfoReader(path)
 
 ### Basic WAV Data
 
-
 The length of the file in frames (interleaved samples) and bytes is available, as is the contents of the format chunk.
-
 
 ```python
 (info.data.frame_count, info.data.byte_count)
@@ -53,9 +51,27 @@ The length of the file in frames (interleaved samples) and bytes is available, a
 >>> (48000, 2, 6, 24)
 ```
 
-## Broadcast WAV Extension
+### Broadcast WAV Extension
 
+A WAV file produced to Broadcast-WAV specifications will have the broadcast metadata extension,
+which includes a 256-character free text descrption, creating entity identifier (usually the 
+recording application or equipment), the date and time of recording and a time reference for 
+timecode synchronization.
 
+The `coding_history` is designed to contain a record of every conversion performed on the audio
+file.
+
+In this example (from a Sound Devices 702T) the bext metadata contains scene/take slating
+information in the `description`. Here also the `originator_ref` is a serial number conforming
+to EBU Rec 99.
+
+If the bext metadata conforms to EBU 3285 v1, it will contain the WAV's 32 or 64 byte SMPTE 
+330M UMID. The 32-byte version of the UMID is usually just a random number, while the 64-byte 
+UMID will also have information on the recording date and time, recording equipment and entity, 
+and geolocation data.
+
+If the bext metadata conforms to EBU 3285 v2, it will hold precomputed program loudness values
+as described by EBU Rec 128.
 
 ```python
 print(info.bext.description)
@@ -90,8 +106,17 @@ print(info.bext.coding_history)
 
 
 
-## iXML Production Recorder Metadata
+### iXML Production Recorder Metadata
 
+iXML allows an XML document to be embedded in a WAV file.
+
+The iXML website recommends a schema for recorder information but 
+there is no official DTD and vendors mostly do their own thing, apart from 
+hitting a few key xpaths. iXML is used by most location/production recorders 
+to save slating information, timecode and sync points in a reliable way.
+
+iXML is also used to link "families" of WAV files together, so WAV files
+recorded simultaneously or contiguously can be related by a receiving client.
 
 ```python
 print("iXML Project:", info.ixml.project)
@@ -108,6 +133,13 @@ print("iXML File Family UID:", info.ixml.family_uid)
     iXML Tape: 18Y12M31
     iXML File Family Name: None
     iXML File Family UID: USSDVGR1112089007124001008206300
-    
+
+
+### INFO Metadata
+
+INFO Metadata is a standard method for saving tagged text data in a WAV or AVI
+file.
+
+
 
 
