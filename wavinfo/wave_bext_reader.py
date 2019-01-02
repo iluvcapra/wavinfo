@@ -42,34 +42,31 @@ class WavBextReader:
             decoded = trimmed.decode(encoding)
             return decoded
 
-        bext_version = unpacked[6]
-        if bext_version > 0:
+        self.description     = sanatize_bytes(unpacked[0])
+        self.originator      = sanatize_bytes(unpacked[1])
+        self.originator_ref  = sanatize_bytes(unpacked[2])
+        self.originator_date = sanatize_bytes(unpacked[3])
+        self.originator_time = sanatize_bytes(unpacked[4])
+        self.time_reference  = unpacked[5]
+        self.version         = unpacked[6]
+        self.umid            = None
+        self.loudness_value          = None
+        self.loudness_range          = None
+        self.max_true_peak           = None
+        self.max_momentary_loudness  = None
+        self.max_shortterm_loudness  = None
+        self.coding_history  = sanatize_bytes(bext_data[rest_starts:])
+        
+        if self.version > 0:
             self.umid = unpacked[6]
-        else:
-            self.umid = None
 
-        if bext_version > 1:
+        if self.version > 1:
             self.loudness_value          = unpacked[8] / 100.0,
             self.loudness_range          = unpacked[9] / 100.0
             self.max_true_peak           = unpacked[10] / 100.0
             self.max_momentary_loudness  = unpacked[11] / 100.0
             self.max_shortterm_loudness  = unpacked[12] / 100.0
-        else:
-            self.loudness_value          = None
-            self.loudness_range          = None
-            self.max_true_peak           = None
-            self.max_momentary_loudness  = None
-            self.max_shortterm_loudness  = None
-
-            self.description     = sanatize_bytes(unpacked[0])
-            self.originator      = sanatize_bytes(unpacked[1])
-            self.originator_ref  = sanatize_bytes(unpacked[2])
-            self.originator_date = sanatize_bytes(unpacked[3])
-            self.originator_time = sanatize_bytes(unpacked[4])
-            self.time_reference  = unpacked[5]
-            self.version         = unpacked[6]
-            self.coding_history  = sanatize_bytes(bext_data[rest_starts:])
-
+           
 
     def to_dict(self):
         return {'description':      self.description,
