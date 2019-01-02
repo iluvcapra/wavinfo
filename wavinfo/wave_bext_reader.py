@@ -58,7 +58,7 @@ class WavBextReader:
         self.coding_history  = sanatize_bytes(bext_data[rest_starts:])
         
         if self.version > 0:
-            self.umid = unpacked[6]
+            self.umid = unpacked[7]
 
         if self.version > 1:
             self.loudness_value          = unpacked[8] / 100.0,
