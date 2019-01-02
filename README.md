@@ -22,8 +22,6 @@ In progress:
 * iXML `STEINBERG` sound library attributes.
 * Pro Tools __embedded regions__.
 
-This module is presently under construction and not sutiable for production at this time.
-
 [ebu]:https://tech.ebu.ch/docs/tech/tech3285.pdf
 [smpte_330m2011]:http://standards.smpte.org/content/978-1-61482-678-1/st-330-2011/SEC1.abstract
 [ixml]:http://www.ixml.info
@@ -32,9 +30,7 @@ This module is presently under construction and not sutiable for production at t
 
 ## Demonstration
 
-
 The entry point for wavinfo is the WavInfoReader class.
-
 
 ```python
 from wavinfo import WavInfoReader
