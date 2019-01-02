@@ -4,6 +4,8 @@ from collections import namedtuple
 
 from .wave_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 from .wave_ixml_reader import WavIXMLFormat
+from .wave_bext_reader import WavBextReader
+from .wave_info_reader import WavInfoChunkReader
 
 WavDataDescriptor = namedtuple('WavDataDescriptor','byte_count frame_count')
 
@@ -22,7 +24,20 @@ class WavInfoReader():
 
     """
 
-    def __init__(self, path):
+    def __init__(self, path, info_encoding='latin_1', bext_encoding='ascii'):
+        """
+        Parse a WAV audio file for metadata.
+
+        * `path`: A filesystem path to the wav file you wish to probe.
+
+        * `info_encoding`: The text encoding of the INFO metadata fields.
+          `latin_1`/Win CP1252 has always been a pretty good guess for this.
+
+        * `bext_encoding`: The text encoding to use when decoding the string
+          fields of the Broadcast-WAV extension. Per EBU 3285 this is ASCII
+          but this parameter is available to you if you encounter a werido.
+
+        """
         with open(path, 'rb') as f:
             chunks = parse_chunk(f)
 
@@ -30,9 +45,9 @@ class WavInfoReader():
             f.seek(0)
 
             self.fmt    = self._get_format(f)
-            self.bext   = self._get_bext(f)
+            self.bext   = self._get_bext(f, encoding=bext_encoding)
             self.ixml   = self._get_ixml(f)
-
+            self.info   = self._get_info(f, encoding=info_encoding)
             self.data   = self._describe_data(f)
 
     def _find_chunk_data(self, ident, from_stream, default_none=False):
@@ -57,7 +72,6 @@ class WavInfoReader():
                 frame_count= int(data_chunk.length / self.fmt.block_align))
 
 
-
     def _get_format(self,f):
         fmt_data = self._find_chunk_data(b'fmt ',f)
 
@@ -78,92 +92,28 @@ class WavInfoReader():
         #0x0006	WAVE_FORMAT_ALAW	8-bit ITU-T G.711 A-law
         #0x0007	WAVE_FORMAT_MULAW	8-bit ITU-T G.711 µ-law
         #0xFFFE	WAVE_FORMAT_EXTENSIBLE	Determined by SubFormat
-        if unpacked[0] == 0x0001:
-            return WavInfoFormat(audio_format = unpacked[0],
-                    channel_count = unpacked[1],
-                    sample_rate   = unpacked[2],
-                    byte_rate     = unpacked[3],
-                    block_align   = unpacked[4],
+
+        #https://sno.phy.queensu.ca/~phil/exiftool/TagNames/RIFF.html
+        return WavInfoFormat(audio_format = unpacked[0],
+                    channel_count   = unpacked[1],
+                    sample_rate     = unpacked[2],
+                    byte_rate       = unpacked[3],
+                    block_align     = unpacked[4],
                     bits_per_sample = unpacked[5]
                     )
 
-    def _get_bext(self,f,encoding='ascii'):
+    def _get_info(self, f, encoding):
+        finder = (chunk.signature for chunk in self.main_list \
+                if type(chunk) is ListChunkDescriptor)
 
+        if b'INFO' in finder:
+            return WavInfoChunkReader(f, encoding)
+
+    def _get_bext(self, f, encoding):
         bext_data = self._find_chunk_data(b'bext',f,default_none=True)
-
-        # description[256]
-        # originator[32]
-        # originatorref[32]
-        # originatordate[10]   "YYYY:MM:DD"
-        # originatortime[8]    "HH:MM:SS"
-        # lowtimeref U32
-        # hightimeref U32
-        # version U16
-        # umid[64]
-        #
-        # EBU 3285 fields
-        # loudnessvalue S16    (in LUFS*100)
-        # loudnessrange S16    (in LUFS*100)
-        # maxtruepeak   S16    (in dbTB*100)
-        # maxmomentaryloudness S16 (LUFS*100)
-        # maxshorttermloudness S16 (LUFS*100)
-        # reserved[180]
-        # codinghistory []
-        if bext_data is None:
-            return None
-
-        packstring = "<256s"+ "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + "hhhhh" + "180s"
-
-        rest_starts = struct.calcsize(packstring)
-        unpacked = struct.unpack(packstring, bext_data[:rest_starts])
-
-        def sanatize_bytes(bytes):
-            first_null = next( (index for index, byte in enumerate(bytes) if byte == 0 ), None )
-            if first_null is not None:
-                trimmed = bytes[:first_null]
-            else:
-                trimmed = bytes
-
-            decoded = trimmed.decode(encoding)
-            return decoded
-
-        bext_version = unpacked[6]
-        if bext_version > 0:
-            umid = unpacked[6]
-        else:
-            umid = None
-
-        if bext_version > 1:
-             loudness_value         = unpacked[8] / 100.0,
-             loudness_range         = unpacked[9] / 100.0
-             max_true_peak          = unpacked[10] / 100.0
-             max_momentary_loudness = unpacked[11] / 100.0
-             max_shortterm_loudness = unpacked[12] / 100.0
-        else:
-            loudness_value          = None
-            loudness_range          = None
-            max_true_peak           = None
-            max_momentary_loudness  = None
-            max_shortterm_loudness  = None
-
-        return WavBextFormat(description=sanatize_bytes(unpacked[0]),
-                originator      = sanatize_bytes(unpacked[1]),
-                originator_ref  = sanatize_bytes(unpacked[2]),
-                originator_date = sanatize_bytes(unpacked[3]),
-                originator_time = sanatize_bytes(unpacked[4]),
-                time_reference  = unpacked[5],
-                version         = unpacked[6],
-                umid            = umid,
-                loudness_value  = loudness_value,
-                loudness_range  = loudness_range,
-                max_true_peak   = max_true_peak,
-                max_momentary_loudness = max_momentary_loudness,
-                max_shortterm_loudness = max_shortterm_loudness,
-                coding_history = sanatize_bytes(bext_data[rest_starts:])
-                )
+        return WavBextReader(bext_data, encoding)
 
     def _get_ixml(self,f):
-
         ixml_data = self._find_chunk_data(b'iXML',f,default_none=True)
         if ixml_data is None:
             return None

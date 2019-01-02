@@ -74,8 +74,8 @@ class TestWaveInfo(TestCase):
                 self.assertEqual( info.bext.originator_ref, '')
 
             # these don't always reflect the bext info
-            #self.assertEqual( info.bext.originator_date, ffprobe_info['format']['tags']['date']  )
-            #self.assertEqual( info.bext.originator_time, ffprobe_info['format']['tags']['creation_time']  )
+            # self.assertEqual( info.bext.originator_date, ffprobe_info['format']['tags']['date']  )
+            # self.assertEqual( info.bext.originator_time, ffprobe_info['format']['tags']['creation_time']  )
             self.assertEqual( info.bext.time_reference, int(ffprobe_info['format']['tags']['time_reference'])  )
 
             if 'coding_history' in ffprobe_info['format']['tags']:
