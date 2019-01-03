@@ -6,6 +6,6 @@ python:
 script:
     - "python3 setup.py test"
 before_install:
-    - sudo apt-get install -y ffmpeg 
+    - "apt-get install -y ffprobe" 
 install:
     - "pip3 install setuptools"
