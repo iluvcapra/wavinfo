@@ -15,7 +15,6 @@ setup(name='wavinfo',
           'License :: OSI Approved :: MIT License',
           'Topic :: Multimedia',
 	  'Topic :: Multimedia :: Sound/Audio',
-          "Programming Language :: Python :: 3.4",
           "Programming Language :: Python :: 3.5",
           "Programming Language :: Python :: 3.6"],
       packages=['wavinfo'])
