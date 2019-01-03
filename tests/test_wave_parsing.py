@@ -7,7 +7,7 @@ from unittest import TestCase
 
 import wavinfo
 
-FFPROBE='/usr/local/bin/ffprobe'
+FFPROBE='ffprobe'
 
 
 def ffprobe(path):
