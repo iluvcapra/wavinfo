@@ -17,7 +17,8 @@ def ffprobe(path):
     process = subprocess.run(arguments, stdin=None, stdout=PIPE, stderr=PIPE)
 
     if process.returncode == 0:
-        return json.loads(process.stdout)
+        output_str = process.stdout.decode('utf-8')
+        return json.loads(output_str)
     else:
         return None
 
