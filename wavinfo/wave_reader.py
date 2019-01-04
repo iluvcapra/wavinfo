@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 import struct
 
 from collections import namedtuple
@@ -9,35 +10,31 @@ from .wave_info_reader import WavInfoChunkReader
 
 WavDataDescriptor = namedtuple('WavDataDescriptor','byte_count frame_count')
 
-WavInfoFormat = namedtuple("WavInfoFormat",'audio_format channel_count sample_rate byte_rate block_align bits_per_sample')
-
-WavBextFormat = namedtuple("WavBextFormat",'description originator originator_ref ' +
-    'originator_date originator_time time_reference version umid ' +
-    'loudness_value loudness_range max_true_peak max_momentary_loudness max_shortterm_loudness ' +
-    'coding_history')
+#: The format of the audio samples
+WavAudioFormat = namedtuple("WavInfoFormat",'audio_format channel_count sample_rate byte_rate block_align bits_per_sample')
 
 
 class WavInfoReader():
     """
-    format : WAV format
-    bext   : The Broadcast-WAV extension as definied by EBU Tech 3285 v2 (2011)
+    Parse a WAV audio file for metadata.
 
     """
 
     def __init__(self, path, info_encoding='latin_1', bext_encoding='ascii'):
         """
-        Parse a WAV audio file for metadata.
+        Create a new reader object.
 
-        * `path`: A filesystem path to the wav file you wish to probe.
+        :param path: A filesystem path to the wav file you wish to probe.
 
-        * `info_encoding`: The text encoding of the INFO metadata fields.
+        :param info_encoding: The text encoding of the INFO metadata fields.
           `latin_1`/Win CP1252 has always been a pretty good guess for this.
 
-        * `bext_encoding`: The text encoding to use when decoding the string
+        :param bext_encoding: The text encoding to use when decoding the string
           fields of the Broadcast-WAV extension. Per EBU 3285 this is ASCII
           but this parameter is available to you if you encounter a werido.
 
         """
+
         with open(path, 'rb') as f:
             chunks = parse_chunk(f)
 
@@ -45,7 +42,10 @@ class WavInfoReader():
             f.seek(0)
 
             self.fmt    = self._get_format(f)
+
+            #: Broadcast-WAV Metadata
             self.bext   = self._get_bext(f, encoding=bext_encoding)
+            #: iXML Metadata
             self.ixml   = self._get_ixml(f)
             self.info   = self._get_info(f, encoding=info_encoding)
             self.data   = self._describe_data(f)
@@ -94,7 +94,7 @@ class WavInfoReader():
         #0xFFFE	WAVE_FORMAT_EXTENSIBLE	Determined by SubFormat
 
         #https://sno.phy.queensu.ca/~phil/exiftool/TagNames/RIFF.html
-        return WavInfoFormat(audio_format = unpacked[0],
+        return WavAudioFormat(audio_format = unpacked[0],
                     channel_count   = unpacked[1],
                     sample_rate     = unpacked[2],
                     byte_rate       = unpacked[3],
