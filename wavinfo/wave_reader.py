@@ -125,7 +125,17 @@ class WavInfoReader():
         ixml_string = ixml_data
         return WavIXMLFormat(ixml_string)
 
+    def walk(self):
+        """
+        Walk all of the available metadata fields.
 
+        :yields: a string, the :scope: of the metadatum, the string :name: of the
+        metadata field, and the value
+        """
 
+        scopes = ('fmt','data')#,'bext','ixml','info')
 
-
+        for scope in scopes:
+            attr = self.__getattribute__(scope)
+            for field in attr._fields:
+                yield scope, field, attr.__getattribute__(field)
