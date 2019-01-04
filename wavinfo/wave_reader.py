@@ -8,16 +8,16 @@ from .wave_ixml_reader import WavIXMLFormat
 from .wave_bext_reader import WavBextReader
 from .wave_info_reader import WavInfoChunkReader
 
+#: Calculated statistics about the audio data.
 WavDataDescriptor = namedtuple('WavDataDescriptor','byte_count frame_count')
 
-#: The format of the audio samples
-WavAudioFormat = namedtuple("WavInfoFormat",'audio_format channel_count sample_rate byte_rate block_align bits_per_sample')
+#: The format of the audio samples.
+WavAudioFormat = namedtuple('WavAudioFormat','audio_format channel_count sample_rate byte_rate block_align bits_per_sample')
 
 
 class WavInfoReader():
     """
     Parse a WAV audio file for metadata.
-
     """
 
     def __init__(self, path, info_encoding='latin_1', bext_encoding='ascii'):
@@ -27,7 +27,7 @@ class WavInfoReader():
         :param path: A filesystem path to the wav file you wish to probe.
 
         :param info_encoding: The text encoding of the INFO metadata fields.
-          `latin_1`/Win CP1252 has always been a pretty good guess for this.
+          latin_1/Win CP1252 has always been a pretty good guess for this.
 
         :param bext_encoding: The text encoding to use when decoding the string
           fields of the Broadcast-WAV extension. Per EBU 3285 this is ASCII
@@ -41,12 +41,16 @@ class WavInfoReader():
             self.main_list = chunks.children
             f.seek(0)
 
+            #: :class:`wavinfo.wave_reader.WavAudioFormat`
             self.fmt    = self._get_format(f)
 
-            #: Broadcast-WAV Metadata
+            #: :class:`wavinfo.wave_bext_reader.WavBextReader` with Broadcast-WAV metadata
             self.bext   = self._get_bext(f, encoding=bext_encoding)
-            #: iXML Metadata
+
+            #: :class:`wavinfo.wave_ixml_reader.WavIXMLFormat` with iXML metadata
             self.ixml   = self._get_ixml(f)
+
+            #: :class:`wavinfo.wave_info_reader.WavInfoChunkReader` with RIFF INFO metadata
             self.info   = self._get_info(f, encoding=info_encoding)
             self.data   = self._describe_data(f)
 

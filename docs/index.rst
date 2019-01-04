@@ -13,28 +13,16 @@ Welcome to wavinfo's documentation!
 .. module:: wavinfo
 
 .. autoclass:: WavInfoReader
+   :members:
 
    .. automethod:: __init__
    
-   .. attribute:: fmt
 
-      Audio format.
+.. autoclass:: wavinfo.wave_reader.WavAudioFormat
+   :members:
 
-   .. attribute:: data
-
-      Statistics on the audio data.
-
-   .. attribute:: bext
-
-      Broadcast-WAV metadata.
-
-   .. attribute:: ixml
-      
-      iXML metadata.
-
-   .. attribute:: info
-
-      RIFF INFO metadata.
+.. autoclass:: wavinfo.wave_reader.WavDataDescriptor
+   :members:
 
 Indices and tables
 ==================
