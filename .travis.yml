@@ -12,10 +12,12 @@ before_install:
     - "sudo add-apt-repository universe"
     - "sudo apt-get install -y ffmpeg"
     - "pip install coverage"
+    - "pip install codecov"
 #    - "pip install coverage==4.4"
     - "pip install pytest-cov==2.5.0"
     - "pip install python-coveralls"
 install:
     - "pip install setuptools"
 after_success:
+    - "codecov -t"
     - coveralls
