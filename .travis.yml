@@ -13,6 +13,7 @@ before_install:
     - "sudo apt-get install -y ffmpeg"
     - "pip install coverage"
     - "pip install codecov"
+    - "pip install pytest-cov==2.5.0"
 #    - "pip install coverage==4.4"
 install:
     - "pip install setuptools"
