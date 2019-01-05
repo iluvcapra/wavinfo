@@ -16,7 +16,7 @@ def ffprobe(path):
         process = subprocess.Popen(arguments, stdout=PIPE)
         process.wait()
         if process.returncode == 0:
-            output = process.communicate()[0] 
+            output = process.communicate()[0]
             if output:
                 output_str = output.decode('utf-8')
                 return json.loads(output_str)
@@ -30,21 +30,22 @@ def ffprobe(path):
         else:
             return None
 
+        
+def all_files():
+    for dirpath, _, filenames in os.walk('tests/test_files'):
+        for filename in filenames:
+            _, ext = os.path.splitext(filename)
+            if ext in ['.wav','.WAV']:
+                yield os.path.join(dirpath, filename)
+        
 class TestWaveInfo(TestCase):
-    def all_files(self):
-        for dirpath, _, filenames in os.walk('tests/test_files'):
-            for filename in filenames:
-                _, ext = os.path.splitext(filename)
-                if ext in ['.wav','.WAV']:
-                    yield os.path.join(dirpath, filename)
-
     def test_sanity(self):
-        for wav_file in self.all_files():
+        for wav_file in all_files():
             info = wavinfo.WavInfoReader(wav_file)
             self.assertTrue(info is not None)
 
     def test_fmt_against_ffprobe(self):
-        for wav_file in self.all_files():
+        for wav_file in all_files():
             info = wavinfo.WavInfoReader(wav_file)
             ffprobe_info = ffprobe(wav_file)
 
@@ -60,13 +61,13 @@ class TestWaveInfo(TestCase):
                 self.assertEqual( info.fmt.byte_rate     , byte_rate  )
 
     def test_data_against_ffprobe(self):
-        for wav_file in self.all_files():
+        for wav_file in all_files():
             info = wavinfo.WavInfoReader(wav_file)
             ffprobe_info = ffprobe(wav_file)
             self.assertEqual( info.data.frame_count, int(ffprobe_info['streams'][0]['duration_ts'] ))
 
     def test_bext_against_ffprobe(self):
-        for wav_file in self.all_files():
+        for wav_file in all_files():
             info = wavinfo.WavInfoReader(wav_file)
             ffprobe_info = ffprobe(wav_file)
             if info.bext:
@@ -98,7 +99,7 @@ class TestWaveInfo(TestCase):
                         'tape': '18Y12M31', 'family_uid': 'USSDVGR1112089007124001008206300'},
                 }
 
-        for wav_file in self.all_files():
+        for wav_file in all_files():
             basename =  os.path.basename(wav_file)
             if basename in expected:
                 info = wavinfo.WavInfoReader(wav_file)
