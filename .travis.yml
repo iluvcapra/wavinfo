@@ -19,5 +19,5 @@ before_install:
 install:
     - "pip install setuptools"
 after_success:
-    - "codecov -t"
+    - "codecov"
     - coveralls
