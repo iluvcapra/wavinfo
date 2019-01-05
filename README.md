@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/iluvcapra/wavinfo.svg?branch=master)](https://travis-ci.com/iluvcapra/wavinfo)
-[![Coverage Status](https://coveralls.io/repos/github/iluvcapra/wavinfo/badge.svg?branch=master)](https://coveralls.io/github/iluvcapra/wavinfo?branch=master)
+[![codecov](https://codecov.io/gh/iluvcapra/wavinfo/branch/master/graph/badge.svg)](https://codecov.io/gh/iluvcapra/wavinfo)
 [![Documentation Status](https://readthedocs.org/projects/wavinfo/badge/?version=latest)](https://wavinfo.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/github/license/iluvcapra/wavinfo.svg) ![](https://img.shields.io/pypi/pyversions/wavinfo.svg) [![](https://img.shields.io/pypi/v/wavinfo.svg)](https://pypi.org/project/wavinfo/) ![](https://img.shields.io/pypi/wheel/wavinfo.svg)
 
 
