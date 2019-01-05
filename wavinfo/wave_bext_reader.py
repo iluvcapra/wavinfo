@@ -24,9 +24,6 @@ class WavBextReader:
         #
         # reserved[180]
         # codinghistory []
-        if bext_data is None:
-            return None
-
         packstring = "<256s"+ "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + "hhhhh" + "180s"
 
         rest_starts = struct.calcsize(packstring)

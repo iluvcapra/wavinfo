@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='wavinfo',
-      version='1.0',
+      version='1.1',
       author='Jamie Hardt',
       author_email='jamiehardt@me.com',
       description='WAVE sound file metadata parser.',
