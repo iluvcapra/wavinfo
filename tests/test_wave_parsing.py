@@ -66,23 +66,23 @@ class TestWaveInfo(TestCase):
         for wav_file in self.all_files():
             info = wavinfo.WavInfoReader(wav_file)
             ffprobe_info = ffprobe(wav_file)
+            if info.bext:
+                self.assertEqual( info.bext.description, ffprobe_info['format']['tags']['comment']  )
+                self.assertEqual( info.bext.originator, ffprobe_info['format']['tags']['encoded_by']  )
+                if 'originator_reference' in ffprobe_info['format']['tags']:
+                    self.assertEqual( info.bext.originator_ref, ffprobe_info['format']['tags']['originator_reference']  )
+                else:
+                    self.assertEqual( info.bext.originator_ref, '')
 
-            self.assertEqual( info.bext.description, ffprobe_info['format']['tags']['comment']  )
-            self.assertEqual( info.bext.originator, ffprobe_info['format']['tags']['encoded_by']  )
-            if 'originator_reference' in ffprobe_info['format']['tags']:
-                self.assertEqual( info.bext.originator_ref, ffprobe_info['format']['tags']['originator_reference']  )
-            else:
-                self.assertEqual( info.bext.originator_ref, '')
+                # these don't always reflect the bext info
+                # self.assertEqual( info.bext.originator_date, ffprobe_info['format']['tags']['date']  )
+                # self.assertEqual( info.bext.originator_time, ffprobe_info['format']['tags']['creation_time']  )
+                self.assertEqual( info.bext.time_reference, int(ffprobe_info['format']['tags']['time_reference'])  )
 
-            # these don't always reflect the bext info
-            # self.assertEqual( info.bext.originator_date, ffprobe_info['format']['tags']['date']  )
-            # self.assertEqual( info.bext.originator_time, ffprobe_info['format']['tags']['creation_time']  )
-            self.assertEqual( info.bext.time_reference, int(ffprobe_info['format']['tags']['time_reference'])  )
-
-            if 'coding_history' in ffprobe_info['format']['tags']:
-                self.assertEqual( info.bext.coding_history, ffprobe_info['format']['tags']['coding_history']  )
-            else:
-                self.assertEqual( info.bext.coding_history, '' )
+                if 'coding_history' in ffprobe_info['format']['tags']:
+                    self.assertEqual( info.bext.coding_history, ffprobe_info['format']['tags']['coding_history']  )
+                else:
+                    self.assertEqual( info.bext.coding_history, '' )
 
     def test_ixml(self):
         expected = {'A101_4.WAV': {'project' : 'BMH', 'scene': 'A101', 'take': '4',

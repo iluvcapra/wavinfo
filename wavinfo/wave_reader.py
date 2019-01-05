@@ -115,7 +115,10 @@ class WavInfoReader():
 
     def _get_bext(self, f, encoding):
         bext_data = self._find_chunk_data(b'bext',f,default_none=True)
-        return WavBextReader(bext_data, encoding)
+        if bext_data:
+            return WavBextReader(bext_data, encoding)
+        else:
+            return None
 
     def _get_ixml(self,f):
         ixml_data = self._find_chunk_data(b'iXML',f,default_none=True)

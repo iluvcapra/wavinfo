@@ -1,6 +1,6 @@
 
 import struct
-
+import pdb
 from collections import namedtuple
 
 class ListChunkDescriptor(namedtuple('ListChunkDescriptor' , 'signature children')):
@@ -30,11 +30,16 @@ def parse_list_chunk(stream, length):
 
     children = []
     while (stream.tell() - start) < length:
-        children.append(parse_chunk(stream))
+        child_chunk = parse_chunk(stream)
+        if child_chunk:
+             children.append(child_chunk)
+        else: 
+             break
 
     return ListChunkDescriptor(signature=signature, children=children)
 
 def parse_chunk(stream):
+    #breakpoint()
     ident = stream.read(4)
     if len(ident) != 4:
         return
