@@ -10,7 +10,7 @@ before_install:
     - "sudo apt-get update"
     - "sudo add-apt-repository universe"
     - "sudo apt-get install -y ffmpeg"
-    - "pip install coverage>=4.4"
+    - "pip install coverage==4.4"
     - "pip install pytest-cov"
     - "pip install python-coveralls"
 install:
