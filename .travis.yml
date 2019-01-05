@@ -14,10 +14,7 @@ before_install:
     - "pip install coverage"
     - "pip install codecov"
 #    - "pip install coverage==4.4"
-    - "pip install pytest-cov==2.5.0"
-    - "pip install python-coveralls"
 install:
     - "pip install setuptools"
 after_success:
     - "codecov"
-    - coveralls
