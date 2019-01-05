@@ -4,13 +4,15 @@ python:
     - "3.6"
     - "3.5"
 script:
-    - "python3 setup.py test"
+    - "python setup.py test"
+    - "py.test tests/ -v --cov wavinfo --cov-report term-missing"
 before_install:
     - "sudo apt-get update"
     - "sudo add-apt-repository universe"
-    - "sudo apt-get install -y ffmpeg" 
-    - "pip3 install python-coveralls
+    - "sudo apt-get install -y ffmpeg"
+    - "pip install pytest-cov"
+    - "pip install python-coveralls"
 install:
-    - "pip3 install setuptools"
+    - "pip install setuptools"
 after_success:
     - coveralls
