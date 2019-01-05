@@ -11,6 +11,7 @@ before_install:
     - "sudo add-apt-repository universe"
     - "sudo apt-get install -y ffmpeg"
     - "pip install pytest-cov"
+    - "pip install coverage"
     - "pip install python-coveralls"
 install:
     - "pip install setuptools"
