@@ -10,11 +10,8 @@ import wavinfo
 
 FFPROBE='ffprobe'
 
-
 def ffprobe(path):
-
     arguments = [ FFPROBE , "-of", "json" , "-show_format", "-show_streams", path ]
-    
     if int(sys.version[0]) <  3:
         process = subprocess.Popen(arguments, stdout=PIPE)
         process.wait()
@@ -27,7 +24,6 @@ def ffprobe(path):
             return None
     else: 
         process = subprocess.run(arguments, stdin=None, stdout=PIPE, stderr=PIPE)
-
         if process.returncode == 0:
             output_str = process.stdout.decode('utf-8')
             return json.loads(output_str)
@@ -35,15 +31,12 @@ def ffprobe(path):
             return None
 
 class TestWaveInfo(TestCase):
-
-
     def all_files(self):
-        for dirpath, dirnames, filenames in os.walk('tests/test_files'):
+        for dirpath, _, filenames in os.walk('tests/test_files'):
             for filename in filenames:
-                name, ext = os.path.splitext(filename)
+                _, ext = os.path.splitext(filename)
                 if ext in ['.wav','.WAV']:
                     yield os.path.join(dirpath, filename)
-
 
     def test_sanity(self):
         for wav_file in self.all_files():
@@ -70,7 +63,6 @@ class TestWaveInfo(TestCase):
         for wav_file in self.all_files():
             info = wavinfo.WavInfoReader(wav_file)
             ffprobe_info = ffprobe(wav_file)
-
             self.assertEqual( info.data.frame_count, int(ffprobe_info['streams'][0]['duration_ts'] ))
 
     def test_bext_against_ffprobe(self):
