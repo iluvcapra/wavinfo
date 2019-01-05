@@ -14,18 +14,30 @@ class WavInfoChunkReader:
 
         self.info_chunk  = next((chunk for chunk in list_chunks \
                 if chunk.signature == b'INFO'), None)
-
+        
+        #: 'ICOP' Copyright
         self.copyright      = self._get_field(f,b'ICOP')
+        #: 'IPRD' Product
         self.product        = self._get_field(f,b'IPRD')
+        #: 'IGNR' Genre
         self.genre          = self._get_field(f,b'IGNR')
+        #: 'IART' Artist, composer, author
         self.artist         = self._get_field(f,b'IART')
+        #: 'ICMT' Comment
         self.comment        = self._get_field(f,b'ICMT')
+        #: 'ISFT' Software, encoding application
         self.software       = self._get_field(f,b'ISFT')
+        #: 'ICRD' Created date
         self.created_date   = self._get_field(f,b'ICRD')
+        #: 'IENG' Engineer
         self.engineer       = self._get_field(f,b'IENG')
+        #: 'IKEY' Keywords, keyword list
         self.keywords       = self._get_field(f,b'IKEY')
+        #: 'INAM' Name, title
         self.title          = self._get_field(f,b'INAM')
+        #: 'ISRC' Source
         self.source         = self._get_field(f,b'ISRC')
+        #: 'TAPE' Tape
         self.tape           = self._get_field(f,b'TAPE')
 
 
@@ -43,6 +55,9 @@ class WavInfoChunkReader:
 
 
     def to_dict(self):
+        """
+        A dictionary with all of the key/values read from the INFO scope.
+        """
         return {'copyright':    self.copyright,
                 'product':  self.product,
                 'genre':    self.genre,

@@ -6,9 +6,6 @@
 Welcome to wavinfo's documentation!
 ===================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
 .. module:: wavinfo
 
@@ -23,6 +20,17 @@ Welcome to wavinfo's documentation!
 
 .. autoclass:: wavinfo.wave_reader.WavDataDescriptor
    :members:
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Notes:
+   
+   metadata_scopes/bext.rst
+   metadata_scopes/ixml.rst
+   metadata_scopes/info.rst
+
+
 
 Indices and tables
 ==================
