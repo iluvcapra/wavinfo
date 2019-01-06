@@ -35,6 +35,7 @@ class WavInfoReader():
 
         """
         absolute_path = os.path.abspath(path)
+        #: ``file://`` url for the file.
         self.url = pathlib.Path(absolute_path).as_uri()
         with open(path, 'rb') as f:
             chunks = parse_chunk(f)
