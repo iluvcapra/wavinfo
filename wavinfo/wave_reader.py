@@ -4,7 +4,7 @@ import os
 import sys
 from collections import namedtuple
 
-if sys.version[0] == 3:
+if sys.version[0] == '3':
     import pathlib
 else:
     import urlparse, urllib
@@ -40,7 +40,7 @@ class WavInfoReader():
         """
         absolute_path = os.path.abspath(path)
 
-        if sys.version[0] == 3:
+        if sys.version[0] == '3':
             #: `file://` url for the file.
             self.url = pathlib.Path(absolute_path).as_uri()
         else:
