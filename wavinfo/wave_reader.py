@@ -1,8 +1,13 @@
 #-*- coding: utf-8 -*-
 import struct
-import pathlib
 import os
+import sys
 from collections import namedtuple
+
+if sys.version[0] == 3:
+    import pathlib
+else:
+    import urlparse, urllib
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 from .wave_ixml_reader import WavIXMLFormat
@@ -32,11 +37,15 @@ class WavInfoReader():
         :param bext_encoding: The text encoding to use when decoding the string
           fields of the Broadcast-WAV extension. Per EBU 3285 this is ASCII
           but this parameter is available to you if you encounter a werido.
-
         """
         absolute_path = os.path.abspath(path)
-        #: ``file://`` url for the file.
-        self.url = pathlib.Path(absolute_path).as_uri()
+
+        if sys.version[0] == 3:
+            #: `file://` url for the file.
+            self.url = pathlib.Path(absolute_path).as_uri()
+        else:
+            self.url = urlparse.urljoin('file:', urllib.pathname2url(absolute_path))
+
         with open(path, 'rb') as f:
             chunks = parse_chunk(f)
 
@@ -135,7 +144,7 @@ class WavInfoReader():
         Walk all of the available metadata fields.
 
         :yields: a string, the :scope: of the metadatum, the string :name: of the
-        metadata field, and the value
+        metadata field, and the value.
         """
 
         scopes = ('fmt','data')#,'bext','ixml','info')
