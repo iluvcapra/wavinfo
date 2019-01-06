@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import struct
-
+import pathlib
+import os
 from collections import namedtuple
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
@@ -13,7 +14,6 @@ WavDataDescriptor = namedtuple('WavDataDescriptor','byte_count frame_count')
 
 #: The format of the audio samples.
 WavAudioFormat = namedtuple('WavAudioFormat','audio_format channel_count sample_rate byte_rate block_align bits_per_sample')
-
 
 class WavInfoReader():
     """
@@ -34,7 +34,8 @@ class WavInfoReader():
           but this parameter is available to you if you encounter a werido.
 
         """
-
+        absolute_path = os.path.abspath(path)
+        self.url = pathlib.Path(absolute_path).as_uri()
         with open(path, 'rb') as f:
             chunks = parse_chunk(f)
 
