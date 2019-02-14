@@ -136,7 +136,7 @@ class WavInfoReader():
         if ixml_data is None:
             return None
 
-        ixml_string = ixml_data
+        ixml_string = ixml_data.rstrip(b'\0')
         return WavIXMLFormat(ixml_string)
 
     def walk(self):
