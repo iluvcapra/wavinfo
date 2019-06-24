@@ -12,7 +12,11 @@ class WavIXMLFormat:
         """
         self.source = xml
         xmlBytes = io.BytesIO(xml)
-        self.parsed = ET.parse(xmlBytes)
+        try:
+            self.parsed = ET.parse(xmlBytes)
+        except ET.ParseError as err:
+            print("Error parsing iXML: " + str(err))
+            return None
 
     def _get_text_value(self, xpath):
         e = self.parsed.find("./" + xpath)
