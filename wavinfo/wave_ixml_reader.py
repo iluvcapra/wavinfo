@@ -1,4 +1,5 @@
-import xml.etree.ElementTree as ET
+#import xml.etree.ElementTree as ET
+from lxml import etree as ET
 import io
 
 class WavIXMLFormat:
@@ -13,10 +14,13 @@ class WavIXMLFormat:
         self.source = xml
         xmlBytes = io.BytesIO(xml)
         try:
-            self.parsed = ET.parse(xmlBytes)
+            parser = ET.XMLParser(recover=True)
+            self.parsed = ET.parse(xmlBytes, parser=parser)
         except ET.ParseError as err:
             print("Error parsing iXML: " + str(err))
-            return None
+            decoded = xml.decode(encoding='utf_8_sig')
+            print(decoded)
+            self.parsed = ET.parse(io.StringIO(decoded))
 
     def _get_text_value(self, xpath):
         e = self.parsed.find("./" + xpath)
