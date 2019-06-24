@@ -17,4 +17,6 @@ setup(name='wavinfo',
 	  'Topic :: Multimedia :: Sound/Audio',
           "Programming Language :: Python :: 3.5",
           "Programming Language :: Python :: 3.6"],
-      packages=['wavinfo'])
+      packages=['wavinfo'],
+      install_requires=['lxml']
+      )
