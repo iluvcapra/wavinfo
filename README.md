@@ -6,7 +6,7 @@
 # wavinfo
 
 
-The `wavinfo` package allows you to probe WAVE files and extract extended metadata, with an emphasis on 
+The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] and extract extended metadata, with an emphasis on 
 production metadata. 
 
 `wavinfo` reads:
@@ -27,6 +27,7 @@ In progress:
 [ebu]:https://tech.ebu.ch/docs/tech/tech3285.pdf
 [smpte_330m2011]:http://standards.smpte.org/content/978-1-61482-678-1/st-330-2011/SEC1.abstract
 [ixml]:http://www.ixml.info
+[eburf64]:https://tech.ebu.ch/docs/tech/tech3306v1_1.pdf
 
 
 
