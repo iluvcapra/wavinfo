@@ -40,7 +40,11 @@ class TestWaveInfo(TestCase):
             info = wavinfo.WavInfoReader(wav_file)
             ffprobe_info = ffprobe(wav_file)
             if info.bext:
-                self.assertEqual( info.bext.description, ffprobe_info['format']['tags']['comment']  )
+                if 'comment' in ffprobe_info['format']['tags']:
+                    self.assertEqual( info.bext.description, ffprobe_info['format']['tags']['comment']  )
+                else: 
+                    self.assertEqual( info.bext.description , '')
+
                 self.assertEqual( info.bext.originator, ffprobe_info['format']['tags']['encoded_by']  )
                 if 'originator_reference' in ffprobe_info['format']['tags']:
                     self.assertEqual( info.bext.originator_ref, ffprobe_info['format']['tags']['originator_reference']  )
