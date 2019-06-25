@@ -44,8 +44,12 @@ class TestWaveInfo(TestCase):
                     self.assertEqual( info.bext.description, ffprobe_info['format']['tags']['comment']  )
                 else: 
                     self.assertEqual( info.bext.description , '')
-
-                self.assertEqual( info.bext.originator, ffprobe_info['format']['tags']['encoded_by']  )
+                
+                if 'encoded_by' in ffprobe_info['format']['tags']:
+                    self.assertEqual( info.bext.originator, ffprobe_info['format']['tags']['encoded_by']  )
+                else:
+                    self.assertEqual( info.bext.originator, '')
+                    
                 if 'originator_reference' in ffprobe_info['format']['tags']:
                     self.assertEqual( info.bext.originator_ref, ffprobe_info['format']['tags']['originator_reference']  )
                 else:
