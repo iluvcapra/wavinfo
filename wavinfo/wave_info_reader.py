@@ -21,6 +21,8 @@ class WavInfoChunkReader:
         self.product        = self._get_field(f,b'IPRD')
         #: 'IGNR' Genre
         self.genre          = self._get_field(f,b'IGNR')
+        #: 'IUBJ' Supject
+        self.subject        = self._get_field(f,b'ISBJ')
         #: 'IART' Artist, composer, author
         self.artist         = self._get_field(f,b'IART')
         #: 'ICMT' Comment
@@ -31,6 +33,8 @@ class WavInfoChunkReader:
         self.created_date   = self._get_field(f,b'ICRD')
         #: 'IENG' Engineer
         self.engineer       = self._get_field(f,b'IENG')
+        #: 'ITCH' Technician
+        self.technician     = self._get_field(f,b'ITCH')
         #: 'IKEY' Keywords, keyword list
         self.keywords       = self._get_field(f,b'IKEY')
         #: 'INAM' Name, title
@@ -39,6 +43,13 @@ class WavInfoChunkReader:
         self.source         = self._get_field(f,b'ISRC')
         #: 'TAPE' Tape
         self.tape           = self._get_field(f,b'TAPE')
+        #: 'IARL' Archival Location
+        self.archival_location = self._get_field(f,b'IARL')
+        #: 'ISFT' Software
+        self.software       = self._get_field(f,b'ISFT')
+        #: 'ICSM' Commissioned
+        self.commissioned   = self._get_field(f,b'ICMS')
+        
 
 
     def _get_field(self, f, field_ident):
