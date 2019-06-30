@@ -28,6 +28,13 @@ class WavIXMLFormat:
             return e.text
 
     @property
+    def raw_xml(self):
+        """
+        The root entity of the iXML document.
+        """
+        return self.parsed
+        
+    @property
     def project(self):
         """
         The project/film name entered for the recording.
