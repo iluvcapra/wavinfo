@@ -1,6 +1,10 @@
 #import xml.etree.ElementTree as ET
 from lxml import etree as ET
 import io
+from collections import namedtuple
+
+
+IXMLTrack = namedtuple('IXMLTrack', ['channel_index', 'interleave_index', 'name', 'function'])
 
 class WavIXMLFormat:
     """
@@ -33,7 +37,20 @@ class WavIXMLFormat:
         The root entity of the iXML document.
         """
         return self.parsed
-        
+
+    @property
+    def track_list(self):
+        """
+        A description of each track.
+        :return: An Iterator
+        """
+        for track in self.parsed.find("./TRACK_LIST").iter():
+            if track.tag == 'TRACK':
+                yield IXMLTrack(channel_index=track.xpath('string(CHANNEL_INDEX/text())'),
+                                interleave_index=track.xpath('string(INTERLEAVE_INDEX/text())'),
+                                name=track.xpath('string(NAME/text())'),
+                                function=track.xpath('string(FUNCTION/text())'))
+
     @property
     def project(self):
         """

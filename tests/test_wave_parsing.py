@@ -87,3 +87,10 @@ class TestWaveInfo(TestCase):
                 self.assertEqual( e['take'], info.ixml.take )
                 self.assertEqual( e['tape'], info.ixml.tape )
                 self.assertEqual( e['family_uid'], info.ixml.family_uid )
+
+                for track in info.ixml.track_list:
+                    self.assertIsNotNone(track.channel_index)
+                    if basename == 'A101_4.WAV' and track.channel_index == '1':
+                        self.assertTrue(track.name == 'MKH516 A')
+
+
