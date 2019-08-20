@@ -11,6 +11,14 @@ setup(name='wavinfo',
       long_description_content_type="text/markdown",
       long_description=long_description,
       url='https://github.com/iluvcapra/wavinfo',
+      project_urls={
+          'Source':
+              'https://github.com/iluvcapra/wavinfo',
+          'Documentation':
+              'https://wavinfo.readthedocs.io/',
+          'Issues':
+              'https://github.com/iluvcapra/wavinfo/issues',
+      },
       classifiers=['Development Status :: 5 - Production/Stable',
           'License :: OSI Approved :: MIT License',
           'Topic :: Multimedia',
@@ -19,5 +27,6 @@ setup(name='wavinfo',
           "Programming Language :: Python :: 3.6",
           "Programming Language :: Python :: 3.7"],
       packages=['wavinfo'],
+      keywords='waveform metadata library film tv editing editorial audio ebu',
       install_requires=['lxml']
       )
