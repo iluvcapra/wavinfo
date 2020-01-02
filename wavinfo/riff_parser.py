@@ -32,43 +32,41 @@ class ChunkDescriptor(namedtuple('ChunkDescriptor', 'ident start length rf64_con
 
 def parse_list_chunk(stream, length, rf64_context=None):
     start = stream.tell()
-
     signature = stream.read(4)
 
     children = []
-    while (stream.tell() - start) < length:
+    while (stream.tell() - start + 8) < length:
         child_chunk = parse_chunk(stream, rf64_context=rf64_context)
-        if child_chunk:
-            children.append(child_chunk)
-        else: 
-            break
+        children.append(child_chunk)
+
+    stream.seek(start + length)
 
     return ListChunkDescriptor(signature=signature, children=children)
 
 
 def parse_chunk(stream, rf64_context=None):
+    header_start = stream.tell()
     ident = stream.read(4)
     size_bytes = stream.read(4)
 
-    if len(ident) != 4 or len(size_bytes) < 4:
-        raise WavInfoEOFError(identifier=ident, chunk_start=stream.tell() - 4)
+    if len(ident) != 4 or len(size_bytes) != 4:
+        raise WavInfoEOFError(identifier=ident, chunk_start=header_start)
 
-    size_bytes = stream.read(4)
-    size = struct.unpack('<I', size_bytes)[0]
-    
-    if size == 0xFFFFFFFF:
+    data_size = struct.unpack('<I', size_bytes)[0]
+
+    if data_size == 0xFFFFFFFF:
         if rf64_context is None and ident == b'RF64':
             rf64_context = parse_rf64(stream=stream)
         
-        size = rf64_context.bigchunk_table[ident] 
+        data_size = rf64_context.bigchunk_table[ident]
             
-    displacement = size
+    displacement = data_size
     if displacement % 2 is not 0:
         displacement = displacement + 1
 
     if ident in [b'RIFF', b'LIST', b'RF64']:
-        return parse_list_chunk(stream=stream, length=size, rf64_context=rf64_context)
+        return parse_list_chunk(stream=stream, length=data_size, rf64_context=rf64_context)
     else:
-        start = stream.tell()
+        data_start = stream.tell()
         stream.seek(displacement, 1)
-        return ChunkDescriptor(ident=ident, start=start, length=size, rf64_context=rf64_context)
+        return ChunkDescriptor(ident=ident, start=data_start, length=data_size, rf64_context=rf64_context)
