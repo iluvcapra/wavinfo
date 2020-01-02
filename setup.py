@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='wavinfo',
-      version='1.3.1',
+      version='1.4',
       author='Jamie Hardt',
       author_email='jamiehardt@me.com',
       description='Probe WAVE Files for iXML, Broadcast-WAVE and other metadata.',
@@ -19,14 +19,15 @@ setup(name='wavinfo',
           'Issues':
               'https://github.com/iluvcapra/wavinfo/issues',
       },
+      packages=['wavinfo'],
       classifiers=['Development Status :: 5 - Production/Stable',
           'License :: OSI Approved :: MIT License',
           'Topic :: Multimedia',
           'Topic :: Multimedia :: Sound/Audio',
           "Programming Language :: Python :: 3.5",
           "Programming Language :: Python :: 3.6",
-          "Programming Language :: Python :: 3.7"],
-      packages=['wavinfo'],
+          "Programming Language :: Python :: 3.7",
+          "Programming Language :: Python :: 3.8"],
       keywords='waveform metadata audio ebu smpte avi library film tv editing editorial',
       install_requires=['lxml']
       )
