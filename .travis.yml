@@ -9,7 +9,7 @@ python:
 script:
     - "gunzip tests/test_files/rf64/*.gz"
     - "python setup.py test"
-    - "pythong -m pytest tests/ -v --cov wavinfo --cov-report term-missing"
+    - "python -m pytest tests/ -v --cov wavinfo --cov-report term-missing"
 before_install:
     - "sudo apt-get update"
     - "sudo add-apt-repository universe"
