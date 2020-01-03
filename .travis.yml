@@ -9,7 +9,7 @@ python:
 script:
     - "gunzip tests/test_files/rf64/*.gz"
     - "python setup.py test"
-#    - "py.test tests/ -v --cov wavinfo --cov-report term-missing"
+    - "py.test tests/ -v --cov wavinfo --cov-report term-missing"
 before_install:
     - "sudo apt-get update"
     - "sudo add-apt-repository universe"
@@ -17,7 +17,7 @@ before_install:
     - "pip install coverage"
     - "pip install codecov"
     - "pip install pytest-cov==2.5.0"
-#    - "pip install coverage==4.4"
+    - "pip install coverage==4.4"
 install:
     - "pip install setuptools"
 after_success:
