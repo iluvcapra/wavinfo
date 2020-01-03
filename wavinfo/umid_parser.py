@@ -51,7 +51,7 @@ class UMIDParser:
 
     @property
     def material_number_creation_method(self) -> str:
-        method_byte: int = self.raw_umid[11]
+        method_byte = self.raw_umid[11]
         method_byte = (method_byte << 4) & 0xf
         if method_byte == 0x0:
             return 'undefined'
