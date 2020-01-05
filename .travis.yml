@@ -15,6 +15,7 @@ before_install:
     - "sudo add-apt-repository universe"
     - "sudo apt-get install -y ffmpeg"
     - "pip install pytest"
+    - "pip install lxml"
 #     - "pip install coverage"
 #     - "pip install codecov"
 #     - "pip install pytest-cov==2.5.0"
