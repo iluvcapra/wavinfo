@@ -147,9 +147,13 @@ class WavInfoReader():
         metadata field, and the value.
         """
 
-        scopes = ('fmt','data')#,'bext','ixml','info')
+        scopes = ('fmt', 'data') #'bext', 'ixml', 'info')
 
         for scope in scopes:
             attr = self.__getattribute__(scope)
             for field in attr._fields:
                 yield scope, field, attr.__getattribute__(field)
+
+            bext_dict = self.bext.to_dict()
+            for key in bext_dict.keys():
+                yield 'bext', key, bext_dict[key]

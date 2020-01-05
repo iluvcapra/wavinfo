@@ -10,9 +10,26 @@ class UMIDParser:
     def __init__(self, raw_umid: bytearray):
         self.raw_umid = raw_umid
 
+    @classmethod
+    def binary_to_string(cls, binary_value):
+        result_str = ''
+        for n in range(len(binary_value)):
+            result_str = f'{binary_value[n]:x}' + result_str
+
+        return result_str
+
     @property
     def universal_label(self) -> bytearray:
         return self.raw_umid[0:12]
+
+    @property
+    def basic_umid(self):
+        return self.raw_umid[0:32]
+
+    def basic_umid_to_str(self):
+        return "%024x-%06x-%032x" % (self.binary_to_string(self.universal_label),
+                                     self.binary_to_string(self.instance_number),
+                                     self.binary_to_string(self.material_number))
 
     @property
     def universal_label_is_valid(self) -> bool:
@@ -95,19 +112,12 @@ class UMIDParser:
             return 'extended'
 
     @property
-    def instance_number(self) -> int:
-        return struct.unpack('<I', self.raw_umid[13:4])[0] & 0x00ffffff
+    def instance_number(self) -> bytearray:
+        return self.raw_umid[13:3]
 
     @property
     def material_number(self) -> bytearray:
-        return self.raw_umid[14:16]
-
-    @property
-    def material_number_hex(self) -> str:
-        result_str = ''
-        for n in range(16):
-            result_str = '{:x}'.format(self.material_number[n]) + result_str
-        return result_str
+        return self.raw_umid[16:16]
 
     @property
     def source_pack(self) -> Union[bytearray, None]:

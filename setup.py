@@ -1,15 +1,17 @@
 from setuptools import setup
+from wavinfo import __author__, __license__, __version__
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='wavinfo',
-      version='1.4.1',
-      author='Jamie Hardt',
+      version=__version__,
+      author=__author__,
       author_email='jamiehardt@me.com',
       description='Probe WAVE Files for iXML, Broadcast-WAVE and other metadata.',
       long_description_content_type="text/markdown",
       long_description=long_description,
+      license=__license__,
       url='https://github.com/iluvcapra/wavinfo',
       project_urls={
           'Source':
@@ -29,5 +31,10 @@ setup(name='wavinfo',
           "Programming Language :: Python :: 3.7",
           "Programming Language :: Python :: 3.8"],
       keywords='waveform metadata audio ebu smpte avi library film tv editing editorial',
-      install_requires=['lxml']
+      install_requires=['lxml'],
+      entry_points={
+          'console_scripts': [
+              'wavinfo = wavinfo.__main__:main'
+          ]
+      }
       )
