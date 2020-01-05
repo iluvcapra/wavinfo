@@ -59,6 +59,11 @@ The length of the file in frames (interleaved samples) and bytes is available, a
 >>> (48000, 2, 6, 24)
 ```
 
+## Platform Lifecycle Stuff
+
+Python 3.5 support is deprecated.
+
+
 ## Other Resources
 
 * For other file formats and ID3 decoding, look at [audio-metadata](https://github.com/thebigmunch/audio-metadata).
