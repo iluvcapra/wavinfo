@@ -22,5 +22,5 @@ before_install:
     - "pip install coverage==4.4"
 install:
     - "pip install setuptools"
-# after_success:
-#     - "codecov"
+after_success:
+    - "codecov"
