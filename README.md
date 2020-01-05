@@ -41,6 +41,12 @@ path = '../tests/test_files/A101_1.WAV'
 info = WavInfoReader(path)
 ```
 
+The package also installs a shell command:
+
+```sh
+$ wavinfo test_files/A101_1.WAV
+```
+
 ### Basic WAV Data
 
 The length of the file in frames (interleaved samples) and bytes is available, as is the contents of the format chunk.
