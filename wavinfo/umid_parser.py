@@ -14,7 +14,7 @@ class UMIDParser:
     def binary_to_string(cls, binary_value):
         result_str = ''
         for n in range(len(binary_value)):
-            result_str = f'{binary_value[n]:x}' + result_str
+            result_str = '{:x}'.format(binary_value[n]) + result_str
 
         return result_str
 
