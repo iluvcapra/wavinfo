@@ -11,17 +11,18 @@ class WavInfoEOFError(EOFError):
 
 
 class ListChunkDescriptor(namedtuple('ListChunkDescriptor', 'signature children')):
-    def find(self, chunk_path):
-        if len(chunk_path) > 1:
-            for chunk in self.children:
-                if type(chunk) is ListChunkDescriptor and \
-                        chunk.signature is chunk_path[0]:
-                    return chunk.find(chunk_path[1:])
-        else:
-            for chunk in self.children:
-                if type(chunk) is ChunkDescriptor and \
-                        chunk.ident is chunk_path[0]:
-                    return chunk
+    pass
+    # def find(self, chunk_path):
+    #     if len(chunk_path) > 1:
+    #         for chunk in self.children:
+    #             if type(chunk) is ListChunkDescriptor and \
+    #                     chunk.signature is chunk_path[0]:
+    #                 return chunk.find(chunk_path[1:])
+    #     else:
+    #         for chunk in self.children:
+    #             if type(chunk) is ChunkDescriptor and \
+    #                     chunk.ident is chunk_path[0]:
+    #                 return chunk
 
 
 class ChunkDescriptor(namedtuple('ChunkDescriptor', 'ident start length rf64_context')):
