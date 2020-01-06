@@ -148,6 +148,12 @@ class WavInfoReader():
             for field in attr._fields:
                 yield scope, field, attr.__getattribute__(field)
 
-            bext_dict = self.bext.to_dict()
-            for key in bext_dict.keys():
-                yield 'bext', key, bext_dict[key]
+            if self.bext is not None:
+                bext_dict = (self.bext or {}).to_dict()
+                for key in bext_dict.keys():
+                    yield 'bext', key, bext_dict[key]
+
+            if self.info is not None:
+                info_dict = self.info.to_dict()
+                for key in info_dict.keys():
+                    yield 'info', key, info_dict[key]
