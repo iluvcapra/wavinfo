@@ -2,6 +2,7 @@
 [![codecov](https://codecov.io/gh/iluvcapra/wavinfo/branch/master/graph/badge.svg)](https://codecov.io/gh/iluvcapra/wavinfo)
 [![Documentation Status](https://readthedocs.org/projects/wavinfo/badge/?version=latest)](https://wavinfo.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/github/license/iluvcapra/wavinfo.svg) ![](https://img.shields.io/pypi/pyversions/wavinfo.svg) [![](https://img.shields.io/pypi/v/wavinfo.svg)](https://pypi.org/project/wavinfo/) ![](https://img.shields.io/pypi/wheel/wavinfo.svg)
 
+<!-- ![Test](https://github.com/iluvcapra/wavinfo/workflows/Upload%20Python%20Package/badge.svg) -->
 
 # wavinfo
 
