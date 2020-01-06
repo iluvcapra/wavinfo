@@ -2,6 +2,7 @@
 [![codecov](https://codecov.io/gh/iluvcapra/wavinfo/branch/master/graph/badge.svg)](https://codecov.io/gh/iluvcapra/wavinfo)
 [![Documentation Status](https://readthedocs.org/projects/wavinfo/badge/?version=latest)](https://wavinfo.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/github/license/iluvcapra/wavinfo.svg) ![](https://img.shields.io/pypi/pyversions/wavinfo.svg) [![](https://img.shields.io/pypi/v/wavinfo.svg)](https://pypi.org/project/wavinfo/) ![](https://img.shields.io/pypi/wheel/wavinfo.svg)
 
+<!-- ![Test](https://github.com/iluvcapra/wavinfo/workflows/Upload%20Python%20Package/badge.svg) -->
 
 # wavinfo
 
@@ -20,13 +21,13 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
   information.
 
 In progress:
-* ADM metadata consilient with the output of the __Dolby RMU__, perhaps later fully complaint with [EBU Tech 3364v2 (2018)][adm].
+* ADM metadata consilient with the output of the __Dolby RMU__, perhaps later fully complaint with [ITU BS.2076-2][adm].
 * iXML `STEINBERG` sound library attributes.
 * __NetMix__ library attributes.
 * Pro Tools __embedded regions__.
 
 [ebu]:https://tech.ebu.ch/docs/tech/tech3285.pdf
-[adm]:https://tech.ebu.ch/docs/tech/tech3364v2_0.pdf
+[adm]:https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.2076-2-201910-I!!PDF-E.pdf
 [smpte_330m2011]:http://standards.smpte.org/content/978-1-61482-678-1/st-330-2011/SEC1.abstract
 [ixml]:http://www.ixml.info
 [eburf64]:https://tech.ebu.ch/docs/tech/tech3306v1_1.pdf
