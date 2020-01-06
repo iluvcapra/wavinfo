@@ -15,7 +15,7 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
   loudness and coding history, if extant. This also includes the SMPTE UMID<sup>[2][smpte_330m2011]</sup>.
 * __iXML__ production recorder metadata<sup>[3][ixml]</sup>, including project, scene, and take tags, recorder notes 
   and file family information.
-* Most of the common __RIFF INFO__ metadata fields.
+* Most of the common __RIFF INFO__<sup>[4][info-tags]</sup> metadata fields.
 * The __wav format__ is also parsed, so you can access the basic sample rate and channel count 
   information.
 
@@ -30,6 +30,7 @@ In progress:
 [smpte_330m2011]:http://standards.smpte.org/content/978-1-61482-678-1/st-330-2011/SEC1.abstract
 [ixml]:http://www.ixml.info
 [eburf64]:https://tech.ebu.ch/docs/tech/tech3306v1_1.pdf
+[info-tags]:https://exiftool.org/TagNames/RIFF.html#Info
 
 
 
