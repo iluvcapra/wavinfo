@@ -11,10 +11,9 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
 
 `wavinfo` reads:
 
-* __Broadcast-WAVE__ metadata, compliant with [EBU Tech 3285v2 (2011)][ebu], including embedded program 
-  loudness and coding history, if extant. This also includes the [SMPTE 330M __UMID__][smpte_330m2011] 
-  Unique Materials Identifier.
-* [__iXML__ production recorder metadata][ixml], including project, scene, and take tags, recorder notes 
+* __Broadcast-WAVE__ metadata<sup>[1][ebu]</sup>, including embedded program 
+  loudness and coding history, if extant. This also includes the SMPTE UMID<sup>[2][smpte_330m2011]</sup>.
+* __iXML__ production recorder metadata<sup>[3][ixml]</sup>, including project, scene, and take tags, recorder notes 
   and file family information.
 * Most of the common __RIFF INFO__ metadata fields.
 * The __wav format__ is also parsed, so you can access the basic sample rate and channel count 
