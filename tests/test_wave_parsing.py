@@ -77,7 +77,7 @@ class TestWaveInfo(TestCase):
                 }
 
         for wav_file in all_files():
-            basename =  os.path.basename(wav_file)
+            basename = os.path.basename(wav_file)
             if basename in expected:
                 info = wavinfo.WavInfoReader(wav_file)
                 e = expected[basename]

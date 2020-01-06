@@ -4,10 +4,7 @@ import os
 import sys
 from collections import namedtuple
 
-if sys.version[0] == '3':
-    import pathlib
-else:
-    import urlparse, urllib
+import pathlib
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 from .wave_ixml_reader import WavIXMLFormat
@@ -40,11 +37,8 @@ class WavInfoReader():
         """
         absolute_path = os.path.abspath(path)
 
-        if sys.version[0] == '3':
-            #: `file://` url for the file.
-            self.url = pathlib.Path(absolute_path).as_uri()
-        else:
-            self.url = urlparse.urljoin('file:', urllib.pathname2url(absolute_path))
+        #: `file://` url for the file.
+        self.url = pathlib.Path(absolute_path).as_uri()
 
         with open(path, 'rb') as f:
             chunks = parse_chunk(f)
