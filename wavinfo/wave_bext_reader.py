@@ -1,4 +1,5 @@
 import struct
+import binascii
 
 class WavBextReader:
     def __init__(self,bext_data,encoding):
@@ -66,6 +67,11 @@ class WavBextReader:
             self.max_momentary_loudness  = unpacked[11] / 100.0
             self.max_shortterm_loudness  = unpacked[12] / 100.0
 
+    def umid_to_str(self):
+        if self.umid:
+            return str(binascii.hexlify(self.umid), encoding='ascii')
+        else:
+            return None
 
     def to_dict(self):
         return {'description':      self.description,
@@ -75,6 +81,7 @@ class WavBextReader:
                 'originator_time':  self.originator_time,
                 'time_reference':   self.time_reference,
                 'version':          self.version,
+                'umid':             self.umid_to_str(),
                 'coding_history':   self.coding_history,
                 'loudness_value':   self.loudness_value,
                 'loudness_range':   self.loudness_range,
