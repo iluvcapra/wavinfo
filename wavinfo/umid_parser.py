@@ -3,7 +3,12 @@ import binascii
 
 
 def binary_to_string(binary_value):
-    return str(binascii.hexlify(binary_value), encoding='ascii')
+    retval = ''
+    for n in range(0, len(binary_value)):
+        sr = "{:02x}".format(binary_value[n])
+        retval += sr
+
+    return retval
 
 
 class UMIDParser:
@@ -24,7 +29,7 @@ class UMIDParser:
     #     return self.raw_umid[0:32]
 
     def basic_umid_to_str(self):
-        return binary_to_string(self.raw_umid[0:13]) + '-' + binary_to_string(self.raw_umid[13:3])
+        return binary_to_string(self.raw_umid[0:32])
     #
     # @property
     # def universal_label_is_valid(self) -> bool:
