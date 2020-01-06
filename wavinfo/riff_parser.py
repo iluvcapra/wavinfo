@@ -58,11 +58,11 @@ def parse_chunk(stream, rf64_context=None):
     if data_size == 0xFFFFFFFF:
         if rf64_context is None and ident == b'RF64':
             rf64_context = parse_rf64(stream=stream)
-        
+
         data_size = rf64_context.bigchunk_table[ident]
-            
+
     displacement = data_size
-    if displacement % 2 is not 0:
+    if (displacement % 2) != 0:
         displacement = displacement + 1
 
     if ident in [b'RIFF', b'LIST', b'RF64']:
