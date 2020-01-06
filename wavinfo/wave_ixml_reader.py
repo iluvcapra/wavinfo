@@ -17,14 +17,8 @@ class WavIXMLFormat:
         """
         self.source = xml
         xmlBytes = io.BytesIO(xml)
-        try:
-            parser = ET.XMLParser(recover=True)
-            self.parsed = ET.parse(xmlBytes, parser=parser)
-        except ET.ParseError as err:
-            print("Error parsing iXML: " + str(err))
-            decoded = xml.decode(encoding='utf_8_sig')
-            print(decoded)
-            self.parsed = ET.parse(io.StringIO(decoded))
+        parser = ET.XMLParser(recover=True)
+        self.parsed = ET.parse(xmlBytes, parser=parser)
 
     def _get_text_value(self, xpath):
         e = self.parsed.find("./" + xpath)
