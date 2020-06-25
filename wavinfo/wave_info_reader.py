@@ -43,8 +43,6 @@ class WavInfoChunkReader:
         self.tape = self._get_field(f, b'TAPE')
         #: 'IARL' Archival Location
         self.archival_location = self._get_field(f, b'IARL')
-        #: 'ISFT' Software
-        self.software = self._get_field(f, b'ISFT')
         #: 'ICSM' Commissioned
         self.commissioned = self._get_field(f, b'ICMS')
 
