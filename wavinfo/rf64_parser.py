@@ -5,7 +5,7 @@ from . import riff_parser
 RF64Context = namedtuple('RF64Context','sample_count bigchunk_table')
 
 
-def parse_rf64(stream):
+def parse_rf64(stream, signature = b'RF64'):
     #print("starting parse_rf64")
     start = stream.tell()
     assert( stream.read(4) == b'WAVE' )
@@ -32,7 +32,7 @@ def parse_rf64(stream):
         bigchunk_table[bigname] = bigsize
 
     bigchunk_table[b'data'] = data_size
-    bigchunk_table[b'RF64'] = riff_size
+    bigchunk_table[signature] = riff_size
 
     stream.seek(start, 0)
     #print("returning from parse_rf64, context: ",RF64Context( sample_count=sample_count, bigchunk_table=bigchunk_table ) )
