@@ -32,5 +32,5 @@ def all_files():
     for dirpath, _, filenames in os.walk('tests/test_files'):
         for filename in filenames:
             _, ext = os.path.splitext(filename)
-            if ext in ['.wav','.WAV']:
+            if ext in ['.wav', '.WAV']:
                 yield os.path.join(dirpath, filename)
