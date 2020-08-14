@@ -4,10 +4,11 @@ import subprocess
 from subprocess import PIPE
 import json
 
-FFPROBE='ffprobe'
+FFPROBE = 'ffprobe'
+
 
 def ffprobe(path):
-    arguments = [ FFPROBE , "-of", "json" , "-show_format", "-show_streams", path ]
+    arguments = [FFPROBE, "-of", "json", "-show_format", "-show_streams", path]
     if int(sys.version[0]) <  3:
         process = subprocess.Popen(arguments, stdout=PIPE)
         process.wait()
@@ -27,13 +28,9 @@ def ffprobe(path):
             return None
 
 
-        
 def all_files():
     for dirpath, _, filenames in os.walk('tests/test_files'):
         for filename in filenames:
             _, ext = os.path.splitext(filename)
             if ext in ['.wav','.WAV']:
                 yield os.path.join(dirpath, filename)
-
-
-
