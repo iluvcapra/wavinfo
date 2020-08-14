@@ -132,7 +132,7 @@ class WavInfoReader:
         scopes = ('fmt', 'data')  # 'bext', 'ixml', 'info')
 
         for scope in scopes:
-            attr: WavAudioFormat = self.__getattribute__(scope)
+            attr = self.__getattribute__(scope)
             for field in attr._fields:
                 yield scope, field, attr.__getattribute__(field)
 
