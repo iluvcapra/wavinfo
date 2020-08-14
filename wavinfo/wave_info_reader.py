@@ -81,5 +81,5 @@ class WavInfoChunkReader:
 
     def __repr__(self):
         return_val = self.to_dict()
-        return_val.update({'encoding', self.encoding})
+        return_val.update({'encoding': self.encoding})
         return str(return_val)
