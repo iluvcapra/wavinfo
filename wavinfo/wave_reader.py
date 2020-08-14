@@ -119,7 +119,7 @@ class WavInfoReader:
 
     def _get_ixml(self, f):
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
-        return None if ixml_data else WavIXMLFormat(ixml_data.rstrip(b'\0'))
+        return None if ixml_data is None else WavIXMLFormat(ixml_data.rstrip(b'\0'))
 
     def walk(self):
         """
