@@ -1,14 +1,10 @@
 from typing import Union
 import binascii
+from functools import reduce
 
 
 def binary_to_string(binary_value):
-    retval = ''
-    for n in range(0, len(binary_value)):
-        sr = "{:02x}".format(binary_value[n])
-        retval += sr
-
-    return retval
+    return reduce(lambda val, el: val + "{:02x}".format(el), binary_value, '')
 
 
 class UMIDParser:
@@ -125,5 +121,3 @@ class UMIDParser:
     #         return self.raw_umid[32:32]
     #     else:
     #         return None
-
-

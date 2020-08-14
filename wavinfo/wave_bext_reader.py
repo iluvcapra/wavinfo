@@ -2,12 +2,13 @@ import struct
 import binascii
 from .umid_parser import UMIDParser
 
+
 class WavBextReader:
     def __init__(self, bext_data, encoding):
         """
         Read Broadcast-WAV extended metadata.
-        :param best_data: The bytes-like data.
-        "param encoding: The encoding to use when decoding the text fields of the
+        :param bext_data: The bytes-like data.
+        :param encoding: The encoding to use when decoding the text fields of the
                  BEXT metadata scope. According to EBU Rec 3285 this shall be ASCII.
         """
         packstring = "<256s" + "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + "hhhhh" + "180s"
@@ -15,33 +16,29 @@ class WavBextReader:
         rest_starts = struct.calcsize(packstring)
         unpacked = struct.unpack(packstring, bext_data[:rest_starts])
 
-        def sanatize_bytes(bytes):
-            first_null = next((index for index, byte in enumerate(bytes) if byte == 0), None)
-            if first_null is not None:
-                trimmed = bytes[:first_null]
-            else:
-                trimmed = bytes
-
+        def sanitize_bytes(b):
+            first_null = next((index for index, byte in enumerate(b) if byte == 0), None)
+            trimmed = b if first_null is None else b[:first_null]
             decoded = trimmed.decode(encoding)
             return decoded
 
         #: Description. A free-text field up to 256 characters long.
-        self.description = sanatize_bytes(unpacked[0])
+        self.description = sanitize_bytes(unpacked[0])
         #: Originator. Usually the name of the encoding application, sometimes
         #: a artist name.
-        self.originator = sanatize_bytes(unpacked[1])
-        #: A unique identifer for the file, a serial number.
-        self.originator_ref = sanatize_bytes(unpacked[2])
+        self.originator = sanitize_bytes(unpacked[1])
+        #: A unique identifier for the file, a serial number.
+        self.originator_ref = sanitize_bytes(unpacked[2])
         #: Date of the recording, in the format YYY-MM-DD
-        self.originator_date = sanatize_bytes(unpacked[3])
+        self.originator_date = sanitize_bytes(unpacked[3])
         #: Time of the recording, in the format HH:MM:SS.
-        self.originator_time = sanatize_bytes(unpacked[4])
+        self.originator_time = sanitize_bytes(unpacked[4])
         #: The sample offset of the start of the file relative to an
         #: epoch, usually midnight the day of the recording. 
         self.time_reference = unpacked[5]
         #: A variable-length text field containing a list of processes and
         #: and conversions performed on the file.
-        self.coding_history = sanatize_bytes(bext_data[rest_starts:])
+        self.coding_history = sanitize_bytes(bext_data[rest_starts:])
         #: BEXT version. 
         self.version = unpacked[6]
         #: SMPTE 330M UMID of this audio file, 64 bytes are allocated though the UMID
