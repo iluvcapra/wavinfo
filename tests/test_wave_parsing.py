@@ -93,3 +93,22 @@ class TestWaveInfo(TestCase):
                     self.assertIsNotNone(track.channel_index)
                     if basename == 'A101_4.WAV' and track.channel_index == '1':
                         self.assertEqual(track.name, 'MKH516 A')
+
+    def test_metadata(self):
+        file_with_metadata = 'tests/test_files/sound_grinder_pro/new_camera bumb 1.wav'
+        self.assertTrue(os.path.exists(file_with_metadata))
+        info = wavinfo.WavInfoReader(file_with_metadata).info
+        self.assertEqual(info.title, 'camera bumb 1')
+        self.assertEqual(info.artist, 'Jamie Hardt')
+        self.assertEqual(info.copyright, 'Â© 2010 Jamie Hardt')
+        self.assertEqual(info.product, 'Test Sounds')  # album
+        self.assertEqual(info.album, info.product)
+        self.assertEqual(info.comment, 'Comments')
+        self.assertEqual(info.software, 'Sound Grinder Pro')
+        self.assertEqual(info.created_date, '2010-12-28')
+        self.assertEqual(info.engineer, 'JPH')
+        self.assertEqual(info.keywords, 'Sound Effect, movement, microphone, bump')
+        self.assertEqual(info.title, 'camera bumb 1')
+        self.assertEqual(type(info.to_dict()), dict)
+        self.assertEqual(type(info.__repr__()), str)
+
