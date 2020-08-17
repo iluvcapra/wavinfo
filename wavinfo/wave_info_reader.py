@@ -17,6 +17,7 @@ class WavInfoChunkReader:
         self.copyright = self._get_field(f, b'ICOP')
         #: 'IPRD' Product
         self.product = self._get_field(f, b'IPRD')
+        self.album = self.product
         #: 'IGNR' Genre
         self.genre = self._get_field(f, b'IGNR')
         #: 'ISBJ' Supject
@@ -63,6 +64,7 @@ class WavInfoChunkReader:
         """
         return {'copyright': self.copyright,
                 'product': self.product,
+                'album': self.album,
                 'genre': self.genre,
                 'artist': self.artist,
                 'comment': self.comment,
@@ -78,3 +80,8 @@ class WavInfoChunkReader:
                 'subject': self.subject,
                 'technician': self.technician
                 }
+
+    def __repr__(self):
+        return_val = self.to_dict()
+        return_val.update({'encoding': self.encoding})
+        return str(return_val)

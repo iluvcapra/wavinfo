@@ -36,7 +36,7 @@ def parse_list_chunk(stream, length, rf64_context=None):
     signature = stream.read(4)
 
     children = []
-    while (stream.tell() - start + 8) < length:
+    while stream.tell() - start + 8 < length:
         child_chunk = parse_chunk(stream, rf64_context=rf64_context)
         children.append(child_chunk)
 
@@ -56,16 +56,16 @@ def parse_chunk(stream, rf64_context=None):
     data_size = struct.unpack('<I', size_bytes)[0]
 
     if data_size == 0xFFFFFFFF:
-        if rf64_context is None and ident in [b'RF64', b'BW64']:
+        if rf64_context is None and ident in {b'RF64', b'BW64'}:
             rf64_context = parse_rf64(stream=stream, signature=ident)
 
         data_size = rf64_context.bigchunk_table[ident]
 
     displacement = data_size
-    if (displacement % 2) != 0:
-        displacement = displacement + 1
+    if displacement % 2:
+        displacement += 1
 
-    if ident in [b'RIFF', b'LIST', b'RF64', b'BW64']:
+    if ident in {b'RIFF', b'LIST', b'RF64', b'BW64'}:
         return parse_list_chunk(stream=stream, length=data_size, rf64_context=rf64_context)
     else:
         data_start = stream.tell()

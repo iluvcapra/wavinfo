@@ -1,6 +1,7 @@
 import unittest
 import wavinfo
 
+
 class TestWalk(unittest.TestCase):
     def test_walk_metadata(self):
         test_file = 'tests/test_files/protools/PT A101_4.A1.wav'

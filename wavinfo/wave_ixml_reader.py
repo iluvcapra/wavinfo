@@ -1,10 +1,11 @@
-#import xml.etree.ElementTree as ET
+# import xml.etree.ElementTree as ET
 from lxml import etree as ET
 import io
 from collections import namedtuple
 
 
 IXMLTrack = namedtuple('IXMLTrack', ['channel_index', 'interleave_index', 'name', 'function'])
+
 
 class WavIXMLFormat:
     """
@@ -16,9 +17,9 @@ class WavIXMLFormat:
         :param xml: A bytes-like object containing the iXML payload.
         """
         self.source = xml
-        xmlBytes = io.BytesIO(xml)
+        xml_bytes = io.BytesIO(xml)
         parser = ET.XMLParser(recover=True)
-        self.parsed = ET.parse(xmlBytes, parser=parser)
+        self.parsed = ET.parse(xml_bytes, parser=parser)
 
     def _get_text_value(self, xpath):
         e = self.parsed.find("./" + xpath)
@@ -87,5 +88,3 @@ class WavIXMLFormat:
         The name of this file's file family.
         """
         return self._get_text_value("FILE_SET/FAMILY_NAME")
-
-

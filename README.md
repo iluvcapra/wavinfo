@@ -6,17 +6,16 @@
 
 # wavinfo
 
-
-The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] and extract extended metadata, with an emphasis on film, video and professional music production metadata. 
+The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] and extract extended metadata, with an emphasis on film, video and professional music production metadata.
 
 `wavinfo` reads:
 
-* __Broadcast-WAVE__ metadata<sup>[1][ebu]</sup>, including embedded program 
+* __Broadcast-WAVE__ metadata<sup>[1][ebu]</sup>, including embedded program
   loudness and coding history, if extant. This also includes the SMPTE UMID<sup>[2][smpte_330m2011]</sup>.
-* __iXML__ production recorder metadata<sup>[3][ixml]</sup>, including project, scene, and take tags, recorder notes 
+* __iXML__ production recorder metadata<sup>[3][ixml]</sup>, including project, scene, and take tags, recorder notes
   and file family information.
 * Most of the common __RIFF INFO__<sup>[4][info-tags]</sup> metadata fields.
-* The __wav format__ is also parsed, so you can access the basic sample rate and channel count 
+* The __wav format__ is also parsed, so you can access the basic sample rate and channel count
   information.
 
 In progress:
@@ -31,8 +30,6 @@ In progress:
 [ixml]:http://www.ixml.info
 [eburf64]:https://tech.ebu.ch/docs/tech/tech3306v1_1.pdf
 [info-tags]:https://exiftool.org/TagNames/RIFF.html#Info
-
-
 
 ## Demonstration
 
@@ -67,11 +64,6 @@ The length of the file in frames (interleaved samples) and bytes is available, a
 
 Python 3.5 support is deprecated.
 
-
 ## Other Resources
 
 * For other file formats and ID3 decoding, look at [audio-metadata](https://github.com/thebigmunch/audio-metadata).
-
-
-
-
