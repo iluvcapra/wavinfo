@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 import struct
 import os
-import sys
 from collections import namedtuple
 
 import pathlib
