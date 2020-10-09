@@ -1,0 +1,3 @@
+lxml~=4.5.2
+setuptools~=49.6.0
+ear~=2.0.0

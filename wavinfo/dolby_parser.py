@@ -21,12 +21,15 @@ class _DPPGenericDownMixLevel(Enum):
     MUTE = 0b111
 
 
-class _DPPGenericInUseIndicator(Enum):
+class DPPDolbySurroundEncodingMode(Enum):
     RESERVED = 0b11
     IN_USE = 0b10
     NOT_IN_USE = 0b01
     NOT_INDICATED = 0b00
 
+# DPPLoRoDownMixCenterLevel
+# DPPLtRtCenterMixLevel
+# DPPLtRtSurroundMixLevel
 
 class DolbyMetadataSegmentTypes(IntEnum):
     END_MARKER = 0
@@ -88,13 +91,6 @@ class DPPSurroundDownMixLevel(Enum):
     RESERVED = 0b11
 
 
-class DPPDolbySurroundEncodingMode(_DPPGenericInUseIndicator):
-    """
-    `dsurmod` § 4.3.3.3
-    """
-    pass
-
-
 class DPPLanguageCode(Enum):
     """
     § 4.3.4.1 , 4.3.5 (always 0xFF)
@@ -122,20 +118,6 @@ class DPPRoomTime(Enum):
     RESERVED = 0b11
 
 
-class DPPLoRoDownMixCenterLevel(_DPPGenericDownMixLevel):
-    """
-    `lorocmixlev` § 4.3.7.1
-    """
-    pass
-
-
-class DPPLoRoDownMixSurroundLevel(_DPPGenericDownMixLevel):
-    """
-    `lorosurmixlev` 4.3.7.2
-    """
-    pass
-
-
 class DPPPreferredDownMixMode(Enum):
     """
     § 4.3.8.1
@@ -146,20 +128,20 @@ class DPPPreferredDownMixMode(Enum):
     PRO_LOGIC_2 = 0b11
 
 
-class DPPLtRtCenterMixLevel(_DPPGenericDownMixLevel):
-    pass
-
-
-class DPPLtRtSurroundMixLevel(_DPPGenericDownMixLevel):
-    pass
-
-
-class DPPSurroundEXMode(_DPPGenericInUseIndicator):
-    pass
-
-
-class DPPHeadphoneMode(_DPPGenericInUseIndicator):
-    pass
+# class DPPLtRtCenterMixLevel(_DPPGenericDownMixLevel):
+#     pass
+#
+#
+# class DPPLtRtSurroundMixLevel(_DPPGenericDownMixLevel):
+#     pass
+#
+#
+# class DPPSurroundEXMode(_DPPGenericInUseIndicator):
+#     pass
+#
+#
+# class DPPHeadphoneMode(_DPPGenericInUseIndicator):
+#     pass
 
 
 class DPPADConverterType(Enum):

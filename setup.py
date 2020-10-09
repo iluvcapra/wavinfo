@@ -31,7 +31,7 @@ setup(name='wavinfo',
           "Programming Language :: Python :: 3.7",
           "Programming Language :: Python :: 3.8"],
       keywords='waveform metadata audio ebu smpte avi library film tv editing editorial',
-      install_requires=['lxml'],
+      install_requires=['lxml', 'ear'],
       entry_points={
           'console_scripts': [
               'wavinfo = wavinfo.__main__:main'
