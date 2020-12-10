@@ -1,0 +1,103 @@
+Index: wavinfo/wave_ixml_reader.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># import xml.etree.ElementTree as ET\nfrom lxml import etree as ET\nimport io\nfrom collections import namedtuple\n\n\nIXMLTrack = namedtuple('IXMLTrack', ['channel_index', 'interleave_index', 'name', 'function'])\n\n\nclass WavIXMLFormat:\n    \"\"\"\n    iXML recorder metadata.\n    \"\"\"\n    def __init__(self, xml):\n        \"\"\"\n        Parse iXML.\n        :param xml: A bytes-like object containing the iXML payload.\n        \"\"\"\n        self.source = xml\n        xml_bytes = io.BytesIO(xml)\n        parser = ET.XMLParser(recover=True)\n        self.parsed = ET.parse(xml_bytes, parser=parser)\n\n    def _get_text_value(self, xpath):\n        e = self.parsed.find(\"./\" + xpath)\n        if e is not None:\n            return e.text\n\n    @property\n    def raw_xml(self):\n        \"\"\"\n        The root entity of the iXML document.\n        \"\"\"\n        return self.parsed\n\n    @property\n    def track_list(self):\n        \"\"\"\n        A description of each track.\n        :return: An Iterator\n        \"\"\"\n        for track in self.parsed.find(\"./TRACK_LIST\").iter():\n            if track.tag == 'TRACK':\n                yield IXMLTrack(channel_index=track.xpath('string(CHANNEL_INDEX/text())'),\n                                interleave_index=track.xpath('string(INTERLEAVE_INDEX/text())'),\n                                name=track.xpath('string(NAME/text())'),\n                                function=track.xpath('string(FUNCTION/text())'))\n\n    @property\n    def project(self):\n        \"\"\"\n        The project/film name entered for the recording.\n        \"\"\"\n        return self._get_text_value(\"PROJECT\")\n\n    @property\n    def scene(self):\n        \"\"\"\n        Scene/slate.\n        \"\"\"\n        return self._get_text_value(\"SCENE\")\n\n    @property\n    def take(self):\n        \"\"\"\n        Take number.\n        \"\"\"\n        return self._get_text_value(\"TAKE\")\n\n    @property\n    def tape(self):\n        \"\"\"\n        Tape name.\n        \"\"\"\n        return self._get_text_value(\"TAPE\")\n\n    @property\n    def family_uid(self):\n        \"\"\"\n        The globally-unique ID for this file family. This may be in the format\n        of a GUID, or an EBU Rec 9 source identifier, or some other dumb number.\n        \"\"\"\n        return self._get_text_value(\"FILE_SET/FAMILY_UID\")\n\n    @property\n    def family_name(self):\n        \"\"\"\n        The name of this file's file family.\n        \"\"\"\n        return self._get_text_value(\"FILE_SET/FAMILY_NAME\")\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- wavinfo/wave_ixml_reader.py	(revision 4576d65da6f00e00fcd6651a890776175ed1ed76)
++++ wavinfo/wave_ixml_reader.py	(date 1598075713197)
+@@ -1,4 +1,3 @@
+-# import xml.etree.ElementTree as ET
+ from lxml import etree as ET
+ import io
+ from collections import namedtuple
+Index: setup.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from setuptools import setup\nfrom wavinfo import __author__, __license__, __version__\n\nwith open(\"README.md\", \"r\") as fh:\n    long_description = fh.read()\n\nsetup(name='wavinfo',\n      version=__version__,\n      author=__author__,\n      author_email='jamiehardt@me.com',\n      description='Probe WAVE Files for iXML, Broadcast-WAVE and other metadata.',\n      long_description_content_type=\"text/markdown\",\n      long_description=long_description,\n      license=__license__,\n      url='https://github.com/iluvcapra/wavinfo',\n      project_urls={\n          'Source':\n              'https://github.com/iluvcapra/wavinfo',\n          'Documentation':\n              'https://wavinfo.readthedocs.io/',\n          'Issues':\n              'https://github.com/iluvcapra/wavinfo/issues',\n      },\n      packages=['wavinfo'],\n      classifiers=['Development Status :: 5 - Production/Stable',\n          'License :: OSI Approved :: MIT License',\n          'Topic :: Multimedia',\n          'Topic :: Multimedia :: Sound/Audio',\n          \"Programming Language :: Python :: 3.5\",\n          \"Programming Language :: Python :: 3.6\",\n          \"Programming Language :: Python :: 3.7\",\n          \"Programming Language :: Python :: 3.8\"],\n      keywords='waveform metadata audio ebu smpte avi library film tv editing editorial',\n      install_requires=['lxml'],\n      entry_points={\n          'console_scripts': [\n              'wavinfo = wavinfo.__main__:main'\n          ]\n      }\n      )\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- setup.py	(revision 4576d65da6f00e00fcd6651a890776175ed1ed76)
++++ setup.py	(date 1598414202839)
+@@ -31,7 +31,7 @@
+           "Programming Language :: Python :: 3.7",
+           "Programming Language :: Python :: 3.8"],
+       keywords='waveform metadata audio ebu smpte avi library film tv editing editorial',
+-      install_requires=['lxml'],
++      install_requires=['lxml', 'ear'],
+       entry_points={
+           'console_scripts': [
+               'wavinfo = wavinfo.__main__:main'
+Index: wavinfo/wave_axml_reader.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- wavinfo/wave_axml_reader.py	(date 1598414561019)
++++ wavinfo/wave_axml_reader.py	(date 1598414561019)
+@@ -0,0 +1,12 @@
++from lxml import etree as ET
++from collections import namedtuple
++
++from ear.fileio.bw64 import Bw64Reader
++
++with Bw64Reader(file) as f:
++    pass
++
++
++
++
++
+Index: .idea/wavinfo.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<module type=\"PYTHON_MODULE\" version=\"4\">\n  <component name=\"NewModuleRootManager\">\n    <content url=\"file://$MODULE_DIR$\" />\n    <orderEntry type=\"jdk\" jdkName=\"Python 3.8 (wavinfo)\" jdkType=\"Python SDK\" />\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\n  </component>\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/wavinfo.iml	(revision 4576d65da6f00e00fcd6651a890776175ed1ed76)
++++ .idea/wavinfo.iml	(date 1598074780168)
+@@ -1,8 +1,10 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <module type="PYTHON_MODULE" version="4">
+   <component name="NewModuleRootManager">
+-    <content url="file://$MODULE_DIR$" />
+-    <orderEntry type="jdk" jdkName="Python 3.8 (wavinfo)" jdkType="Python SDK" />
++    <content url="file://$MODULE_DIR$">
++      <excludeFolder url="file://$MODULE_DIR$/venv" />
++    </content>
++    <orderEntry type="jdk" jdkName="Python 3.7 (wavinfo)" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+ </module>
+\ No newline at end of file
+Index: requirements.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- requirements.txt	(date 1598414216509)
++++ requirements.txt	(date 1598414216509)
+@@ -0,0 +1,3 @@
++lxml~=4.5.2
++setuptools~=49.6.0
++ear~=2.0.0
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.8 (wavinfo)\" project-jdk-type=\"Python SDK\" />\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision 4576d65da6f00e00fcd6651a890776175ed1ed76)
++++ .idea/misc.xml	(date 1598074780171)
+@@ -1,4 +1,4 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.8 (wavinfo)" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7 (wavinfo)" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
