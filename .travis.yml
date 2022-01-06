@@ -2,10 +2,11 @@ dist: xenial
 language: python
 python:
 #    - "2.7"
-    - "3.5"
+#    - "3.5"
     - "3.6"
     - "3.7"
     - "3.8"
+    - "3.9"
 script:
     - "gunzip tests/test_files/rf64/*.gz"
     - "python setup.py test"

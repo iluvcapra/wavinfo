@@ -26,12 +26,13 @@ setup(name='wavinfo',
           'License :: OSI Approved :: MIT License',
           'Topic :: Multimedia',
           'Topic :: Multimedia :: Sound/Audio',
-          "Programming Language :: Python :: 3.5",
+#           "Programming Language :: Python :: 3.5",
           "Programming Language :: Python :: 3.6",
           "Programming Language :: Python :: 3.7",
-          "Programming Language :: Python :: 3.8"],
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9"],
       keywords='waveform metadata audio ebu smpte avi library film tv editing editorial',
-      install_requires=['lxml'],
+      install_requires=['lxml', 'ear'],
       entry_points={
           'console_scripts': [
               'wavinfo = wavinfo.__main__:main'
