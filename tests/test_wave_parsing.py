@@ -12,7 +12,7 @@ class TestWaveInfo(TestCase):
     def test_sanity(self):
         for wav_file in all_files():
             info = wavinfo.WavInfoReader(wav_file)
-            self.assertEqual(info.__repr__(), 'WavInfoReader(%s, %s, %s)'.format(wav_file, 'latin_1', 'ascii'))
+            self.assertEqual(info.__repr__(), 'WavInfoReader({}, latin_1, ascii)'.format(os.path.abspath(wav_file)))
             self.assertIsNotNone(info)
 
     def test_fmt_against_ffprobe(self):
