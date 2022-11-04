@@ -27,43 +27,57 @@ class WavInfoReader:
         """
         Create a new reader object.
 
-        :param path: A filesystem path to the wav file you wish to probe.
+        :param path: 
+            A filesystem path to the wav file you wish to probe or a 
+            file handle to an open file.
 
-        :param info_encoding: The text encoding of the INFO metadata fields.
-          latin_1/Win CP1252 has always been a pretty good guess for this.
+        :param info_encoding: 
+            The text encoding of the INFO metadata fields.
+            latin_1/Win CP1252 has always been a pretty good guess for this.
 
-        :param bext_encoding: The text encoding to use when decoding the string
-          fields of the Broadcast-WAV extension. Per EBU 3285 this is ASCII
-          but this parameter is available to you if you encounter a weirdo.
+        :param bext_encoding: 
+            The text encoding to use when decoding the string
+            fields of the Broadcast-WAV extension. Per EBU 3285 this is ASCII
+            but this parameter is available to you if you encounter a weirdo.
         """
-        absolute_path = os.path.abspath(path)
-
-        #: `file://` url for the file.
-        self.url = pathlib.Path(absolute_path).as_uri()
-
-        # for __repr__()
-        self.path = absolute_path
+        
         self.info_encoding = info_encoding
         self.bext_encoding = bext_encoding
+        
+        if hasattr(path, 'read'):
+            self.get_wav_info(path)
+            self.url = 'about:blank'
+            self.path = repr(path)
+        else:
+            absolute_path = os.path.abspath(path)
 
-        with open(path, 'rb') as f:
-            chunks = parse_chunk(f)
+            #: `file://` url for the file.
+            self.url = pathlib.Path(absolute_path).as_uri()
 
-            self.main_list = chunks.children
-            f.seek(0)
+            # for __repr__()
+            self.path = absolute_path
+            
+            with open(path, 'rb') as f:
+                self.get_wav_info(f)
+            
+    def get_wav_info(self, wavfile):
+        chunks = parse_chunk(wavfile)
 
-            #: :class:`wavinfo.wave_reader.WavAudioFormat`
-            self.fmt = self._get_format(f)
+        self.main_list = chunks.children
+        wavfile.seek(0)
 
-            #: :class:`wavinfo.wave_bext_reader.WavBextReader` with Broadcast-WAV metadata
-            self.bext = self._get_bext(f, encoding=bext_encoding)
+        #: :class:`wavinfo.wave_reader.WavAudioFormat`
+        self.fmt = self._get_format(wavfile)
 
-            #: :class:`wavinfo.wave_ixml_reader.WavIXMLFormat` with iXML metadata
-            self.ixml = self._get_ixml(f)
+        #: :class:`wavinfo.wave_bext_reader.WavBextReader` with Broadcast-WAV metadata
+        self.bext = self._get_bext(wavfile, encoding=self.bext_encoding)
 
-            #: :class:`wavinfo.wave_info_reader.WavInfoChunkReader` with RIFF INFO metadata
-            self.info = self._get_info(f, encoding=info_encoding)
-            self.data = self._describe_data()
+        #: :class:`wavinfo.wave_ixml_reader.WavIXMLFormat` with iXML metadata
+        self.ixml = self._get_ixml(wavfile)
+
+        #: :class:`wavinfo.wave_info_reader.WavInfoChunkReader` with RIFF INFO metadata
+        self.info = self._get_info(wavfile, encoding=self.info_encoding)
+        self.data = self._describe_data()
 
     def _find_chunk_data(self, ident, from_stream, default_none=False):
         top_chunks = (chunk for chunk in self.main_list if type(chunk) is ChunkDescriptor and chunk.ident == ident)
@@ -146,4 +160,4 @@ class WavInfoReader:
                     yield 'info', key, info_dict[key]
 
     def __repr__(self):
-        return 'WavInfoReader(%s, %s, %s)'.format(self.path, self.info_encoding, self.bext_encoding)
+        return 'WavInfoReader({}, {}, {})'.format(self.path, self.info_encoding, self.bext_encoding)
