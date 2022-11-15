@@ -1,5 +1,5 @@
-attrs
-ear==2.0.0
+attrs==21.4.0
+ear==2.1.0
 enum34==1.1.10
 exceptiongroup==1.0.4
 iniconfig==1.1.1
