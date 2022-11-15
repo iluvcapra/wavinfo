@@ -1,5 +1,5 @@
 [![Documentation Status](https://readthedocs.org/projects/wavinfo/badge/?version=latest)](https://wavinfo.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/github/license/iluvcapra/wavinfo.svg) ![](https://img.shields.io/pypi/pyversions/wavinfo.svg) [![](https://img.shields.io/pypi/v/wavinfo.svg)](https://pypi.org/project/wavinfo/) ![](https://img.shields.io/pypi/wheel/wavinfo.svg)
-![Lint and Test](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+![Lint and Test](https://github.com/github/docs/actions/workflows/pythonpackage.yml/badge.svg)
 
 <!-- ![Test](https://github.com/iluvcapra/wavinfo/workflows/Upload%20Python%20Package/badge.svg) -->
 
