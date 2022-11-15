@@ -1,4 +1,4 @@
-attrs==22.1.0
+attrs
 ear==2.0.0
 enum34==1.1.10
 exceptiongroup==1.0.4
