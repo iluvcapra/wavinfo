@@ -1,8 +1,6 @@
 [![Documentation Status](https://readthedocs.org/projects/wavinfo/badge/?version=latest)](https://wavinfo.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/github/license/iluvcapra/wavinfo.svg) ![](https://img.shields.io/pypi/pyversions/wavinfo.svg) [![](https://img.shields.io/pypi/v/wavinfo.svg)](https://pypi.org/project/wavinfo/) ![](https://img.shields.io/pypi/wheel/wavinfo.svg)
 ![Lint and Test](https://github.com/iluvcapra/wavinfo/actions/workflows/python-package.yml/badge.svg)
 
-<!-- ![Test](https://github.com/iluvcapra/wavinfo/workflows/Upload%20Python%20Package/badge.svg) -->
-
 # wavinfo
 
 The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] and extract extended metadata, with an emphasis on film, video and professional music production metadata.
