@@ -14,20 +14,20 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('..'), os.path.abspath('.'))
 print(sys.path)
 
 
 # -- Project information -----------------------------------------------------
 
 project = u'wavinfo'
-copyright = u'2019, Jamie Hardt'
+copyright = u'2022, Jamie Hardt'
 author = u'Jamie Hardt'
 
 # The short X.Y version
 version = u''
 # The full version, including alpha/beta/rc tags
-release = u'v1.1'
+release = u'v1.7.1'
 
 
 # -- General configuration ---------------------------------------------------
