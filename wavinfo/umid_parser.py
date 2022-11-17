@@ -1,5 +1,3 @@
-from typing import Union
-import binascii
 from functools import reduce
 
 
@@ -13,7 +11,7 @@ class UMIDParser:
 
     This implementation is based on SMPTE ST 330:2011
     """
-    def __init__(self, raw_umid: bytearray):
+    def __init__(self, raw_umid: bytes):
         self.raw_umid = raw_umid
     #
     # @property
