@@ -1,14 +1,6 @@
 INFO Metadata
 =============
 
-
-.. module:: wavinfo
-
-.. autoclass:: wavinfo.wave_info_reader.WavInfoChunkReader
-   :members:
-
-
-
 Notes
 -----
 
@@ -26,6 +18,15 @@ music library software.
     print("INFO Artist:",    bullet.info.artist)
     print("INFO Copyright:", bullet.info.copyright)
     print("INFO Comment:",   bullet.info.comment)
+
+
+Class Reference
+---------------
+
+.. module:: wavinfo
+
+.. autoclass:: wavinfo.wave_info_reader.WavInfoChunkReader
+   :members:
 
 
 

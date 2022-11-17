@@ -1,13 +1,6 @@
 iXML Production Recorder Metadata
 =================================
 
-
-.. module:: wavinfo
-
-.. autoclass:: wavinfo.wave_ixml_reader.WavIXMLFormat
-   :members:
-
-
 Notes
 -----
 iXML allows an XML document to be embedded in a WAV file.
@@ -40,5 +33,13 @@ Result:
     iXML File Family Name: None
     iXML File Family UID: USSDVGR1112089007124001008206300
 
+
+Class Reference
+---------------
+
+.. module:: wavinfo
+
+.. autoclass:: wavinfo.wave_ixml_reader.WavIXMLFormat
+   :members:
 
 

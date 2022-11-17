@@ -1,7 +1,7 @@
 from lxml import etree as ET
 import io
 from collections import namedtuple
-
+from typing import Optional
 
 IXMLTrack = namedtuple('IXMLTrack', ['channel_index', 'interleave_index', 'name', 'function'])
 
@@ -20,10 +20,12 @@ class WavIXMLFormat:
         parser = ET.XMLParser(recover=True)
         self.parsed = ET.parse(xml_bytes, parser=parser)
 
-    def _get_text_value(self, xpath):
+    def _get_text_value(self, xpath) -> Optional[str]:
         e = self.parsed.find("./" + xpath)
         if e is not None:
             return e.text
+        else: 
+            return None
 
     @property
     def raw_xml(self):
@@ -46,35 +48,35 @@ class WavIXMLFormat:
                                 function=track.xpath('string(FUNCTION/text())'))
 
     @property
-    def project(self):
+    def project(self) -> Optional[str]:
         """
         The project/film name entered for the recording.
         """
         return self._get_text_value("PROJECT")
 
     @property
-    def scene(self):
+    def scene(self) -> Optional[str]:
         """
         Scene/slate.
         """
         return self._get_text_value("SCENE")
 
     @property
-    def take(self):
+    def take(self) ->  Optional[str]:
         """
         Take number.
         """
         return self._get_text_value("TAKE")
 
     @property
-    def tape(self):
+    def tape(self) -> Optional[str]:
         """
         Tape name.
         """
         return self._get_text_value("TAPE")
 
     @property
-    def family_uid(self):
+    def family_uid(self) -> Optional[str]:
         """
         The globally-unique ID for this file family. This may be in the format
         of a GUID, or an EBU Rec 9 source identifier, or some other dumb number.
@@ -82,7 +84,7 @@ class WavIXMLFormat:
         return self._get_text_value("FILE_SET/FAMILY_UID")
 
     @property
-    def family_name(self):
+    def family_name(self) -> Optional[str]:
         """
         The name of this file's file family.
         """

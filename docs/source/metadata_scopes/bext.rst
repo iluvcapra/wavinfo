@@ -1,11 +1,6 @@
 Broadcast WAV Extension
 =======================
 
-.. module:: wavinfo
-
-.. autoclass:: wavinfo.wave_bext_reader.WavBextReader
-   :members:
-
 
 Notes
 -----
@@ -63,3 +58,14 @@ Result:
     Originator Time: 12:40:00
     Time Reference: 2190940753
     A=PCM,F=48000,W=24,M=stereo,R=48000,T=2 Ch
+
+
+Class Reference
+---------------
+
+.. module:: wavinfo
+
+.. autoclass:: wavinfo.wave_bext_reader.WavBextReader
+   :members:
+
+
