@@ -1,9 +1,14 @@
 from lxml import etree as ET
 from collections import namedtuple
 
-from ear.fileio.bw64 import Bw64Reader
 
+class WaveAxmlReader:
+    """
+    Reads XML data from an EBU ADM (Audio Definiton Model) WAV File.
+    """
 
-
+    def __init__(self, axml_data, ) -> None:
+        pass
+        
 
 
