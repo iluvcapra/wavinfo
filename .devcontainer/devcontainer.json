@@ -5,7 +5,7 @@
     "ghcr.io/devcontainers/features/python:1": {},
     "ghcr.io/meaningful-ooo/devcontainer-features/fish:1": {}
 },
-"postCreateCommand": "pip3 install -r requirements.txt && pip3 install -r docs/requirements.txt && pip3 install -r pytest && conda install -y ffmpeg",
+"postCreateCommand": "pip3 install -r requirements.txt && pip3 install -r docs/requirements.txt && pip3 install pytest && conda install -y ffmpeg",
 "customizations": {
 	"vscode": {
 		"extensions": [
