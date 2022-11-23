@@ -151,22 +151,29 @@ class WavInfoReader:
         metadata field, and the value.
         """
 
-        scopes = ('fmt', 'data')  # 'bext', 'ixml', 'info')
+        scopes = ('fmt', 'data', 'ixml', 'bext', 'info')
 
         for scope in scopes:
-            attr = self.__getattribute__(scope)
-            for field in attr._fields:
-                yield scope, field, attr.__getattribute__(field)
+            if scope in ['fmt', 'data']:
+                attr = self.__getattribute__(scope)
+                for field in attr._fields:
+                    yield scope, field, attr.__getattribute__(field)
 
-            if self.bext is not None:
-                bext_dict = (self.bext or {}).to_dict()
+            if scope in ['bext']:
+                bext_dict = self.bext.to_dict() if self.bext else {}
                 for key in bext_dict.keys():
                     yield 'bext', key, bext_dict[key]
 
-            if self.info is not None:
-                info_dict = self.info.to_dict()
+            if scope in ['info']:
+                info_dict = self.info.to_dict() if self.info else {}
                 for key in info_dict.keys():
                     yield 'info', key, info_dict[key]
+            
+            if scope in ['ixml']:
+                ixml_dict = self.ixml.to_dict() if self.ixml else {}
+                for key in ixml_dict.keys():
+                    yield 'ixml', key, ixml_dict[key]
+        
 
     def __repr__(self):
         return 'WavInfoReader({}, {}, {})'.format(self.path, self.info_encoding, self.bext_encoding)

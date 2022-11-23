@@ -89,3 +89,13 @@ class WavIXMLFormat:
         The name of this file's file family.
         """
         return self._get_text_value("FILE_SET/FAMILY_NAME")
+
+    def to_dict(self):
+        return dict(track_list=list(map(lambda x: x._asdict(), self.track_list)), 
+            project=self.project,
+            scene=self.scene,
+            take=self.take,
+            tape=self.tape,
+            family_uid=self.family_uid,
+            family_name=self.family_name 
+            )
