@@ -14,9 +14,10 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
 * Most of the common __RIFF INFO__<sup>[4][info-tags]</sup> metadata fields.
 * The __wav format__ is also parsed, so you can access the basic sample rate and channel count
   information.
+* EBU ADM track metadata<sup>[5][adm]</sup>, including track, channel and pack formats, object and content names.
 
 In progress:
-* ADM metadata consilient with the output of the [__Dolby RMU__][dolby], and [EBU Tech 3285 Supplement 6][ebu3285s6].
+* [Dolby RMU][dolby] metadata and [EBU Tech 3285 Supplement 6][ebu3285s6].
 * iXML `STEINBERG` sound library attributes.
 * __NetMix__ library attributes.
 * Pro Tools __embedded regions__.
