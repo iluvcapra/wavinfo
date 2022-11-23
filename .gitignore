@@ -107,3 +107,5 @@ docs_venv/
 # vim swap
 *.swp
 .DS_Store
+
+.vscode/
