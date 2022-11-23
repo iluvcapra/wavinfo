@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath("../../.."))
 print(sys.path)
 
+import wavinfo
 
 # -- Project information -----------------------------------------------------
 
@@ -28,7 +29,7 @@ author = u'Jamie Hardt'
 # The short X.Y version
 version = u''
 # The full version, including alpha/beta/rc tags
-release = u'v1.7.1'
+release = u'v2.0.0'
 
 
 # -- General configuration ---------------------------------------------------
