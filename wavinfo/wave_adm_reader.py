@@ -4,6 +4,7 @@ ADM Reader
 
 from struct import unpack, unpack_from, calcsize
 from dataclasses import dataclass
+from io import BytesIO
 
 from lxml import etree as ET
 
@@ -26,7 +27,7 @@ class ChannelEntry:
     "audioPackFormatID"
 
 
-class WavAxmlReader:
+class WavADMReader:
     """
     Reads XML data from an EBU ADM (Audio Definiton Model) WAV File.
     """
@@ -35,7 +36,7 @@ class WavAxmlReader:
         header_fmt = "<HH"
         uid_fmt = "<H12s14s11sx"
 
-        self.axml = ET.fromstring(axml_data)
+        self.axml = ET.parse(BytesIO(axml_data))
 
         self.track_count, uid_count = unpack(header_fmt, chna_data)
 

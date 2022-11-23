@@ -9,7 +9,7 @@ from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 from .wave_ixml_reader import WavIXMLFormat
 from .wave_bext_reader import WavBextReader
 from .wave_info_reader import WavInfoChunkReader
-from .wave_axml_reader import WavAxmlReader
+from .wave_adm_reader import WavADMReader
 
 #: Calculated statistics about the audio data.
 WavDataDescriptor = namedtuple('WavDataDescriptor', 'byte_count frame_count')
@@ -77,7 +77,7 @@ class WavInfoReader:
         self.ixml = self._get_ixml(wavfile)
 
         #: :class:`wavinfo.wave_axml_reader.WavAxmlReader` with ADM metadata
-        self.adm  = self._get_axml(wavfile)
+        self.adm  = self._get_adm(wavfile)
 
         #: :class:`wavinfo.wave_info_reader.WavInfoChunkReader` with RIFF INFO metadata
         self.info = self._get_info(wavfile, encoding=self.info_encoding)
@@ -134,10 +134,10 @@ class WavInfoReader:
         bext_data = self._find_chunk_data(b'bext', f, default_none=True)
         return WavBextReader(bext_data, encoding) if bext_data else None
 
-    def _get_axml(self, f):
+    def _get_adm(self, f):
         axml = self._find_chunk_data(b'axml', f, default_none=True)
         chna = self._find_chunk_data(b'chna', f, default_none=True)
-        return WavAxmlReader(axml_data=axml, chna_data=chna)
+        return WavADMReader(axml_data=axml, chna_data=chna) if axml and chna else None
 
     def _get_ixml(self, f):
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
