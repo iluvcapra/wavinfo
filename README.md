@@ -16,13 +16,14 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
   information.
 
 In progress:
-* ADM metadata consilient with the output of the [__Dolby RMU__][dolby], perhaps later fully complaint with [ITU BS.2076-2][adm].
+* ADM metadata consilient with the output of the [__Dolby RMU__][dolby], and [EBU Tech 3285 Supplement 6][ebu3285s6].
 * iXML `STEINBERG` sound library attributes.
 * __NetMix__ library attributes.
 * Pro Tools __embedded regions__.
 
 [dolby]:https://developer.dolby.com/globalassets/documentation/technology/dolby_atmos_master_adm_profile_v1.0.pdf
 [ebu]:https://tech.ebu.ch/docs/tech/tech3285.pdf
+[ebu3285sub6]:https://tech.ebu.ch/docs/tech/tech3285s6.pdf
 [adm]:https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.2076-2-201910-I!!PDF-E.pdf
 [smpte_330m2011]:http://standards.smpte.org/content/978-1-61482-678-1/st-330-2011/SEC1.abstract
 [ixml]:http://www.ixml.info
