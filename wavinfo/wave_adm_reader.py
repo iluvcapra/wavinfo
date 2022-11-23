@@ -9,21 +9,24 @@ from typing import Iterable, Tuple
 
 from lxml import etree as ET
 
+ChannelEntry = namedtuple('ChannelEntry', "track_index uid track_ref pack_ref")
+
 class WavADMReader:
     """
     Reads XML data from an EBU ADM (Audio Definiton Model) WAV File.
     """
 
-    ChannelEntry = namedtuple('ChannelEntry', "track_index uid track_ref pack_ref")
-
     def __init__(self, axml_data: bytes, chna_data: bytes):
         header_fmt = "<HH"
         uid_fmt = "<H12s14s11sx"
 
+        #: An :mod:`lxml.etree` of the ADM XML document
         self.axml = ET.parse(BytesIO(axml_data))
 
-        self.track_count, uid_count = unpack(header_fmt, chna_data[0:4])
+        _, uid_count = unpack(header_fmt, chna_data[0:4])
 
+        #: A list of :class:`ChannelEntry` objects parsed from the
+        #: `chna` metadata chunk. 
         self.channel_uids = []
 
         offset = calcsize(header_fmt)
@@ -33,7 +36,7 @@ class WavADMReader:
 
             # these values are either ascii or all null
 
-            self.channel_uids.append(WavADMReader.ChannelEntry(track_index,
+            self.channel_uids.append(ChannelEntry(track_index,
                 uid.decode('ascii') , track_ref.decode('ascii'), pack_ref.decode('ascii')))
 
             offset += calcsize(uid_fmt)

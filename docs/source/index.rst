@@ -10,9 +10,10 @@ Welcome to wavinfo's documentation!
    :maxdepth: 2
    :caption: Notes
   
+   metadata_scopes/adm.rst
    metadata_scopes/bext.rst
-   metadata_scopes/ixml.rst
    metadata_scopes/info.rst
+   metadata_scopes/ixml.rst
 
    classes
 
