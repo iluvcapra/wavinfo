@@ -32,13 +32,13 @@ class WavADMReader:
     Reads XML data from an EBU ADM (Audio Definiton Model) WAV File.
     """
 
-    def __init__(self, axml_data: bytes, chna_data: bytes) -> None:
+    def __init__(self, axml_data: bytes, chna_data: bytes):
         header_fmt = "<HH"
         uid_fmt = "<H12s14s11sx"
 
         self.axml = ET.parse(BytesIO(axml_data))
 
-        self.track_count, uid_count = unpack(header_fmt, chna_data)
+        self.track_count, uid_count = unpack(header_fmt, chna_data[0:4])
 
         self.channel_uids = []
 
