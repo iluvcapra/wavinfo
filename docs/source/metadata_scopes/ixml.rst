@@ -37,8 +37,6 @@ Result:
 Class Reference
 ---------------
 
-.. module:: wavinfo
-
 .. autoclass:: wavinfo.wave_ixml_reader.WavIXMLFormat
    :members:
 

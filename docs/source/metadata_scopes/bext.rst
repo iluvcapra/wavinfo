@@ -63,8 +63,6 @@ Result:
 Class Reference
 ---------------
 
-.. module:: wavinfo
-
 .. autoclass:: wavinfo.wave_bext_reader.WavBextReader
    :members:
 

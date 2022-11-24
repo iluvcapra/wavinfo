@@ -23,8 +23,6 @@ music library software.
 Class Reference
 ---------------
 
-.. module:: wavinfo
-
 .. autoclass:: wavinfo.wave_info_reader.WavInfoChunkReader
    :members:
 

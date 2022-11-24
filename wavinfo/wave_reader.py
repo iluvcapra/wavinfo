@@ -40,6 +40,8 @@ class WavInfoReader:
             The text encoding to use when decoding the string
             fields of the Broadcast-WAV extension. Per EBU 3285 this is ASCII
             but this parameter is available to you if you encounter a weirdo.
+
+
         """
         
         self.info_encoding = info_encoding
@@ -149,6 +151,8 @@ class WavInfoReader:
 
         :yields: a string, the :scope: of the metadatum, the string :name: of the
         metadata field, and the value.
+
+        
         """
 
         scopes = ('fmt', 'data', 'ixml', 'bext', 'info')
