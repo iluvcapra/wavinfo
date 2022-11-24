@@ -1,5 +1,5 @@
 from setuptools import setup
-from .wavinfo import __author__, __license__, __version__
+from wavinfo import __author__, __license__, __version__
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
