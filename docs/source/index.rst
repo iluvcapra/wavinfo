@@ -9,7 +9,8 @@ Welcome to wavinfo's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Notes
-  
+   
+   quickstart
    metadata_scopes/adm.rst
    metadata_scopes/bext.rst
    metadata_scopes/info.rst
