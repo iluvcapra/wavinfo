@@ -29,9 +29,9 @@ class WavBextReader:
         self.originator : str = sanitize_bytes(unpacked[1])
         #: A unique identifier for the file, a serial number.
         self.originator_ref : str = sanitize_bytes(unpacked[2])
-        #: Date of the recording, in the format YYY-MM-DD
+        #: Date of the recording, in the format YYYY-MM-DD in the local calendar
         self.originator_date : str = sanitize_bytes(unpacked[3])
-        #: Time of the recording, in the format HH:MM:SS.
+        #: Time of the recording, in the format HH:MM:SS on the local clock
         self.originator_time : str = sanitize_bytes(unpacked[4])
         #: The sample offset of the start of the file relative to an
         #: epoch, usually midnight the day of the recording. 
