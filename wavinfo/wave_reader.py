@@ -155,7 +155,7 @@ class WavInfoReader:
         
         """
 
-        scopes = ('fmt', 'data', 'ixml', 'bext', 'info')
+        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm')
 
         for scope in scopes:
             if scope in ['fmt', 'data']:
@@ -163,20 +163,10 @@ class WavInfoReader:
                 for field in attr._fields:
                     yield scope, field, attr.__getattribute__(field)
 
-            if scope in ['bext']:
-                bext_dict = self.bext.to_dict() if self.bext else {}
-                for key in bext_dict.keys():
-                    yield 'bext', key, bext_dict[key]
-
-            if scope in ['info']:
-                info_dict = self.info.to_dict() if self.info else {}
-                for key in info_dict.keys():
-                    yield 'info', key, info_dict[key]
-            
-            if scope in ['ixml']:
-                ixml_dict = self.ixml.to_dict() if self.ixml else {}
-                for key in ixml_dict.keys():
-                    yield 'ixml', key, ixml_dict[key]
+            else:
+                dict = self.__getattribute__(scope).to_dict() if self.__getattribute__(scope) else {}
+                for key in dict.keys():
+                    yield scope, key, dict[key]
         
 
     def __repr__(self):
