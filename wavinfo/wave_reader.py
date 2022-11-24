@@ -91,7 +91,7 @@ class WavInfoReader:
         return chunk_descriptor.read_data(from_stream) if chunk_descriptor else None
 
     def _describe_data(self):
-        data_chunk = next(c for c in self.main_list if c.ident == b'data')
+        data_chunk = next(c for c in self.main_list if type(c) is ChunkDescriptor and c.ident == b'data')
 
         return WavDataDescriptor(byte_count=data_chunk.length,
                                  frame_count=int(data_chunk.length / self.fmt.block_align))

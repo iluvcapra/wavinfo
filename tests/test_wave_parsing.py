@@ -21,12 +21,12 @@ class TestWaveInfo(TestCase):
 
             self.assertEqual(info.fmt.channel_count, ffprobe_info['streams'][0]['channels'])
             self.assertEqual(info.fmt.sample_rate, int(ffprobe_info['streams'][0]['sample_rate']))
-            self.assertEqual(info.fmt.bits_per_sample, int(ffprobe_info['streams'][0]['bits_per_raw_sample']))
+            self.assertEqual(info.fmt.bits_per_sample, int(ffprobe_info['streams'][0]['bits_per_sample']))
 
             if info.fmt.audio_format == 1:
                 self.assertTrue(ffprobe_info['streams'][0]['codec_name'].startswith('pcm'))
                 streams = ffprobe_info['streams'][0]
-                byte_rate = int(streams['sample_rate']) * streams['channels'] * int(streams['bits_per_raw_sample']) / 8
+                byte_rate = int(streams['sample_rate']) * streams['channels'] * int(streams['bits_per_sample']) / 8
                 self.assertEqual(info.fmt.byte_rate, byte_rate)
 
     def test_data_against_ffprobe(self):
