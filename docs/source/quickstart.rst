@@ -10,3 +10,8 @@ ptulsconv Quickstart
 
     info = wavinfo.WavInfoReader(path)
 
+
+
+.. autoclass:: wavinfo.wave_reader.WavInfoReader
+   :members:
+

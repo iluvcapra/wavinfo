@@ -3,6 +3,8 @@ import struct
 import os
 from collections import namedtuple
 
+from typing import Optional
+
 import pathlib
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
@@ -22,6 +24,8 @@ WavAudioFormat = namedtuple('WavAudioFormat',
 class WavInfoReader:
     """
     Parse a WAV audio file for metadata.
+
+    
     """
 
     def __init__(self, path, info_encoding='latin_1', bext_encoding='ascii'):
@@ -55,10 +59,24 @@ class WavInfoReader:
             absolute_path = os.path.abspath(path)
 
             #: `file://` url for the file.
-            self.url = pathlib.Path(absolute_path).as_uri()
+            self.url: pathlib.Path = pathlib.Path(absolute_path).as_uri()
 
-            # for __repr__()
             self.path = absolute_path
+
+            self.fmt :Optional[WavAudioFormat] = None
+            ":class:`wavinfo.wave_reader.WavAudioFormat`"
+
+            self.bext :Optional[WavBextReader] = None
+            ":class:`wavinfo.wave_bext_reader.WavBextReader` with Broadcast-WAV metadata"
+
+            self.ixml :Optional[WavIXMLFormat] = None
+            ":class:`wavinfo.wave_ixml_reader.WavIXMLFormat` with iXML metadata"
+
+            self.adm :Optional[WavADMReader]= None
+            ":class:`wavinfo.wave_axml_reader.WavADMReader` with ADM metadata"
+
+            self.info :Optional[WavInfoChunkReader]= None
+            ":class:`wavinfo.wave_info_reader.WavInfoChunkReader` with RIFF INFO metadata"
             
             with open(path, 'rb') as f:
                 self.get_wav_info(f)
@@ -69,19 +87,10 @@ class WavInfoReader:
         self.main_list = chunks.children
         wavfile.seek(0)
 
-        #: :class:`wavinfo.wave_reader.WavAudioFormat`
         self.fmt = self._get_format(wavfile)
-
-        #: :class:`wavinfo.wave_bext_reader.WavBextReader` with Broadcast-WAV metadata
         self.bext = self._get_bext(wavfile, encoding=self.bext_encoding)
-
-        #: :class:`wavinfo.wave_ixml_reader.WavIXMLFormat` with iXML metadata
         self.ixml = self._get_ixml(wavfile)
-
-        #: :class:`wavinfo.wave_axml_reader.WavAxmlReader` with ADM metadata
         self.adm  = self._get_adm(wavfile)
-
-        #: :class:`wavinfo.wave_info_reader.WavInfoChunkReader` with RIFF INFO metadata
         self.info = self._get_info(wavfile, encoding=self.info_encoding)
         self.data = self._describe_data()
 
@@ -149,9 +158,9 @@ class WavInfoReader:
         """
         Walk all of the available metadata fields.
 
-        :yields: a string, the :scope: of the metadatum, the string :name: of the
-        metadata field, and the value.
-
+        :yields: tuples of the *scope*, *key*, and *value* of
+            each metadatum. The *scope* value will be one of
+            "fmt", "data", "ixml", "bext", "info" or "adm".
         
         """
 

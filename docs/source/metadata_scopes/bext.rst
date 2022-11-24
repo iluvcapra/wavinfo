@@ -9,20 +9,25 @@ which includes a 256-character free text descrption, creating entity identifier 
 recording application or equipment), the date and time of recording and a time reference for 
 timecode synchronization.
 
-The `coding_history` is designed to contain a record of every conversion performed on the audio
+The :py:attr:`coding_history` is designed to contain a record of every conversion performed on the audio
 file.
 
 In this example (from a Sound Devices 702T) the bext metadata contains scene/take slating
-information in the `description`. Here also the `originator_ref` is a serial number conforming
+information in the :py:attr:`description`. Here also the :py:attr:`originator_ref` is a serial number conforming
 to EBU Rec 99.
 
-If the bext metadata conforms to EBU 3285 v1, it will contain the WAV's 32 or 64 byte SMPTE 
-330M UMID. The 32-byte version of the UMID is usually just a random number, while the 64-byte 
+If the bext metadata conforms to `EBU 3285 v1`_, it will contain the WAV's 32 or 64 byte `SMPTE 
+ST 330 UMID`_. The 32-byte version of the UMID is usually just a random number, while the 64-byte 
 UMID will also have information on the recording date and time, recording equipment and entity, 
 and geolocation data.
 
-If the bext metadata conforms to EBU 3285 v2, it will hold precomputed program loudness values
-as described by EBU Rec 128.
+If the bext metadata conforms to `EBU 3285 v2`_, it will hold precomputed program loudness values
+as described by `EBU Rec 128`_.
+
+.. _EBU 3285 v1: https://tech.ebu.ch/publications/tech3285s1
+.. _SMPTE ST 330 UMID: https://standards.globalspec.com/std/1396751/smpte-st-330
+.. _EBU 3285 v2: https://tech.ebu.ch/publications/tech3285s2
+.. _EBU Rec 128: https://tech.ebu.ch/publications/r128
 
 ..  code:: python
 

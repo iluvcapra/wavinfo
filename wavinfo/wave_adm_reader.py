@@ -47,8 +47,8 @@ class WavADMReader:
         Information about a track in the WAV file.
 
         :param index: index of audio track (indexed from zero) 
-        :returns: a dictionary with content_name, object_name, pack_format_name, pack_type, 
-                  channel_format_name
+        :returns: a dictionary with *content_name*, *object_name*, *pack_format_name*, *pack_type*, 
+                  *channel_format_name*
         """
         channel_info = next((x for x in self.channel_uids if x.track_index == index + 1), None)
         
@@ -86,4 +86,7 @@ class WavADMReader:
         return ret_dict
 
     def to_dict(self):
+        """
+        Get ADM metadata as a dictionary.
+        """
         return dict(channel_entries=list(map(lambda z: z._asdict(), self.channel_uids)))

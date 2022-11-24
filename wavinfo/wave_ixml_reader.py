@@ -38,7 +38,7 @@ class WavIXMLFormat:
     def track_list(self):
         """
         A description of each track.
-        :return: An Iterator
+        :returns: An Iterator
         """
         for track in self.parsed.find("./TRACK_LIST").iter():
             if track.tag == 'TRACK':

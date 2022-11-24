@@ -13,3 +13,6 @@ Class Reference
 
 .. autoclass:: wavinfo.wave_adm_reader.WavADMReader
     :members:
+
+.. autoclass:: wavinfo.wave_adm_reader.ChannelEntry
+    :members:
