@@ -3,7 +3,7 @@ import struct
 import os
 from collections import namedtuple
 
-from typing import Optional
+from typing import Optional, Generator, Any
 
 import pathlib
 
@@ -154,14 +154,13 @@ class WavInfoReader:
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
         return None if ixml_data is None else WavIXMLFormat(ixml_data.rstrip(b'\0'))
 
-    def walk(self):
+    def walk(self) -> Generator[str,str,Any]:
         """
         Walk all of the available metadata fields.
 
         :yields: tuples of the *scope*, *key*, and *value* of
             each metadatum. The *scope* value will be one of
             "fmt", "data", "ixml", "bext", "info" or "adm".
-        
         """
 
         scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm')
