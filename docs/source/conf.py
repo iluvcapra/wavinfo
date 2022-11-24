@@ -27,9 +27,9 @@ copyright = u'2022, Jamie Hardt'
 author = u'Jamie Hardt'
 
 # The short X.Y version
-version = u''
+version = wavinfo.__version__
 # The full version, including alpha/beta/rc tags
-release = u'v2.0.0'
+release = wavinfo.__version__
 
 
 # -- General configuration ---------------------------------------------------
