@@ -11,7 +11,7 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
 `wavinfo` reads:
 
 * [__Broadcast-WAVE__][ebu] metadata, including embedded program
-  loudness and coding history and [__SMPTE UMID__][smpte_330m2011].
+  loudness, coding history and [__SMPTE UMID__][smpte_330m2011].
 * [__ADM__][adm] track metadata, including channel, pack formats, object and content names.
 * [__iXML__][ixml] production recorder metadata, including project, scene, and take tags, recorder notes
   and file family information.
