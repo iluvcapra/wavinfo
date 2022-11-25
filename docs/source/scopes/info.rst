@@ -20,6 +20,17 @@ music library software.
     print("INFO Comment:",   bullet.info.comment)
 
 
+On Encodings
+""""""""""""
+According to Microsoft, the original developers of the RIFF file and RIFF INFO 
+metadata, these fields are always to be interpreted as ISO Latin 1 characters, 
+and this is the default encoding used by `wavinfo` for these fields. You can
+select a different encoding (like Shift-JIS) by passing an encoding name (as 
+would be used by `string.encode()`) to `WavInfoReader.__init__()`'s
+`info_encoding=` parameter.
+ 
+
+
 Class Reference
 ---------------
 
