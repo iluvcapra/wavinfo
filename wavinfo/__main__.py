@@ -3,7 +3,14 @@ import datetime
 from . import WavInfoReader
 import sys
 import json
+from enum import Enum
 
+class MyJSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Enum):
+            return dict(name=o._name_, value=o._value_)
+        else:
+            return super().default(o)
 
 def main():
     parser = OptionParser()
@@ -25,7 +32,7 @@ def main():
 
                 ret_dict['scopes'][scope][name] = value
 
-            json.dump(ret_dict, fp=sys.stdout, indent=2)
+            json.dump(ret_dict, cls=MyJSONEncoder, fp=sys.stdout, indent=2)
         except Exception as e:
             print(e)
 

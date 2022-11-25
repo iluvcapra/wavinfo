@@ -9,7 +9,7 @@ Unless otherwise stated, all § references here are to
 
 from enum import IntEnum, Enum
 from struct import unpack
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import List, Optional, Tuple, Any, Union
 
 from io import BytesIO
@@ -255,10 +255,6 @@ class DolbyDigitalPlusMetadata:
         RESERVED = 3
 
 
-    class DataRate(int):
-        pass
-
-
     class RFCompressionProfile(Enum):
         """
         `compr1` RF compression profile
@@ -419,7 +415,7 @@ class DolbyDigitalPlusMetadata:
             pass
 
         def datarate(b) -> int:
-            return b
+            return unpack("<H", b)[0]
 
         def reserved(_):
             pass
@@ -436,13 +432,13 @@ class DolbyDigitalPlusMetadata:
         downmix_mode, ltrt_center_downmix_level, ltrt_surround_downmix_level = ext_bsi1_word2(buffer[9])
         surround_ex_mode, dolby_headphone_encoded, ad_converter_type = ext_bsi2_word1(buffer[10])
 
-        ddplus_reserved2(buffer[11:3])
+        ddplus_reserved2(buffer[11:14])
         compression = compr1(buffer[14])
         dynamic_range = dynrng1(buffer[15])
-        ddplus_reserved3(buffer[16:3])
+        ddplus_reserved3(buffer[16:19])
         stream_info = ddplus_info1(buffer[19])
-        ddplus_reserved4(buffer[20:5])
-        data_rate = datarate(buffer[25:2])
+        ddplus_reserved4(buffer[20:25])
+        data_rate = datarate(buffer[25:27])
         reserved(buffer[27:69])
 
         return DolbyDigitalPlusMetadata(program_id=pid,
@@ -481,7 +477,7 @@ class DolbyAtmosMetadata:
     https://github.com/DolbyLaboratories/dbmd-atmos-parser/
     """
 
-    class WarpMode(IntEnum):
+    class WarpMode(Enum):
         NORMAL = 0x00
         WARPING = 0x01
         DOWNMIX_PLIIX = 0x02
@@ -537,6 +533,10 @@ class DolbyAtmosSupplementalMetadata:
     object_count: int
     render_modes: List['DolbyAtmosMetadata.BinauralRenderMode']
     trim_modes: List[int]
+
+    @classmethod
+    def load(cls, data: bytes):
+        pass
 
 
 
@@ -594,6 +594,8 @@ class WavDolbyMetadataReader:
                     segment = DolbyDigitalPlusMetadata.load(segment)
                 elif stype == SegmentType.DolbyAtmos:
                     segment = DolbyAtmosMetadata.load(segment)
+                elif stype == SegmentType.DolbyAtmosSupplemental:
+                    segment = DolbyAtmosSupplementalMetadata.load(segment)
                 
                 self.segment_list.append( (stype, checksum == expected_checksum, segment) )
     
@@ -616,4 +618,14 @@ class WavDolbyMetadataReader:
         Every valid Dolby Atmos Supplemental metadata segment in the file.
         """
         return [x[2] for x in self.segment_list \
-            if x[0] == SegmentType.DolbyAtmosSupplemental and x[1]] 
+            if x[0] == SegmentType.DolbyAtmosSupplemental and x[1]]
+
+    def to_dict(self) -> dict:
+
+        ddp = map(lambda x: asdict(x), self.dolby_digital_plus())
+        atmos = map(lambda x: asdict(x), self.dolby_atmos())
+        atmos_sup = [] #map(lambda x: asdict(x), self.dolby_atmos_supplemental())
+        
+        return dict(dolby_digital_plus=list(ddp),
+             dolby_atmos=list(atmos),
+             dolby_atmos_supplemental=list(atmos_sup))

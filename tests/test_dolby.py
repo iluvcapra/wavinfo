@@ -33,7 +33,6 @@ class TestDolby(TestCase):
             self.assertTrue(seg[1])
 
     def test_ddp(self):
-
         t1 = wavinfo.WavInfoReader(self.test_file)
         d = t1.dolby
 
@@ -42,7 +41,6 @@ class TestDolby(TestCase):
         self.assertTrue( ddp[0].audio_coding_mode, DolbyDigitalPlusMetadata.AudioCodingMode.CH_ORD_3_2 )
         self.assertTrue( ddp[0].lfe_on)
         
-
     def test_atmos(self):
         t1 = wavinfo.WavInfoReader(self.test_file)
         d = t1.dolby

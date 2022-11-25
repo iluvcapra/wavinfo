@@ -169,10 +169,10 @@ class WavInfoReader:
 
         :yields: tuples of the *scope*, *key*, and *value* of
             each metadatum. The *scope* value will be one of
-            "fmt", "data", "ixml", "bext", "info" or "adm".
+            "fmt", "data", "ixml", "bext", "info", "dolby", or "adm".
         """
 
-        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm')
+        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'dolby')
 
         for scope in scopes:
             if scope in ['fmt', 'data']:
