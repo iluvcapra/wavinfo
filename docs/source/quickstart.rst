@@ -11,6 +11,8 @@ wavinfo Quickstart
     info = wavinfo.WavInfoReader(path)
 
 
+.. module:: wavinfo
+    :noindex:
 
 .. autoclass:: wavinfo.wave_reader.WavInfoReader
    :members:

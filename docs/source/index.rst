@@ -6,16 +6,21 @@
 Welcome to wavinfo's documentation!
 ===================================
 
+The `wavinfo` package allows you to probe WAVE and RF64/WAVE files and 
+extract extended metadata, with an emphasis on film, video and professional 
+music production metadata.
+
+
 .. toctree::
    :maxdepth: 1
    :caption: Notes
    
    quickstart
-   metadata_scopes/adm.rst
-   metadata_scopes/bext.rst
-   metadata_scopes/dolby.rst
-   metadata_scopes/info.rst
-   metadata_scopes/ixml.rst
+   scopes/bext.rst
+   scopes/ixml.rst
+   scopes/adm.rst
+   scopes/dolby.rst
+   scopes/info.rst
 
    classes
 
