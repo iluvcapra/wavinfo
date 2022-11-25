@@ -1,5 +1,5 @@
 """
-Wave `dbmd` Dolby Metadata
+Reading Dolby Bitstream Metadata
 
 Unless otherwise stated, all § references here are to 
 `EBU Tech 3285 Supplement 6`_.
@@ -10,20 +10,28 @@ Unless otherwise stated, all § references here are to
 from enum import IntEnum, Enum
 from struct import unpack
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 
 
-class SegmentTypes(IntEnum):
+class SegmentType(IntEnum):
     """
     
     """
     EndMarker = 0x0
     DolbyE = 0x1
+    Reserved2 = 0x2
     DolbyDigital = 0x3
+    Reserved4 = 0x4
+    Reserved5 = 0x5
+    Reserved6 = 0x6
     DolbyDigitalPlus = 0x7
     AudioInfo = 0x8
     DolbyAtmos = 0x9
     DolbyAtmosSupplemental = 0xa
+
+    @classmethod
+    def _missing_(cls,val):
+        return val
 
 
 @dataclass
@@ -43,6 +51,7 @@ class DolbyDigitalPlusMetadata:
         A gain coefficient used in several metadata fields for downmix
         scenarios.
         """
+
         PLUS_3DB = 0b000
         "+3 dB"
 
@@ -263,7 +272,7 @@ class DolbyDigitalPlusMetadata:
     lfe_on: bool
 
     #: The kind of service of this stream. `bsmod` § 4.3.2.2
-    bitstream_mode: 'DolbyDigitalPlusMetadata.BitStreamMode'
+    bitstream_mode: BitStreamMode
 
     #: Indicates which channels are in use. `acmod` § 4.3.2.3
     audio_coding_mode: AudioCodingMode
@@ -290,15 +299,38 @@ class DolbyDigitalPlusMetadata:
     original_bitstream: bool
 
     dialnorm: DialnormLevel
-    langcode: Optional[int]
-    mixlevel: Optional[MixLevel]
-    roomtype: Optional[RoomType]
+
+    #: Language code
+    langcode: int
+
+    #: `True` if `mixlevel` and `roomtype` are valid
+    prod_info_exists: bool
+
+    #: Mix level
+    mixlevel: MixLevel
+
+    #: Room Type
+    roomtype: RoomType
+
+    #: LoRo preferred center downmix level
     loro_center_downmix_level: DownMixLevelToken
+    
+    #: LoRo preferred surround downmix level
     loro_surround_downmix_level: DownMixLevelToken
+
+    #: Preferred downmix mode
     downmix_mode: PreferredDownMixMode
+    
+    #: LtRt preferred center downmix level
     ltrt_center_downmix_level: DownMixLevelToken
+
+    #: LtRt preferred surround downmix level
     ltrt_surround_downmix_level: DownMixLevelToken
+
+    #: Surround-EX mode
     surround_ex_mode: SurroundEXMode
+    
+    #: Dolby Headphone mode
     dolby_headphone_encoded: HeadphoneMode
     ad_converter_type: ADConverterType
     compression_profile: RFCompressionProfile
@@ -430,3 +462,23 @@ class DolbyDigitalPlusMetadata:
             dynamic_range=dynamic_range,
             stream_type=stream_info,
             datarate_kbps=data_rate)
+
+
+class WavDolbyChunkReader:
+    """
+    Reads Dolby bitstream metadata.
+    """
+
+    #: List of the Dolby Metadata Segments.
+    #:
+    #: Each list entry is a tuple of `SegmentType`, a `bool`
+    #: indicating if the segment's checksum was valid, and the
+    #: segment's parsed dataclass (or a `bytes` array if it was 
+    #: not recognized).
+    segment_list: Tuple[SegmentType | int, bool, Any] 
+
+    def __init__(self, dbmd_data) -> None:
+        self.segment_list = []
+
+
+
