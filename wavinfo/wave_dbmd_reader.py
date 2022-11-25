@@ -232,7 +232,7 @@ class DolbyDigitalPlusMetadata:
         """
         Encodes `ddplus_info1.stream_type` field § 4.3.12.1
         """
-        
+
         INDEPENDENT = 0
         DEPENDENT = 1
         INDEPENDENT_FROM_DOLBY_DIGITAL = 2
@@ -263,7 +263,7 @@ class DolbyDigitalPlusMetadata:
     lfe_on: bool
 
     #: The kind of service of this stream. `bsmod` § 4.3.2.2
-    bitstream_mode: BitStreamMode
+    bitstream_mode: 'DolbyDigitalPlusMetadata.BitStreamMode'
 
     #: Indicates which channels are in use. `acmod` § 4.3.2.3
     audio_coding_mode: AudioCodingMode
