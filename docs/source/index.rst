@@ -13,6 +13,7 @@ Welcome to wavinfo's documentation!
    quickstart
    metadata_scopes/adm.rst
    metadata_scopes/bext.rst
+   metadata_scopes/dolby.rst
    metadata_scopes/info.rst
    metadata_scopes/ixml.rst
 
