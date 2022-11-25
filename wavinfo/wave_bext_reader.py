@@ -17,6 +17,7 @@ class WavBextReader:
         unpacked = struct.unpack(packstring, bext_data[:rest_starts])
 
         def sanitize_bytes(b : bytes) -> str:
+            # honestly can't remember why I'm stripping nulls this way
             first_null = next((index for index, byte in enumerate(b) if byte == 0), None)
             trimmed = b if first_null is None else b[:first_null]
             decoded = trimmed.decode(encoding)
