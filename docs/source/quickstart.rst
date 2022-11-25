@@ -1,4 +1,4 @@
-ptulsconv Quickstart
+wavinfo Quickstart
 ====================
 
 .. code-block:: python
