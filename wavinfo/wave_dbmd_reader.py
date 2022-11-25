@@ -493,8 +493,7 @@ class DolbyAtmosMetadata:
 
     @classmethod
     def load(cls, data: bytes):
-        assert len(data) == cls.SEGMENT_LENGTH, 
-            "DolbyAtmosMetadata segment present in file is incorrect length" 
+        assert len(data) == cls.SEGMENT_LENGTH, "DolbyAtmosMetadata segment present in file is incorrect length" 
 
         h = BytesIO(data)
 
