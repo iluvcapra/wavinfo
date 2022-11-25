@@ -10,6 +10,6 @@ If you discover a bug or would like better support for a feature, please do the 
 1. Check out the source code and submit a PR.
    
    If you're facile with Python and understand what you'd like to fix, submit a PR and I'll 
-   review it as soon as I can. There's a `.devcontainer` available for you to work on this 
-   project so you can creates commits on this project in a GitHub codespace.
+   review it as soon as I can. There's a `.devcontainer` available so you can creates commits 
+   on this project in a GitHub codespace.
    
