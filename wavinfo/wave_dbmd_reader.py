@@ -10,7 +10,7 @@ Unless otherwise stated, all § references here are to
 from enum import IntEnum, Enum
 from struct import unpack
 from dataclasses import dataclass
-from typing import Optional, Tuple, Any, Union
+from typing import List, Optional, Tuple, Any, Union
 
 from io import BytesIO
 
@@ -20,11 +20,11 @@ class SegmentType(IntEnum):
     """
     EndMarker = 0x0
     DolbyE = 0x1
-    Reserved2 = 0x2
+    # Reserved2 = 0x2
     DolbyDigital = 0x3
-    Reserved4 = 0x4
-    Reserved5 = 0x5
-    Reserved6 = 0x6
+    # Reserved4 = 0x4
+    # Reserved5 = 0x5
+    # Reserved6 = 0x6
     DolbyDigitalPlus = 0x7
     AudioInfo = 0x8
     DolbyAtmos = 0x9
@@ -351,14 +351,12 @@ class DolbyDigitalPlusMetadata:
     datarate_kbps: int
     
     @staticmethod
-    def parse_dolby_digital_plus(buffer: bytes):
+    def load(buffer: bytes):
         assert len(buffer) == 96, "Dolby Digital Plus segment incorrect size, "
         "expected 96 got %i" % len(buffer)
 
-        retval = DolbyDigitalPlusMetadata()
-
         def program_id(b) -> int:
-            return unpack("<B",b)
+            return b
 
         def program_info(b):
             return (b & 0x40) > 0, \
@@ -378,7 +376,7 @@ class DolbyDigitalPlusMetadata:
                 DolbyDigitalPlusMetadata.DialnormLevel(b & 0x1f)
 
         def langcod(b) -> int:
-            return unpack("B", b)
+            return b
 
         def audio_prod_info(b):
             return (b & 0x80) > 0, \
@@ -406,10 +404,10 @@ class DolbyDigitalPlusMetadata:
             pass
 
         def compr1(b):
-            return DolbyDigitalPlusMetadata.RFCompressionProfile(unpack("B", b))
+            return DolbyDigitalPlusMetadata.RFCompressionProfile(b)
 
         def dynrng1(b):
-            DolbyDigitalPlusMetadata.RFCompressionProfile(unpack("B",b)) 
+            DolbyDigitalPlusMetadata.RFCompressionProfile(b) 
 
         def ddplus_reserved3(_):
             pass
@@ -421,7 +419,7 @@ class DolbyDigitalPlusMetadata:
             pass
 
         def datarate(b) -> int:
-            return unpack("<H", b)
+            return b
 
         def reserved(_):
             pass
@@ -476,6 +474,72 @@ class DolbyDigitalPlusMetadata:
             datarate_kbps=data_rate)
 
 
+@dataclass
+class DolbyAtmosMetadata:
+    """
+
+    https://github.com/DolbyLaboratories/dbmd-atmos-parser/
+    """
+
+    class WarpMode(IntEnum):
+        NORMAL = 0x00
+        WARPING = 0x01
+        DOWNMIX_PLIIX = 0x02
+        DOWNMIX_LORO = 0x03
+        NOT_INDICATED = 0x04
+
+    tool_name: str
+    tool_version: Tuple[int,int,int]
+    warp_mode: WarpMode
+
+    SEGMENT_LENGTH = 248
+    TOOL_NAME_LENGTH = 64
+
+    @classmethod
+    def load(cls, data: bytes):
+        assert(len(data) == cls.SEGMENT_LENGTH, 
+            "DolbyAtmosMetadata segment present in file is incorrect length")
+
+        h = BytesIO(data)
+
+        h.seek(32, 1)
+        toolname = h.read(cls.TOOL_NAME_LENGTH)
+        toolname = unpack("%is" % cls.TOOL_NAME_LENGTH, toolname)[0]
+        toolname = toolname.decode('utf-8').strip('\0')
+
+        vers = h.read(3)
+        major, minor, fix = unpack("BBB", vers)
+
+        h.seek(53, 1)
+
+        a_val = unpack("B", h.read(1))[0]
+        warp_mode = a_val & 0x7
+
+        return DolbyAtmosMetadata(tool_name=toolname, 
+            tool_version=(major, minor, fix), warp_mode=DolbyAtmosMetadata.WarpMode(warp_mode))
+
+        
+
+
+
+@dataclass
+class DolbyAtmosSupplementalMetadata:
+    
+
+    class BinauralRenderMode(Enum):
+        BYPASS = 0x00
+        NEAR = 0x01
+        FAR = 0x02
+        MID = 0x03
+        NOT_INDICATED = 0x04
+
+
+    object_count: int
+    render_modes: List['DolbyAtmosMetadata.BinauralRenderMode']
+    trim_modes: List[int]
+
+
+
 class WavDolbyMetadataReader:
     """
     Reads Dolby bitstream metadata.
@@ -489,7 +553,19 @@ class WavDolbyMetadataReader:
     #: not recognized).
     segment_list: Tuple[Union[SegmentType, int], bool, Any] 
 
-    version: str
+    version: Tuple[int,int,int,int]
+
+    @staticmethod
+    def segment_checksum(bs: bytes, size: int):
+        retval = size
+        for b in bs:
+            retval += int(b)
+            retval &= 0xff
+
+        retval = ((~retval) + 1) & 0xff
+
+        return retval
+
 
     def __init__(self, dbmd_data) -> None:
         self.segment_list = []
@@ -499,13 +575,45 @@ class WavDolbyMetadataReader:
         v_vec = []
         for _ in range(4):
             b = h.read(1)
-            v_vec.insert(0, str(unpack("B", b[0:1])))
+            v_vec.insert(0, unpack("B",b)[0])
         
-        self.version = ".".join(v_vec)
+        self.version = tuple(v_vec)
 
+        while True:
+            stype= SegmentType(unpack("B", h.read(1))[0])
+            if stype == SegmentType.EndMarker:
+                break
+            else:
+                seg_size = unpack("<H", h.read(2))[0]
+                seg_payload = h.read(seg_size)
+                expected_checksum = WavDolbyMetadataReader.segment_checksum(seg_payload, seg_size)
+                checksum = unpack("B", h.read(1))[0]
 
+                segment = seg_payload
+                if stype == SegmentType.DolbyDigitalPlus:
+                    segment = DolbyDigitalPlusMetadata.load(segment)
+                elif stype == SegmentType.DolbyAtmos:
+                    segment = DolbyAtmosMetadata.load(segment)
+                
+                self.segment_list.append( (stype, checksum == expected_checksum, segment) )
+    
+    def dolby_digital_plus(self) -> List[DolbyDigitalPlusMetadata]:
+        """
+        Every valid Dolby Digital Plus metadata segment in the file.
+        """
+        return [x[2] for x in self.segment_list \
+            if x[0] == SegmentType.DolbyDigitalPlus and x[1]]
 
+    def dolby_atmos(self) -> List[DolbyAtmosMetadata]:
+        """
+        Every valid Dolby Atmos metadata segment in the file.
+        """
+        return [x[2] for x in self.segment_list \
+            if x[0] == SegmentType.DolbyAtmos and x[1]]
 
-
-
-
+    def dolby_atmos_supplemental(self) -> List[DolbyAtmosSupplementalMetadata]:
+        """
+        Every valid Dolby Atmos Supplemental metadata segment in the file.
+        """
+        return [x[2] for x in self.segment_list \
+            if x[0] == SegmentType.DolbyAtmosSupplemental and x[1]] 
