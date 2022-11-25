@@ -10,7 +10,7 @@ Unless otherwise stated, all § references here are to
 from enum import IntEnum, Enum
 from struct import unpack
 from dataclasses import dataclass
-from typing import Optional, Tuple, Any
+from typing import Optional, Tuple, Any, Union
 
 from io import BytesIO
 
@@ -487,7 +487,7 @@ class WavDolbyMetadataReader:
     #: indicating if the segment's checksum was valid, and the
     #: segment's parsed dataclass (or a `bytes` array if it was 
     #: not recognized).
-    segment_list: Tuple[SegmentType | int, bool, Any] 
+    segment_list: Tuple[Union[SegmentType, int], bool, Any] 
 
     version: str
 
