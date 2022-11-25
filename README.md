@@ -18,13 +18,12 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
 * Most of the common [__RIFF INFO__][info-tags] metadata fields.
 * The __wav format__ is also parsed, so you can access the basic sample rate and channel count
   information.
+* [__Dolby Digital Plus__][ebu3285s6] and Dolby Atmos `dbmd` metadata.
 
 In progress:
-* [__Dolby RMU__][dolby] metadata and [EBU Tech 3285 Supplement 6][ebu3285s6].
 * Pro Tools __embedded regions__.
 * iXML `STEINBERG` sound library attributes.
 
-[dolby]:https://developer.dolby.com/globalassets/documentation/technology/dolby_atmos_master_adm_profile_v1.0.pdf
 [ebu]:https://tech.ebu.ch/docs/tech/tech3285.pdf
 [ebu3285s6]:https://tech.ebu.ch/docs/tech/tech3285s6.pdf
 [adm]:https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.2076-2-201910-I!!PDF-E.pdf
