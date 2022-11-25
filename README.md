@@ -13,12 +13,12 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
 * [__Broadcast-WAVE__][ebu] metadata, including embedded program
   loudness, coding history and [__SMPTE UMID__][smpte_330m2011].
 * [__ADM__][adm] track metadata, including channel, pack formats, object and content names.
+* [__Dolby Digital Plus__][ebu3285s6] and Dolby Atmos `dbmd` metadata.
 * [__iXML__][ixml] production recorder metadata, including project, scene, and take tags, recorder notes
   and file family information.
 * Most of the common [__RIFF INFO__][info-tags] metadata fields.
 * The __wav format__ is also parsed, so you can access the basic sample rate and channel count
   information.
-* [__Dolby Digital Plus__][ebu3285s6] and Dolby Atmos `dbmd` metadata.
 
 In progress:
 * Pro Tools __embedded regions__.
