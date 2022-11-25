@@ -12,10 +12,11 @@ from struct import unpack
 from dataclasses import dataclass
 from typing import Optional, Tuple, Any
 
+from io import BytesIO
 
 class SegmentType(IntEnum):
     """
-    
+    Metadata segment type.
     """
     EndMarker = 0x0
     DolbyE = 0x1
@@ -78,6 +79,9 @@ class DolbyDigitalPlusMetadata:
 
 
     class DolbySurroundEncodingMode(Enum):
+        """
+        Dolby surround endcoding mode.
+        """
         RESERVED = 0b11
         IN_USE = 0b10
         NOT_IN_USE = 0b01
@@ -169,13 +173,13 @@ class DolbyDigitalPlusMetadata:
         RESERVED = 0b11
 
 
-    class LanguageCode(Enum):
+    class LanguageCode(int):
         """
         § 4.3.4.1
-        Per ATSC/A52 § 5.4.2.12 this is not in use and always 0xFF
-        """
 
-        NONE = 0xff
+        Per ATSC/A52 § 5.4.2.12, this is not in use and always 0xFF.
+        """
+        pass
 
 
     class MixLevel(int):
@@ -204,6 +208,8 @@ class DolbyDigitalPlusMetadata:
 
     class PreferredDownMixMode(Enum):
         """
+        Indicates the creating engineer's preference of what the receiver should
+        downmix.
         § 4.3.8.1
         """
         NOT_INDICATED = 0b00
@@ -214,6 +220,7 @@ class DolbyDigitalPlusMetadata:
 
     class SurroundEXMode(IntEnum):
         """
+        Dolby Surround-EX mode.
         `dsurexmod` § 4.3.9.1
         """
         NOT_INDICATED = 0b00
@@ -332,10 +339,15 @@ class DolbyDigitalPlusMetadata:
     
     #: Dolby Headphone mode
     dolby_headphone_encoded: HeadphoneMode
+
     ad_converter_type: ADConverterType
     compression_profile: RFCompressionProfile
     dynamic_range: RFCompressionProfile
-    stream_type: StreamDependency
+    
+    #: Indicates if this stream can be decoded independently or not
+    stream_dependency: StreamDependency
+
+    #: Data rate of this bitstream in kilobits per second
     datarate_kbps: int
     
     @staticmethod
@@ -460,11 +472,11 @@ class DolbyDigitalPlusMetadata:
             ad_converter_type=ad_converter_type,
             compression_profile=compression,
             dynamic_range=dynamic_range,
-            stream_type=stream_info,
+            stream_dependency=stream_info,
             datarate_kbps=data_rate)
 
 
-class WavDolbyChunkReader:
+class WavDolbyMetadataReader:
     """
     Reads Dolby bitstream metadata.
     """
@@ -477,8 +489,23 @@ class WavDolbyChunkReader:
     #: not recognized).
     segment_list: Tuple[SegmentType | int, bool, Any] 
 
+    version: str
+
     def __init__(self, dbmd_data) -> None:
         self.segment_list = []
+
+        h = BytesIO(dbmd_data)
+
+        v_vec = []
+        for _ in range(4):
+            b = h.read(1)
+            v_vec.insert(0, str(unpack("B", b[0:1])))
+        
+        self.version = ".".join(v_vec)
+
+
+
+
 
 
 

@@ -12,6 +12,7 @@ from .wave_ixml_reader import WavIXMLFormat
 from .wave_bext_reader import WavBextReader
 from .wave_info_reader import WavInfoChunkReader
 from .wave_adm_reader import WavADMReader
+from .wave_dbmd_reader import WavDolbyMetadataReader
 
 #: Calculated statistics about the audio data.
 WavDataDescriptor = namedtuple('WavDataDescriptor', 'byte_count frame_count')
@@ -63,20 +64,23 @@ class WavInfoReader:
 
             self.path = absolute_path
 
+            #: Wave audio data format
             self.fmt :Optional[WavAudioFormat] = None
-            ":class:`wavinfo.wave_reader.WavAudioFormat`"
 
+            #: Broadcast-Wave metadata
             self.bext :Optional[WavBextReader] = None
-            ":class:`wavinfo.wave_bext_reader.WavBextReader` with Broadcast-WAV metadata"
 
+            #: iXML metadata
             self.ixml :Optional[WavIXMLFormat] = None
-            ":class:`wavinfo.wave_ixml_reader.WavIXMLFormat` with iXML metadata"
 
+            #: ADM Audio Definiton Model metadata
             self.adm :Optional[WavADMReader]= None
-            ":class:`wavinfo.wave_axml_reader.WavADMReader` with ADM metadata"
 
+            #: Dolby Bitstream Metadata
+            self.dolby :Optional[WavDolbyMetadataReader] = None
+
+            #: RIFF INFO Metadata
             self.info :Optional[WavInfoChunkReader]= None
-            ":class:`wavinfo.wave_info_reader.WavInfoChunkReader` with RIFF INFO metadata"
             
             with open(path, 'rb') as f:
                 self.get_wav_info(f)
@@ -92,6 +96,7 @@ class WavInfoReader:
         self.ixml = self._get_ixml(wavfile)
         self.adm  = self._get_adm(wavfile)
         self.info = self._get_info(wavfile, encoding=self.info_encoding)
+        self.dolby = self._get_dbmd(wavfile)
         self.data = self._describe_data()
 
     def _find_chunk_data(self, ident, from_stream, default_none=False):
@@ -150,9 +155,13 @@ class WavInfoReader:
         chna = self._find_chunk_data(b'chna', f, default_none=True)
         return WavADMReader(axml_data=axml, chna_data=chna) if axml and chna else None
 
+    def _get_dbmd(self, f):
+        dbmd_data = self._find_chunk_data(b'dbmd', f, default_none=True)
+        return WavDolbyMetadataReader(dbmd_data=dbmd_data) if dbmd_data else None
+
     def _get_ixml(self, f):
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
-        return None if ixml_data is None else WavIXMLFormat(ixml_data.rstrip(b'\0'))
+        return WavIXMLFormat(ixml_data.rstrip(b'\0')) if ixml_data else None
 
     def walk(self) -> Generator[str,str,Any]:
         """
@@ -176,6 +185,5 @@ class WavInfoReader:
                 for key in dict.keys():
                     yield scope, key, dict[key]
         
-
     def __repr__(self):
         return 'WavInfoReader({}, {}, {})'.format(self.path, self.info_encoding, self.bext_encoding)
