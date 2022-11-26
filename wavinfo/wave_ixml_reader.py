@@ -27,6 +27,9 @@ class WavIXMLFormat:
         else: 
             return None
 
+    def xml_bytes(self):
+        return ET.tostring(self.parsed).decode("utf-8")
+
     @property
     def raw_xml(self):
         """

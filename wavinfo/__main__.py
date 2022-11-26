@@ -12,29 +12,53 @@ class MyJSONEncoder(json.JSONEncoder):
         else:
             return super().default(o)
 
+class MissingDataError(RuntimeError):
+    pass
+
 def main():
     parser = OptionParser()
 
-    parser.usage = 'wavinfo [FILE.wav]*'
+    parser.usage = 'wavinfo [FILES]'
 
     # parser.add_option('-f', dest='output_format', help='Set the output format',
     #                   default='json',
     #                   metavar='FORMAT')
 
+    parser.add_option('--adm', dest='adm', help='Output ADM XML', 
+        default=False, action='store_true')
+
+    parser.add_option('--ixml', dest='ixml', help='Output iXML',
+        default=False, action='store_true')
+
     (options, args) = parser.parse_args(sys.argv)
     for arg in args[1:]:
         try:
             this_file = WavInfoReader(path=arg)
-            ret_dict = {'file_argument': arg, 'run_date': datetime.datetime.now().isoformat() , 'scopes': {}}
-            for scope, name, value in this_file.walk():
-                if scope not in ret_dict['scopes'].keys():
-                    ret_dict['scopes'][scope] = {}
+            if options.adm:
+                if this_file.adm:
+                    sys.stdout.write(this_file.adm.xml_str())
+                else:
+                    raise MissingDataError("--adm option active but ADM metadata not present")
+            elif options.ixml:
+                if this_file.ixml:
+                    sys.stdout.write(this_file.ixml.xml_bytes())
+                else:
+                    raise MissingDataError("--ixml option active but iXML metadata not present")
+            else:
+                ret_dict = {'file_argument': arg, 'run_date': datetime.datetime.now().isoformat() , 'scopes': {}}
+                for scope, name, value in this_file.walk():
+                    if scope not in ret_dict['scopes'].keys():
+                        ret_dict['scopes'][scope] = {}
 
-                ret_dict['scopes'][scope][name] = value
+                    ret_dict['scopes'][scope][name] = value
 
-            json.dump(ret_dict, cls=MyJSONEncoder, fp=sys.stdout, indent=2)
+                json.dump(ret_dict, cls=MyJSONEncoder, fp=sys.stdout, indent=2)
+        except MissingDataError as e:
+            print("Missing metadata error in file %s" % arg, file=sys.stderr)
+            print(e, file=sys.stderr)
+            continue
         except Exception as e:
-            print(e)
+            raise e
 
 
 if __name__ == "__main__":

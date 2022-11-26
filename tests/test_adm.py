@@ -23,6 +23,17 @@ class TestADMWave(TestCase):
         dict = adm.to_dict()
         self.assertIsNotNone(dict)
     
+    def test_programme(self):
+        info = wavinfo.WavInfoReader(self.protools_adm_wav)
+        adm = info.adm
+        pdict = adm.programme()
+        self.assertIn("programme_id", pdict.keys())
+        self.assertIn("programme_name", pdict.keys())
+        self.assertEqual(pdict['programme_id'], 'APR_1001')
+        self.assertEqual(pdict['programme_name'], 'Atmos_Master')
+        self.assertIn("contents", pdict.keys())
+        self.assertEqual(len(pdict["contents"]), 3)
+
     def test_track_info(self):
         info = wavinfo.WavInfoReader(self.protools_adm_wav)
         adm = info.adm
