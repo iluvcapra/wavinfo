@@ -47,8 +47,8 @@ class WavADMReader:
         Information about a track in the WAV file.
 
         :param index: index of audio track (indexed from zero) 
-        :returns: a dictionary with *content_name*, *object_name*, *pack_format_name*, *pack_type*, 
-                  *channel_format_name*
+        :returns: a dictionary with *content_name*, *content_id*, *object_name*, *object_id*, 
+            *pack_format_name*, *pack_type*, *channel_format_name*
         """
         channel_info = next((x for x in self.channel_uids if x.track_index == index + 1), None)
         
@@ -59,29 +59,42 @@ class WavADMReader:
 
         nsmap = self.axml.getroot().nsmap
 
-        trackformat_elem = self.axml.find(".//audioFormatExtended/audioTrackFormat[@audioTrackFormatID='%s']" % channel_info.track_ref, namespaces=nsmap)
+        afext = self.axml.find(".//audioFormatExtended", namespaces=nsmap)
+
+        trackformat_elem = afext.find(".//audioTrackFormat[@audioTrackFormatID='%s']" % channel_info.track_ref, 
+            namespaces=nsmap)
 
         stream_id = trackformat_elem[0].text
 
-        channelformatref_elem = self.axml.find(".//audioFormatExtended/audioStreamFormat[@audioStreamFormatID='%s']/audioChannelFormatIDRef" % stream_id, namespaces=nsmap)
+        channelformatref_elem = afext.find(".//audioStreamFormat[@audioStreamFormatID='%s']/audioChannelFormatIDRef" % stream_id, 
+            namespaces=nsmap)
         channelformat_id = channelformatref_elem.text
 
-        packformatref_elem = self.axml.find(".//audioFormatExtended/audioStreamFormat[@audioStreamFormatID='%s']/audioPackFormatIDRef" % stream_id, namespaces=nsmap)
+        packformatref_elem = afext.find(".//audioStreamFormat[@audioStreamFormatID='%s']/audioPackFormatIDRef" % stream_id, 
+            namespaces=nsmap)
         packformat_id = packformatref_elem.text
 
-        channelformat_elem = self.axml.find(".//audioFormatExtended/audioChannelFormat[@audioChannelFormatID='%s']" % channelformat_id, namespaces=nsmap)
+        channelformat_elem = afext.find(".//audioChannelFormat[@audioChannelFormatID='%s']" % channelformat_id, 
+            namespaces=nsmap)
         ret_dict['channel_format_name'] = channelformat_elem.get("audioChannelFormatName")
 
-        packformat_elem = self.axml.find(".//audioFormatExtended/audioPackFormat[@audioPackFormatID='%s']" % packformat_id, namespaces=nsmap)
+        packformat_elem = afext.find(".//audioPackFormat[@audioPackFormatID='%s']" % packformat_id, 
+            namespaces=nsmap)
         ret_dict['pack_type'] = packformat_elem.get("typeDefinition")
         ret_dict['pack_format_name'] = packformat_elem.get("audioPackFormatName")
 
-        object_elem = self.axml.find(".//audioFormatExtended/audioObject[audioPackFormatIDRef = '%s']" % packformat_id, namespaces=nsmap)
+        object_elem = afext.find(".//audioObject[audioPackFormatIDRef = '%s']" % packformat_id, 
+            namespaces=nsmap)
+
         ret_dict['audio_object_name'] = object_elem.get("audioObjectName")
         object_id = object_elem.get("audioObjectID")
+        ret_dict['object_id'] = object_id
 
-        content_elem = self.axml.find(".//audioFormatExtended/audioContent/[audioObjectIDRef = '%s']" % object_id, namespaces=nsmap)
+        content_elem = afext.find(".//audioContent/[audioObjectIDRef = '%s']" % object_id, 
+            namespaces=nsmap)
+
         ret_dict['content_name'] = content_elem.get("audioContentName")
+        ret_dict['content_id'] = content_elem.get("audioContentID")
 
         return ret_dict
 
@@ -89,4 +102,10 @@ class WavADMReader:
         """
         Get ADM metadata as a dictionary.
         """
-        return dict(channel_entries=list(map(lambda z: z._asdict(), self.channel_uids)))
+
+        def make_entry(channel_uid_rec):
+            rd = channel_uid_rec._asdict()
+            rd.update(self.track_info(channel_uid_rec.track_index - 1))
+            return rd
+
+        return dict(channel_entries=list(map(lambda z: make_entry(z), self.channel_uids)))
