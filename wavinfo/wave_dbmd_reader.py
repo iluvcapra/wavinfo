@@ -473,6 +473,7 @@ class DolbyDigitalPlusMetadata:
 @dataclass
 class DolbyAtmosMetadata:
     """
+    Dolby Atmos Metadata Segment
 
     https://github.com/DolbyLaboratories/dbmd-atmos-parser/
     """
@@ -493,7 +494,8 @@ class DolbyAtmosMetadata:
 
     @classmethod
     def load(cls, data: bytes):
-        assert len(data) == cls.SEGMENT_LENGTH, "DolbyAtmosMetadata segment present in file is incorrect length" 
+        assert len(data) == cls.SEGMENT_LENGTH, "DolbyAtmosMetadata segment "\
+            "is incorrect length, expected %i actual was %i" % (cls.SEGMENT_LENGTH, len(data)) 
 
         h = BytesIO(data)
 
@@ -514,12 +516,13 @@ class DolbyAtmosMetadata:
             tool_version=(major, minor, fix), warp_mode=DolbyAtmosMetadata.WarpMode(warp_mode))
 
         
-
-
-
 @dataclass
 class DolbyAtmosSupplementalMetadata:
-    
+    """
+    Dolby Atmos supplemental metadata segment.
+
+    https://github.com/DolbyLaboratories/dbmd-atmos-parser/blob/master/dbmd_atmos_parse/src/dbmd_atmos_parse.c
+    """ 
 
     class BinauralRenderMode(Enum):
         BYPASS = 0x00
@@ -530,13 +533,42 @@ class DolbyAtmosSupplementalMetadata:
 
 
     object_count: int
-    render_modes: List['DolbyAtmosMetadata.BinauralRenderMode']
+    render_modes: List['DolbyAtmosSupplementalMetadata.BinauralRenderMode']
     trim_modes: List[int]
+
+
+    MAGIC = 0xf8726fbd
+    TRIM_CONFIG_COUNT = 9
 
     @classmethod
     def load(cls, data: bytes):
-        pass
 
+        trim_modes = []
+        render_modes = []
+
+        h = BytesIO(data)
+        magic = unpack("<I", h.read(4))
+        assert magic == cls.MAGIC, "Magic value was not found"
+
+        object_count = unpack("<H", h.read(2))
+
+        h.read(1) #skip 1
+
+        for _ in range(cls.TRIM_CONFIG_COUNT):
+            auto_trim = unpack("B", h.read(1))
+            trim_modes.append(auto_trim)
+
+            h.read(14) #skip 14
+        
+        h.read(object_count) # skip object_count bytes
+
+        for _ in range(object_count):
+            binaural_mode = unpack("B", h.read(1))
+            binaural_mode &= 0x7
+            render_modes.append(binaural_mode)
+
+        return DolbyAtmosSupplementalMetadata(object_count=object_count,
+            render_modes=render_modes,trim_modes=trim_modes)
 
 
 class WavDolbyMetadataReader:
@@ -593,8 +625,8 @@ class WavDolbyMetadataReader:
                     segment = DolbyDigitalPlusMetadata.load(segment)
                 elif stype == SegmentType.DolbyAtmos:
                     segment = DolbyAtmosMetadata.load(segment)
-                elif stype == SegmentType.DolbyAtmosSupplemental:
-                    segment = DolbyAtmosSupplementalMetadata.load(segment)
+                # elif stype == SegmentType.DolbyAtmosSupplemental:
+                #     segment = DolbyAtmosSupplementalMetadata.load(segment)
                 
                 self.segment_list.append( (stype, checksum == expected_checksum, segment) )
     
@@ -612,19 +644,18 @@ class WavDolbyMetadataReader:
         return [x[2] for x in self.segment_list \
             if x[0] == SegmentType.DolbyAtmos and x[1]]
 
-    def dolby_atmos_supplemental(self) -> List[DolbyAtmosSupplementalMetadata]:
-        """
-        Every valid Dolby Atmos Supplemental metadata segment in the file.
-        """
-        return [x[2] for x in self.segment_list \
-            if x[0] == SegmentType.DolbyAtmosSupplemental and x[1]]
+    # def dolby_atmos_supplemental(self) -> List[DolbyAtmosSupplementalMetadata]:
+    #     """
+    #     Every valid Dolby Atmos Supplemental metadata segment in the file.
+    #     """
+    #     return [x[2] for x in self.segment_list \
+    #         if x[0] == SegmentType.DolbyAtmosSupplemental and x[1]]
 
     def to_dict(self) -> dict:
 
         ddp = map(lambda x: asdict(x), self.dolby_digital_plus())
         atmos = map(lambda x: asdict(x), self.dolby_atmos())
-        atmos_sup = [] #map(lambda x: asdict(x), self.dolby_atmos_supplemental())
+        #atmos_sup = map(lambda x: asdict(x), self.dolby_atmos_supplemental())
         
         return dict(dolby_digital_plus=list(ddp),
-             dolby_atmos=list(atmos),
-             dolby_atmos_supplemental=list(atmos_sup))
+             dolby_atmos=list(atmos))

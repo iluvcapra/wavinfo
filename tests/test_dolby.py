@@ -19,11 +19,9 @@ class TestDolby(TestCase):
 
         ddp = [x for x in d.segment_list if x[0] == SegmentType.DolbyDigitalPlus]
         atmos = [x for x in d.segment_list if x[0] == SegmentType.DolbyAtmos]
-        atmos_sup = [x for x in d.segment_list if x[0] == SegmentType.DolbyAtmosSupplemental]
 
         self.assertEqual(len(ddp), 1)
         self.assertEqual(len(atmos), 1)
-        self.assertEqual(len(atmos_sup), 1)
 
     def test_checksums(self):
         t1 = wavinfo.WavInfoReader(self.test_file)

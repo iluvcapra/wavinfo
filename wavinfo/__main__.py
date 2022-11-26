@@ -8,7 +8,7 @@ from enum import Enum
 class MyJSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, Enum):
-            return dict(name=o._name_, value=o._value_)
+            return o._name_
         else:
             return super().default(o)
 
