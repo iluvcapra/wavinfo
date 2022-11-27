@@ -14,6 +14,7 @@ ChannelEntry = namedtuple('ChannelEntry', "track_index uid track_ref pack_ref")
 class WavADMReader:
     """
     Reads XML data from an EBU ADM (Audio Definiton Model) WAV File.
+
     """
 
     def __init__(self, axml_data: bytes, chna_data: bytes):
@@ -26,7 +27,12 @@ class WavADMReader:
         _, uid_count = unpack(header_fmt, chna_data[0:4])
 
         #: A list of :class:`ChannelEntry` objects parsed from the
-        #: `chna` metadata chunk. 
+        #: `chna` metadata chunk.
+        #:
+        #: .. note::
+        #:    In-file, the `chna` track indexes start at 1. However, this interface
+        #:    numbers the first track 0, in order to maintain consistency with other
+        #:    libraries.
         self.channel_uids = []
 
         offset = calcsize(header_fmt)
@@ -36,7 +42,7 @@ class WavADMReader:
 
             # these values are either ascii or all null
 
-            self.channel_uids.append(ChannelEntry(track_index,
+            self.channel_uids.append(ChannelEntry(track_index - 1,
                 uid.decode('ascii') , track_ref.decode('ascii'), pack_ref.decode('ascii')))
 
             offset += calcsize(uid_fmt)
@@ -97,7 +103,7 @@ class WavADMReader:
         :returns: a dictionary with *content_name*, *content_id*, *object_name*, *object_id*, 
             *pack_format_name*, *pack_type*, *channel_format_name*
         """
-        channel_info = next((x for x in self.channel_uids if x.track_index == index + 1), None)
+        channel_info = next((x for x in self.channel_uids if x.track_index == index), None)
         
         if channel_info is None:
             return None
@@ -152,7 +158,7 @@ class WavADMReader:
 
         def make_entry(channel_uid_rec):
             rd = channel_uid_rec._asdict()
-            rd.update(self.track_info(channel_uid_rec.track_index - 1))
+            rd.update(self.track_info(channel_uid_rec.track_index))
             return rd
 
         return dict(channel_entries=list(map(lambda z: make_entry(z), self.channel_uids)),
