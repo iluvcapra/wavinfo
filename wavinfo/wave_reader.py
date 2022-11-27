@@ -166,10 +166,10 @@ class WavInfoReader:
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
         return WavIXMLFormat(ixml_data.rstrip(b'\0')) if ixml_data else None
 
-    def iter(self) -> Generator[str,str,Any]:
+    def walk(self) -> Generator[str,str,Any]: #FIXME: this should probably be named "iter()"
         """
         Walk all of the available metadata fields.
-
+        
         :yields: tuples of the *scope*, *key*, and *value* of
             each metadatum. The *scope* value will be one of
             "fmt", "data", "ixml", "bext", "info", "dolby", or "adm".

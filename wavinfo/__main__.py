@@ -52,7 +52,7 @@ def main():
                     'application': "wavinfo " + __version__, 
                     'scopes': {}
                     }
-                for scope, name, value in this_file.iter():
+                for scope, name, value in this_file.walk():
                     if scope not in ret_dict['scopes'].keys():
                         ret_dict['scopes'][scope] = {}
 
