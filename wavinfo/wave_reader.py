@@ -64,22 +64,25 @@ class WavInfoReader:
 
             self.path = absolute_path
 
-            #: Wave audio data format
+            #: Wave audio data format.
             self.fmt :Optional[WavAudioFormat] = None
 
-            #: Broadcast-Wave metadata
+            #: Statistics of the `data` section.
+            self.data :Optional[WavDataDescriptor] = None
+
+            #: Broadcast-Wave metadata.
             self.bext :Optional[WavBextReader] = None
 
-            #: iXML metadata
+            #: iXML metadata.
             self.ixml :Optional[WavIXMLFormat] = None
 
-            #: ADM Audio Definiton Model metadata
+            #: ADM Audio Definiton Model metadata.
             self.adm :Optional[WavADMReader]= None
 
-            #: Dolby Bitstream Metadata
+            #: Dolby bitstream metadata.
             self.dolby :Optional[WavDolbyMetadataReader] = None
 
-            #: RIFF INFO Metadata
+            #: RIFF INFO metadata.
             self.info :Optional[WavInfoChunkReader]= None
             
             with open(path, 'rb') as f:
@@ -163,7 +166,7 @@ class WavInfoReader:
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
         return WavIXMLFormat(ixml_data.rstrip(b'\0')) if ixml_data else None
 
-    def walk(self) -> Generator[str,str,Any]:
+    def iter(self) -> Generator[str,str,Any]:
         """
         Walk all of the available metadata fields.
 

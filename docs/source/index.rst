@@ -13,14 +13,12 @@ music production metadata.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Notes
+   :glob:
+   :numbered:
    
    quickstart
-   scopes/bext.rst
-   scopes/ixml.rst
-   scopes/adm.rst
-   scopes/dolby.rst
-   scopes/info.rst
+   command_line
+   scopes/*
 
    classes
 

@@ -1,6 +1,7 @@
 from optparse import OptionParser, OptionGroup
 import datetime
 from . import WavInfoReader
+from . import __version__
 import sys
 import json
 from enum import Enum
@@ -18,7 +19,7 @@ class MissingDataError(RuntimeError):
 def main():
     parser = OptionParser()
 
-    parser.usage = 'wavinfo [FILES]'
+    parser.usage = 'wavinfo (--adm | --ixml) [FILES]'
 
     # parser.add_option('-f', dest='output_format', help='Set the output format',
     #                   default='json',
@@ -38,15 +39,20 @@ def main():
                 if this_file.adm:
                     sys.stdout.write(this_file.adm.xml_str())
                 else:
-                    raise MissingDataError("--adm option active but ADM metadata not present")
+                    raise MissingDataError("adm")
             elif options.ixml:
                 if this_file.ixml:
                     sys.stdout.write(this_file.ixml.xml_bytes())
                 else:
-                    raise MissingDataError("--ixml option active but iXML metadata not present")
+                    raise MissingDataError("ixml")
             else:
-                ret_dict = {'file_argument': arg, 'run_date': datetime.datetime.now().isoformat() , 'scopes': {}}
-                for scope, name, value in this_file.walk():
+                ret_dict = {
+                    'filename': arg, 
+                    'run_date': datetime.datetime.now().isoformat() , 
+                    'application': "wavinfo " + __version__, 
+                    'scopes': {}
+                    }
+                for scope, name, value in this_file.iter():
                     if scope not in ret_dict['scopes'].keys():
                         ret_dict['scopes'][scope] = {}
 
@@ -54,8 +60,7 @@ def main():
 
                 json.dump(ret_dict, cls=MyJSONEncoder, fp=sys.stdout, indent=2)
         except MissingDataError as e:
-            print("Missing metadata error in file %s" % arg, file=sys.stderr)
-            print(e, file=sys.stderr)
+            print("MissingDataError: Missing metadata (%s) in file %s" % (e, arg), file=sys.stderr)
             continue
         except Exception as e:
             raise e

@@ -8,7 +8,7 @@ class TestWalk(unittest.TestCase):
         info = wavinfo.WavInfoReader(test_file)
 
         tested_data , tested_format = False, False
-        for scope, key, value in info.walk():
+        for scope, key, value in info.iter():
             if scope == 'fmt':
                 if key == 'channel_count':
                     tested_format = True

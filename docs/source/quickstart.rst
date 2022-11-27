@@ -1,6 +1,11 @@
 wavinfo Quickstart
 ====================
 
+All metadata is read by an instance of :class:`WaveInfoReader<wavinfo.wave_reader.WavInfoReader>`.
+Each type of metadata, iXML, Broadcast-WAV etc. is accessible through *scopes*, properties on an 
+instance of :class:`WaveInfoReader`. 
+
+
 .. code-block:: python
     :caption: Using wavinfo
 
