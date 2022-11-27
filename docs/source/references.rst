@@ -1,6 +1,12 @@
 References
 ==========
 
+Wave File Format
+----------------
+
+* `ITU Recommendation BS.2088-1-2019 — Long-form file format for the international exchange of audio programme materials with metadata <https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.2088-1-201910-I!!PDF-E.pdf>`_
+* `IETF Network Working Group — RFC2361 — WAVE and AVI Codec Registries <https://www.rfc-editor.org/rfc/rfc2361>`_
+
 Broadcast Wave Format
 ---------------------
 
@@ -11,7 +17,7 @@ Broadcast Wave Format
 Audio Definition Model
 ----------------------
 
-* `ITU Recommendation BS.2076-2-2019 <https://www.itu.int/itu-r/rec/bs/R-REC-BS.2076-2-201910-I!!PDF-E.pdf>`_
+* `ITU Recommendation BS.2076-2-2019 — Audio definition model <https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.2076-2-201910-I!!PDF-E.pdf>`_
 * `EBU Tech 3285 Supplement 5 — <axml> Chunk <https://tech.ebu.ch/docs/tech/tech3285s5.pdf>`_
 * `EBU ADM Guidelines <https://adm.ebu.io>`_
 
@@ -19,7 +25,7 @@ Dolby
 -----
 
 * `EBU Tech 3285 Supplement 6 — Dolby Metadata <https://tech.ebu.ch/docs/tech/tech3285s6.pdf>`_
-* `Dolby Atmos ADM Profile`_
+* `Dolby Laboratories — Dolby Atmos ADM Profile <https://developer.dolby.com/globalassets/documentation/technology/dolby_atmos_master_adm_profile_v1.0.pdf>`_
 
 iXML
 ----
@@ -29,8 +35,5 @@ iXML
 
 RIFF INFO
 ---------
-* `Exiftool Documentation <exiftoolhttps://exiftool.org/TagNames/RIFF.html#Info_docs>`_
+* `Exiftool Documentation <https://exiftool.org/TagNames/RIFF.html#Info_docs>`_
 
-
-.. _Dolby Atmos ADM Profile: https://developer.dolby.com/globalassets/documentation/technology/dolby_atmos_master_adm_profile_v1.0.pdf
-.. _eburf64: 
