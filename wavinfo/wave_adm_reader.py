@@ -53,7 +53,7 @@ class WavADMReader:
 
     def programme(self) -> dict:
         """
-        Extract the ADM audioProgramme data structure and some of its reference properties 
+        Read the ADM `audioProgramme` data structure and some of its reference properties. 
         """
         ret_dict = dict()
 
@@ -95,7 +95,7 @@ class WavADMReader:
 
         return ret_dict
 
-    def track_info(self, index):
+    def track_info(self, index) -> dict:
         """
         Information about a track in the WAV file.
 
@@ -151,7 +151,7 @@ class WavADMReader:
 
         return ret_dict
 
-    def to_dict(self):
+    def to_dict(self) -> dict: #FIXME should be "asdict"
         """
         Get ADM metadata as a dictionary.
         """

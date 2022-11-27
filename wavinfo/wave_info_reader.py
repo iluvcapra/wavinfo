@@ -59,7 +59,7 @@ class WavInfoChunkReader:
         else:
             return None
 
-    def to_dict(self):
+    def to_dict(self) -> dict: #FIXME should be asdict 
         """
         A dictionary with all of the key/values read from the INFO scope.
         """

@@ -14,7 +14,10 @@ instance of :class:`WaveInfoReader`.
     path = 'path/to/your/wave/audio.wav'
 
     info = wavinfo.WavInfoReader(path)
-
+    
+    adm_metadata = info.adm
+    ixml_metadata = info.ixml
+    
 
 .. module:: wavinfo
     :noindex:

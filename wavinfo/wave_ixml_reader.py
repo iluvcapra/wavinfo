@@ -27,7 +27,7 @@ class WavIXMLFormat:
         else: 
             return None
 
-    def xml_bytes(self):
+    def xml_str(self) -> str:
         return ET.tostring(self.parsed).decode("utf-8")
 
     @property
@@ -41,7 +41,8 @@ class WavIXMLFormat:
     def track_list(self):
         """
         A description of each track.
-        :returns: An Iterator
+
+        :yields: `IXMLTrack` for each track.
         """
         for track in self.parsed.find("./TRACK_LIST").iter():
             if track.tag == 'TRACK':

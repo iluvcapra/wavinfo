@@ -42,7 +42,7 @@ def main():
                     raise MissingDataError("adm")
             elif options.ixml:
                 if this_file.ixml:
-                    sys.stdout.write(this_file.ixml.xml_bytes())
+                    sys.stdout.write(this_file.ixml.xml_str())
                 else:
                     raise MissingDataError("ixml")
             else:

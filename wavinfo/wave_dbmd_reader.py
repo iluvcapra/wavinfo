@@ -598,7 +598,7 @@ class WavDolbyMetadataReader:
         return retval
 
 
-    def __init__(self, dbmd_data) -> None:
+    def __init__(self, dbmd_data):
         self.segment_list = []
 
         h = BytesIO(dbmd_data)
