@@ -19,8 +19,8 @@ music production metadata.
    quickstart
    command_line
    scopes/*
-
    classes
+   references
 
 
 Indices and tables

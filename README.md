@@ -10,13 +10,13 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
 
 `wavinfo` reads:
 
-* [__Broadcast-WAVE__][ebu] metadata, including embedded program
-  loudness, coding history and [__SMPTE UMID__][smpte_330m2011].
-* [__ADM__][adm] track metadata and schema, including channel, pack formats, object, content and programme.
-* [__Dolby Digital Plus__][ebu3285s6] and Dolby Atmos `dbmd` metadata.
-* [__iXML__][ixml] production recorder metadata, including project, scene, and take tags, recorder notes
+* [Broadcast-WAVE][bext] metadata, including embedded program
+  loudness, coding history and [SMPTE UMID][smpte_330m2011].
+* [ADM][adm] track metadata and schema, including channel, pack formats, object, content and programme.
+* [Dolby Digital Plus][ebu3285s6] and Dolby Atmos `dbmd` metadata.
+* [iXML][ixml] production recorder metadata, including project, scene, and take tags, recorder notes
   and file family information.
-* Most of the common [__RIFF INFO__][info-tags] metadata fields.
+* Most of the common [RIFF INFO][info-tags] metadata fields.
 * The __wav format__ is also parsed, so you can access the basic sample rate and channel count
   information.
 
@@ -24,13 +24,14 @@ In progress:
 * Pro Tools __embedded regions__.
 * iXML `STEINBERG` sound library attributes.
 
-[ebu]:https://tech.ebu.ch/docs/tech/tech3285.pdf
-[ebu3285s6]:https://tech.ebu.ch/docs/tech/tech3285s6.pdf
-[adm]:https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.2076-2-201910-I!!PDF-E.pdf
-[smpte_330m2011]:http://standards.smpte.org/content/978-1-61482-678-1/st-330-2011/SEC1.abstract
-[ixml]:http://www.ixml.info
+[bext]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html
+[smpte_330m2011]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html#wavinfo.wave_bext_reader.WavBextReader.umid
+[adm]:https://wavinfo.readthedocs.io/en/latest/scopes/adm.html
+[ebu3285s6]:https://wavinfo.readthedocs.io/en/latest/scopes/dolby.html
+[ixml]:https://wavinfo.readthedocs.io/en/latest/scopes/ixml.html
+[info-tags]:https://wavinfo.readthedocs.io/en/latest/scopes/info.html
 [eburf64]:https://tech.ebu.ch/docs/tech/tech3306v1_1.pdf
-[info-tags]:https://exiftool.org/TagNames/RIFF.html#Info
+
 
 ## How To Use
 
