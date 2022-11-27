@@ -19,7 +19,7 @@ class MissingDataError(RuntimeError):
 def main():
     parser = OptionParser()
 
-    parser.usage = 'wavinfo (--adm | --ixml) [FILES]'
+    parser.usage = 'wavinfo (--adm | --ixml) <FILE> +'
 
     # parser.add_option('-f', dest='output_format', help='Set the output format',
     #                   default='json',
