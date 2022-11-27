@@ -26,16 +26,16 @@ class WavBextReader:
         #: Description. A free-text field up to 256 characters long.
         self.description : str = sanitize_bytes(unpacked[0])
         #: Originator. Usually the name of the encoding application, sometimes
-        #: a artist name.
+        #: an artist name.
         self.originator : str = sanitize_bytes(unpacked[1])
         #: A unique identifier for the file, a serial number.
         self.originator_ref : str = sanitize_bytes(unpacked[2])
-        #: Date of the recording, in the format YYYY-MM-DD in the local calendar
+        #: Date of the recording, in the format YYYY-MM-DD.
         self.originator_date : str = sanitize_bytes(unpacked[3])
-        #: Time of the recording, in the format HH:MM:SS on the local clock
+        #: Time of the recording, in the format HH:MM:SS.
         self.originator_time : str = sanitize_bytes(unpacked[4])
-        #: The sample offset of the start of the file relative to an
-        #: epoch, usually midnight the day of the recording. 
+        #: The sample offset of the start, usually relative 
+        #: to midnight. 
         self.time_reference : int  = unpacked[5]
         #: A variable-length text field containing a list of processes and
         #: and conversions performed on the file.
@@ -47,7 +47,7 @@ class WavBextReader:
         self.umid : Optional[bytes] = None
         #: EBU R128 Integrated loudness, in LUFS.
         self.loudness_value : Optional[float] = None
-        #: EBU R128 Loudness rante, in LUFS.
+        #: EBU R128 Loudness range, in LUFS.
         self.loudness_range : Optional[float] = None
         #: True peak level, in dBFS TP
         self.max_true_peak : Optional[float] = None
