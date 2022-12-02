@@ -21,7 +21,7 @@ class WavInfoChunkReader:
         self.album : Optional[str] = self.product
         #: 'IGNR' Genre
         self.genre : Optional[str] = self._get_field(f, b'IGNR')
-        #: 'ISBJ' Supject
+        #: 'ISBJ' Subject
         self.subject : Optional[str] = self._get_field(f, b'ISBJ')
         #: 'IART' Artist, composer, author
         self.artist : Optional[str] = self._get_field(f, b'IART')
