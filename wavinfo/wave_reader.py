@@ -34,7 +34,7 @@ class WavInfoReader:
         Create a new reader object.
 
         :param path: 
-            A filesystem path to the wav file you wish to probe or a 
+            A pathlike object or IO to the wav file you wish to probe or a 
             file handle to an open file.
 
         :param info_encoding: 
@@ -45,17 +45,38 @@ class WavInfoReader:
             The text encoding to use when decoding the string
             fields of the Broadcast-WAV extension. Per EBU 3285 this is ASCII
             but this parameter is available to you if you encounter a weirdo.
-
-
         """
         
         self.info_encoding = info_encoding
         self.bext_encoding = bext_encoding
         
+        #: Wave audio data format.
+        self.fmt :Optional[WavAudioFormat] = None
+
+        #: Statistics of the `data` section.
+        self.data :Optional[WavDataDescriptor] = None
+
+        #: Broadcast-Wave metadata.
+        self.bext :Optional[WavBextReader] = None
+
+        #: iXML metadata.
+        self.ixml :Optional[WavIXMLFormat] = None
+
+        #: ADM Audio Definiton Model metadata.
+        self.adm :Optional[WavADMReader]= None
+
+        #: Dolby bitstream metadata.
+        self.dolby :Optional[WavDolbyMetadataReader] = None
+
+        #: RIFF INFO metadata.
+        self.info :Optional[WavInfoChunkReader]= None
+
         if hasattr(path, 'read'):
             self.get_wav_info(path)
             self.url = 'about:blank'
             self.path = repr(path)
+
+            self.get_wav_info(path)
         else:
             absolute_path = os.path.abspath(path)
 
@@ -63,28 +84,7 @@ class WavInfoReader:
             self.url: pathlib.Path = pathlib.Path(absolute_path).as_uri()
 
             self.path = absolute_path
-
-            #: Wave audio data format.
-            self.fmt :Optional[WavAudioFormat] = None
-
-            #: Statistics of the `data` section.
-            self.data :Optional[WavDataDescriptor] = None
-
-            #: Broadcast-Wave metadata.
-            self.bext :Optional[WavBextReader] = None
-
-            #: iXML metadata.
-            self.ixml :Optional[WavIXMLFormat] = None
-
-            #: ADM Audio Definiton Model metadata.
-            self.adm :Optional[WavADMReader]= None
-
-            #: Dolby bitstream metadata.
-            self.dolby :Optional[WavDolbyMetadataReader] = None
-
-            #: RIFF INFO metadata.
-            self.info :Optional[WavInfoChunkReader]= None
-            
+        
             with open(path, 'rb') as f:
                 self.get_wav_info(f)
             
