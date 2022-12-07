@@ -75,8 +75,7 @@ class WavInfoReader:
             self.get_wav_info(path)
             self.url = 'about:blank'
             self.path = repr(path)
-
-            self.get_wav_info(path)
+            
         else:
             absolute_path = os.path.abspath(path)
 
