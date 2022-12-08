@@ -68,12 +68,15 @@ class SteinbergMetadata:
         self.parsed = xml.find("//BWFXML/STEINBERG")
 
     @property
-    def audio_speaker_arrangement(self) -> AudioSpeakerArrangement:
+    def audio_speaker_arrangement(self) -> Optional[AudioSpeakerArrangement]:
         """
-        AudioSpeakerArrangement
+        `AudioSpeakerArrangement` property
         """
         val = self.parsed.find("./ATTR_LIST/ATTR[NAME/text() = 'AudioSpeakerArrangement']/VALUE/text()")
-        return type(self).AudioSpeakerArrangement(int(val))
+        if len(val) > 0:
+            return type(self).AudioSpeakerArrangement(int(val[0]))
+        else:
+            return None
 
     @property
     def sample_format_size(self) -> Optional[int]:
