@@ -16,13 +16,13 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
 * [Dolby Digital Plus][ebu3285s6] and Dolby Atmos `dbmd` metadata.
 * [iXML][ixml] production recorder metadata, including project, scene, and take tags, recorder notes
   and file family information.
+  * iXML `STEINBERG` sound library attributes.
 * Most of the common [RIFF INFO][info-tags] metadata fields.
 * The __wav format__ is also parsed, so you can access the basic sample rate and channel count
   information.
 
 In progress:
 * Pro Tools __embedded regions__.
-* iXML `STEINBERG` sound library attributes.
 
 [bext]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html
 [smpte_330m2011]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html#wavinfo.wave_bext_reader.WavBextReader.umid
