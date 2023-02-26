@@ -40,4 +40,9 @@ Class Reference
 .. autoclass:: wavinfo.wave_ixml_reader.WavIXMLFormat
    :members:
 
+Steinberg-Specific iXML Metadata
+--------------------------------
+
+.. autoclass:: wavinfo.wave_ixml_reader.SteinbergMetadata
+   :members:
 
