@@ -1,0 +1,70 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "wavinfo"
+authors = [{name = "Jamie Hardt", email = "jamiehardt@me.com"}]
+readme = "README.md"
+dynamic = ["version", "description"]
+requires-python = "~=3.8"
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'License :: OSI Approved :: MIT License',
+    'Topic :: Multimedia',
+    'Topic :: Multimedia :: Sound/Audio',
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
+]
+dependencies = [
+    "lxml ~= 4.9.2"
+]
+keywords = [
+    'waveform', 
+    'metadata', 
+    'audio', 
+    'ebu', 
+    'smpte', 
+    'avi', 
+    'library', 
+    'film', 
+    'broadcast' 
+]
+
+[tool.flit.module]
+name = "wavinfo"
+
+[project.optional-dependencies]
+doc = [
+    'sphinx >= 5.3.0',
+    'sphinx_rtd_theme >= 1.1.1',
+]
+
+[project.urls]
+Home = "https://github.com/iluvcapra/wavinfo"
+Documentation = "https://wavinfo.readthedocs.io/"
+Source = "https://github.com/iluvcapra/wavinfo.git"
+Issues = 'https://github.com/iluvcapra/wavinfo/issues' 
+
+[project.entry_points.console_scripts]
+wavinfo = 'wavinfo.__main__:main'
+
+[project.scripts]
+wavinfo = "wavinfo.__main__:main"
+
+[tool.pyright]
+typeCheckingMode = "basic"
+
+[tool.pylint]
+max-line-length = 88
+disable = [
+    "C0103", # (invalid-name)
+    "C0114", # (missing-module-docstring)
+    "C0115", # (missing-class-docstring)
+    "C0116", # (missing-function-docstring)
+    "R0903", # (too-few-public-methods)
+    "R0913", # (too-many-arguments)
+    "W0105", # (pointless-string-statement)
+]
