@@ -116,6 +116,13 @@ class TestWaveInfo(TestCase):
             self.assertFalse(info.ixml.steinberg.media_drop_frames)
             self.assertEqual(info.ixml.steinberg.media_duration, 1200.0)
 
+    def test_steinberg_missing(self):
+        file_with_no_nuendo = "tests/test_files/sounddevices/A101_1.WAV"
+
+        info = wavinfo.WavInfoReader(file_with_no_nuendo)
+        assert info.ixml is not None
+        self.assertIsNone(info.ixml.steinberg)
+
     def test_info_metadata(self):
         file_with_metadata = 'tests/test_files/sound_grinder_pro/new_camera bumb 1.wav'
         self.assertTrue(os.path.exists(file_with_metadata))
