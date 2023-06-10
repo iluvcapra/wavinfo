@@ -104,7 +104,7 @@ class TestWaveInfo(TestCase):
                         self.assertEqual(track.name, 'MKH516 A')
 
     def test_steinberg_ixml(self):
-        nuendo_files = 'test/test_files/nuendo/*.wav'
+        nuendo_files = 'tests/test_files/nuendo/*.wav'
         for file in glob(nuendo_files):
             info = wavinfo.WavInfoReader(file)
             assert info.ixml is not None 
