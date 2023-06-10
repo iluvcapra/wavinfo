@@ -111,8 +111,6 @@ class TestWaveInfo(TestCase):
             self.assertIsNotNone(info.ixml.steinberg)
             assert info.ixml.steinberg is not None
 
-
-
     def test_metadata(self):
         file_with_metadata = 'tests/test_files/sound_grinder_pro/new_camera bumb 1.wav'
         self.assertTrue(os.path.exists(file_with_metadata))
