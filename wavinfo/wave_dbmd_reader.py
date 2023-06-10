@@ -547,8 +547,8 @@ class DolbyAtmosSupplementalMetadata:
         render_modes = []
 
         h = BytesIO(data)
-        magic = unpack("<I", h.read(4))
-        # assert magic == cls.MAGIC, "Magic value was not found"
+        magic = unpack("<I", h.read(4))[0]
+        assert magic == cls.MAGIC, "Magic value was not found"
 
         object_count = unpack("<H", h.read(2))[0]
 
