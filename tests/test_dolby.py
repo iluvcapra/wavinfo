@@ -10,12 +10,14 @@ class TestDolby(TestCase):
     def test_version(self):
         t1 = wavinfo.WavInfoReader(self.test_file)
         d = t1.dolby
-
+        
+        assert d is not None
         self.assertEqual((1,0,0,6), d.version)
 
     def test_segments(self):
         t1 = wavinfo.WavInfoReader(self.test_file)
         d = t1.dolby
+        assert d is not None
 
         ddp = [x for x in d.segment_list if x[0] == SegmentType.DolbyDigitalPlus]
         atmos = [x for x in d.segment_list if x[0] == SegmentType.DolbyAtmos]
@@ -26,6 +28,7 @@ class TestDolby(TestCase):
     def test_checksums(self):
         t1 = wavinfo.WavInfoReader(self.test_file)
         d = t1.dolby
+        assert d is not None
 
         for seg in d.segment_list:
             self.assertTrue(seg[1])
@@ -33,7 +36,7 @@ class TestDolby(TestCase):
     def test_ddp(self):
         t1 = wavinfo.WavInfoReader(self.test_file)
         d = t1.dolby
-
+        assert d is not None
         ddp = d.dolby_digital_plus()
         self.assertEqual(len(ddp), 1, "Failed to find exactly one Dolby Digital Plus metadata segment")
         self.assertTrue( ddp[0].audio_coding_mode, DolbyDigitalPlusMetadata.AudioCodingMode.CH_ORD_3_2 )
@@ -42,7 +45,7 @@ class TestDolby(TestCase):
     def test_atmos(self):
         t1 = wavinfo.WavInfoReader(self.test_file)
         d = t1.dolby
-
+        assert d is not None
         atmos = d.dolby_atmos()
         self.assertEqual(len(atmos), 1, "Failed to find exactly one Atmos metadata segment")
 
