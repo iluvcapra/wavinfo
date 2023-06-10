@@ -49,7 +49,7 @@ class SteinbergMetadata:
         AURO_13_0 = 41
         AURO_13_1 = 42
 
-    Steinberg_xpath = "//BWFXML/STEINBERG"
+    Steinberg_xpath = "./STEINBERG"
 
     @classmethod
     def present(cls, xml: ET.ElementTree) -> bool:
@@ -58,14 +58,14 @@ class SteinbergMetadata:
         :param xml: an iXML ElementTree
         """
         x = xml.find(cls.Steinberg_xpath)
-        return x is not None and len(x) > 0
+        return x is not None
 
     def __init__(self, xml: ET.ElementTree) -> None:
         """
         Parse Steinberg iXML data.
         :param xml: The entire iXML Tree
         """
-        self.parsed = xml.find("//BWFXML/STEINBERG")
+        self.parsed = xml.find(self.Steinberg_xpath)
 
     @property
     def audio_speaker_arrangement(self) -> Optional[AudioSpeakerArrangement]:
