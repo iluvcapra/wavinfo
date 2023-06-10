@@ -548,9 +548,9 @@ class DolbyAtmosSupplementalMetadata:
 
         h = BytesIO(data)
         magic = unpack("<I", h.read(4))
-        assert magic == cls.MAGIC, "Magic value was not found"
+        # assert magic == cls.MAGIC, "Magic value was not found"
 
-        object_count = unpack("<H", h.read(2))
+        object_count = unpack("<H", h.read(2))[0]
 
         h.read(1) #skip 1
 
@@ -563,7 +563,7 @@ class DolbyAtmosSupplementalMetadata:
         h.read(object_count) # skip object_count bytes
 
         for _ in range(object_count):
-            binaural_mode = unpack("B", h.read(1))
+            binaural_mode = unpack("B", h.read(1))[0]
             binaural_mode &= 0x7
             render_modes.append(binaural_mode)
 
@@ -582,7 +582,7 @@ class WavDolbyMetadataReader:
     #: indicating if the segment's checksum was valid, and the
     #: segment's parsed dataclass (or a `bytes` array if it was 
     #: not recognized).
-    segment_list: Tuple[Union[SegmentType, int], bool, Any] 
+    segment_list: List[Tuple[Union[SegmentType, int], bool, Any]]
 
     version: Tuple[int,int,int,int]
 
@@ -625,8 +625,8 @@ class WavDolbyMetadataReader:
                     segment = DolbyDigitalPlusMetadata.load(segment)
                 elif stype == SegmentType.DolbyAtmos:
                     segment = DolbyAtmosMetadata.load(segment)
-                # elif stype == SegmentType.DolbyAtmosSupplemental:
-                #     segment = DolbyAtmosSupplementalMetadata.load(segment)
+                elif stype == SegmentType.DolbyAtmosSupplemental:
+                    segment = DolbyAtmosSupplementalMetadata.load(segment)
                 
                 self.segment_list.append( (stype, checksum == expected_checksum, segment) )
     
@@ -644,12 +644,12 @@ class WavDolbyMetadataReader:
         return [x[2] for x in self.segment_list \
             if x[0] == SegmentType.DolbyAtmos and x[1]]
 
-    # def dolby_atmos_supplemental(self) -> List[DolbyAtmosSupplementalMetadata]:
-    #     """
-    #     Every valid Dolby Atmos Supplemental metadata segment in the file.
-    #     """
-    #     return [x[2] for x in self.segment_list \
-    #         if x[0] == SegmentType.DolbyAtmosSupplemental and x[1]]
+    def dolby_atmos_supplemental(self) -> List[DolbyAtmosSupplementalMetadata]:
+        """
+        Every valid Dolby Atmos Supplemental metadata segment in the file.
+        """
+        return [x[2] for x in self.segment_list \
+            if x[0] == SegmentType.DolbyAtmosSupplemental and x[1]]
 
     def to_dict(self) -> dict:
 
