@@ -112,8 +112,11 @@ class TestWaveInfo(TestCase):
             assert info.ixml.steinberg is not None
             self.assertIsNotNone(info.ixml.steinberg.audio_speaker_arrangement)
             self.assertEqual(info.ixml.steinberg.sample_format_size, 3) 
+            self.assertEqual(info.ixml.steinberg.media_company, "https://github.com/iluvcapra/wavinfo")
+            self.assertFalse(info.ixml.steinberg.media_drop_frames)
+            self.assertEqual(info.ixml.steinberg.media_duration, 1200.0)
 
-    def test_metadata(self):
+    def test_info_metadata(self):
         file_with_metadata = 'tests/test_files/sound_grinder_pro/new_camera bumb 1.wav'
         self.assertTrue(os.path.exists(file_with_metadata))
         info = wavinfo.WavInfoReader(file_with_metadata).info

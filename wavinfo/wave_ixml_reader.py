@@ -75,8 +75,6 @@ class SteinbergMetadata:
         val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'AudioSpeakerArrangement']/VALUE")
         if val is not None:
             return type(self).AudioSpeakerArrangement(int(val.text))
-        else:
-            return None
 
     @property
     def sample_format_size(self) -> Optional[int]:
@@ -86,29 +84,33 @@ class SteinbergMetadata:
         val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'AudioSampleFormatSize']/VALUE")
         if val is not None:
             return int(val.text)
-        else:
-            return None
 
     @property
     def media_company(self) -> Optional[str]:
         """
         MediaCompany
         """
-        pass
+        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'MediaCompany']/VALUE")
+        if val is not None:
+            return val.text
 
     @property
     def media_drop_frames(self) -> Optional[bool]:
         """
         MediaDropFrames
         """
-        pass
+        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'MediaDropFrames']/VALUE")
+        if val is not None:
+            return val.text == "1"
 
     @property
     def media_duration(self) -> Optional[float]:
         """
         MediaDuration
         """
-        pass 
+        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'MediaDuration']/VALUE")
+        if val is not None:
+            return float(val.text)
 
     @property
     def media_start_time(self) -> Optional[float]:
