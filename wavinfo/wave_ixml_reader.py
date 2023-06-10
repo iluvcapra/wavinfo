@@ -58,7 +58,7 @@ class SteinbergMetadata:
         :param xml: an iXML ElementTree
         """
         x = xml.find(cls.Steinberg_xpath)
-        return len(x) > 0
+        return x is not None and len(x) > 0
 
     def __init__(self, xml: ET.ElementTree) -> None:
         """
