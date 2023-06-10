@@ -110,6 +110,8 @@ class TestWaveInfo(TestCase):
             assert info.ixml is not None 
             self.assertIsNotNone(info.ixml.steinberg)
             assert info.ixml.steinberg is not None
+            self.assertIsNotNone(info.ixml.steinberg.audio_speaker_arrangement)
+            self.assertEqual(info.ixml.steinberg.sample_format_size, 3) 
 
     def test_metadata(self):
         file_with_metadata = 'tests/test_files/sound_grinder_pro/new_camera bumb 1.wav'

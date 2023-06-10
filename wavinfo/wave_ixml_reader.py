@@ -72,9 +72,9 @@ class SteinbergMetadata:
         """
         `AudioSpeakerArrangement` property
         """
-        val = self.parsed.find("./ATTR_LIST/ATTR[NAME/text() = 'AudioSpeakerArrangement']/VALUE/text()")
-        if len(val) > 0:
-            return type(self).AudioSpeakerArrangement(int(val[0]))
+        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'AudioSpeakerArrangement']/VALUE")
+        if val is not None:
+            return type(self).AudioSpeakerArrangement(int(val.text))
         else:
             return None
 
@@ -83,7 +83,11 @@ class SteinbergMetadata:
         """
         AudioSampleFormatSize
         """
-        pass
+        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'AudioSampleFormatSize']/VALUE")
+        if val is not None:
+            return int(val.text)
+        else:
+            return None
 
     @property
     def media_company(self) -> Optional[str]:
