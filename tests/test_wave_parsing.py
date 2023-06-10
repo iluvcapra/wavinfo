@@ -1,4 +1,6 @@
 import os.path
+from glob import glob
+from typing import Dict, Any, cast
 
 from unittest import TestCase
 
@@ -19,6 +21,9 @@ class TestWaveInfo(TestCase):
             info = wavinfo.WavInfoReader(wav_file)
             ffprobe_info = ffprobe(wav_file)
 
+            assert info.fmt is not None
+            assert ffprobe_info is not None
+
             self.assertEqual(info.fmt.channel_count, ffprobe_info['streams'][0]['channels'])
             self.assertEqual(info.fmt.sample_rate, int(ffprobe_info['streams'][0]['sample_rate']))
             self.assertEqual(info.fmt.bits_per_sample, int(ffprobe_info['streams'][0]['bits_per_sample']))
@@ -32,13 +37,17 @@ class TestWaveInfo(TestCase):
     def test_data_against_ffprobe(self):
         for wav_file in all_files():
             info = wavinfo.WavInfoReader(wav_file)
-            ffprobe_info = ffprobe(wav_file)
+            ffprobe_info = cast(Dict[str,Any], ffprobe(wav_file))
+            assert ffprobe_info is not None
+            assert info.data is not None
             self.assertEqual(info.data.frame_count, int(ffprobe_info['streams'][0]['duration_ts']))
 
     def test_bext_against_ffprobe(self):
         for wav_file in all_files():
             info = wavinfo.WavInfoReader(wav_file)
             ffprobe_info = ffprobe(wav_file)
+            assert ffprobe_info is not None
+
             if info.bext:
                 if 'comment' in ffprobe_info['format']['tags']:
                     self.assertEqual(info.bext.description, ffprobe_info['format']['tags']['comment'])
@@ -81,7 +90,8 @@ class TestWaveInfo(TestCase):
             if basename in expected:
                 info = wavinfo.WavInfoReader(wav_file)
                 e = expected[basename]
-
+                self.assertIsNotNone(info.ixml)
+                assert info.ixml is not None 
                 self.assertEqual(e['project'], info.ixml.project)
                 self.assertEqual(e['scene'], info.ixml.scene)
                 self.assertEqual(e['take'], info.ixml.take)
@@ -93,10 +103,22 @@ class TestWaveInfo(TestCase):
                     if basename == 'A101_4.WAV' and track.channel_index == '1':
                         self.assertEqual(track.name, 'MKH516 A')
 
+    def test_steinberg_ixml(self):
+        nuendo_files = 'test/test_files/nuendo/*.wav'
+        for file in glob(nuendo_files):
+            info = wavinfo.WavInfoReader(file)
+            assert info.ixml is not None 
+            self.assertIsNotNone(info.ixml.steinberg)
+            assert info.ixml.steinberg is not None
+
+
+
     def test_metadata(self):
         file_with_metadata = 'tests/test_files/sound_grinder_pro/new_camera bumb 1.wav'
         self.assertTrue(os.path.exists(file_with_metadata))
         info = wavinfo.WavInfoReader(file_with_metadata).info
+
+        assert info is not None
         self.assertEqual(info.title, 'camera bumb 1')
         self.assertEqual(info.artist, 'Jamie Hardt')
         self.assertEqual(info.copyright, 'Â© 2010 Jamie Hardt')
