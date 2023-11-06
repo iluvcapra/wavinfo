@@ -62,5 +62,5 @@ def parse_chunk(stream, rf64_context=None):
     else:
         data_start = stream.tell()
         stream.seek(displacement, 1)
-        return ChunkDescriptor(ident=ident, start=data_start, length=data_size, 
+        return ChunkDescriptor(ident=ident, start=data_start, length=data_size,
                                rf64_context=rf64_context)

@@ -103,19 +103,27 @@ class WavInfoReader:
         self.data = self._describe_data()
 
     def _find_chunk_data(self, ident, from_stream, default_none=False):
-        top_chunks = (chunk for chunk in self.main_list if type(chunk) is ChunkDescriptor and chunk.ident == ident)
-        chunk_descriptor = next(top_chunks, None) if default_none else next(top_chunks)
-        return chunk_descriptor.read_data(from_stream) if chunk_descriptor else None
+        top_chunks = (chunk for chunk in self.main_list \
+            if type(chunk) is ChunkDescriptor and chunk.ident == ident)
+
+        chunk_descriptor = next(top_chunks, None) \
+            if default_none else next(top_chunks)
+
+        return chunk_descriptor.read_data(from_stream) \
+            if chunk_descriptor else None
 
     def _describe_data(self):
-        data_chunk = next(c for c in self.main_list if type(c) is ChunkDescriptor and c.ident == b'data')
+        data_chunk = next(c for c in self.main_list \
+            if type(c) is ChunkDescriptor and c.ident == b'data')
 
-        return WavDataDescriptor(byte_count=data_chunk.length,
-                                 frame_count=int(data_chunk.length / self.fmt.block_align))
+        assert isinstance(self.fmt, WavAudioFormat)
+        return WavDataDescriptor(
+            byte_count=data_chunk.length, 
+            frame_count=int(data_chunk.length / self.fmt.block_align))
 
     def _get_format(self, f):
         fmt_data = self._find_chunk_data(b'fmt ', f)
-
+        assert fmt_data is not None, "Fmt data not found, not a valid wav file"
         # The format chunk is
         # audio_format    U16
         # channel_count   U16
