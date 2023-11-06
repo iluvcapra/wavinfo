@@ -15,7 +15,7 @@ class ListChunkDescriptor(namedtuple('ListChunkDescriptor', 'signature children'
 
 
 class ChunkDescriptor(namedtuple('ChunkDescriptor', 'ident start length rf64_context')):
-    def read_data(self, from_stream):
+    def read_data(self, from_stream) -> bytes:
         from_stream.seek(self.start)
         return from_stream.read(self.length)
 
@@ -48,14 +48,16 @@ def parse_chunk(stream, rf64_context=None):
         if rf64_context is None and ident in {b'RF64', b'BW64'}:
             rf64_context = parse_rf64(stream=stream, signature=ident)
 
-        assert rf64_context is not None
+        assert rf64_context is not None, \
+            f"Sentinel data size 0xFFFFFFFF found outside of RF64 context"
+        
         data_size = rf64_context.bigchunk_table[ident]
 
     displacement = data_size
     if displacement % 2:
         displacement += 1
 
-    if ident in {b'RIFF', b'LIST', b'RF64', b'BW64'}:
+    if ident in {b'RIFF', b'LIST', b'RF64', b'BW64', b'list'}:
         return parse_list_chunk(stream=stream, length=data_size,
                                 rf64_context=rf64_context)
 

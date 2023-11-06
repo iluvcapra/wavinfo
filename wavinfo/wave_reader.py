@@ -13,6 +13,7 @@ from .wave_bext_reader import WavBextReader
 from .wave_info_reader import WavInfoChunkReader
 from .wave_adm_reader import WavADMReader
 from .wave_dbmd_reader import WavDolbyMetadataReader
+from .wave_cues_reader import WavCuesReader
 
 #: Calculated statistics about the audio data.
 WavDataDescriptor = namedtuple('WavDataDescriptor', 'byte_count frame_count')
@@ -90,6 +91,7 @@ class WavInfoReader:
             
     def get_wav_info(self, wavfile):
         chunks = parse_chunk(wavfile)
+        assert type(chunks) is ListChunkDescriptor  
 
         self.main_list = chunks.children
         wavfile.seek(0)
@@ -100,10 +102,10 @@ class WavInfoReader:
         self.adm  = self._get_adm(wavfile)
         self.info = self._get_info(wavfile, encoding=self.info_encoding)
         self.dolby = self._get_dbmd(wavfile)
-        self.cue = self._get_cue(wavfile)
+        # self.cue = self._get_cue(wavfile)
         self.data = self._describe_data()
 
-    def _find_chunk_data(self, ident, from_stream, default_none=False):
+    def _find_chunk_data(self, ident, from_stream, default_none=False) -> Optional[bytes]:
         top_chunks = (chunk for chunk in self.main_list \
             if type(chunk) is ChunkDescriptor and chunk.ident == ident)
 
@@ -112,6 +114,13 @@ class WavInfoReader:
 
         return chunk_descriptor.read_data(from_stream) \
             if chunk_descriptor else None
+
+    def _find_list_chunk(self, signature) -> Optional[ListChunkDescriptor]:
+        top_chunks = (chunk for chunk in self.main_list \
+            if type(chunk) is ListChunkDescriptor and \
+                chunk.signature == signature)
+
+        return next(top_chunks, None)
 
     def _describe_data(self):
         data_chunk = next(c for c in self.main_list \
@@ -179,10 +188,15 @@ class WavInfoReader:
         return WavIXMLFormat(ixml_data.rstrip(b'\0')) if ixml_data else None
 
     def _get_cue(self, f):
-        cue = self._find_chunk_data(b'cue ', f, default_none=True)
-        labl = self._find_chunk_data(b'labl', f, default_none=True)
-        ltxt = self._find_chunk_data(b'ltxt', f, default_none=True)
-        assert False, "cue metadata implementation in progress"
+        cue = next((cue_chunk for cue_chunk in self.main_list if cue_chunk.ident == b'cue '), None)
+        adtl = self._find_list_chunk(b'adtl')
+        labls = []
+        ltxts = []
+        if adtl is not None:
+            labls = [child.read_data(f) for child in adtl.children if child.ident == b'labl']
+            ltxts = [child.read_data(f) for child in adtl.children if child.ident == b'ltxt']
+
+        return WavCuesReader.merge(f, cue, labls, ltxts)
 
     def walk(self) -> Generator[str,str,Any]: #FIXME: this should probably be named "iter()"
         """
