@@ -19,7 +19,8 @@ WavDataDescriptor = namedtuple('WavDataDescriptor', 'byte_count frame_count')
 
 #: The format of the audio samples.
 WavAudioFormat = namedtuple('WavAudioFormat',
-                            'audio_format channel_count sample_rate byte_rate block_align bits_per_sample')
+                            ['audio_format', 'channel_count', 'sample_rate',
+                             'byte_rate',  'block_align',  'bits_per_sample'])
 
 
 class WavInfoReader:
@@ -80,7 +81,7 @@ class WavInfoReader:
             absolute_path = os.path.abspath(path)
 
             #: `file://` url for the file.
-            self.url: pathlib.Path = pathlib.Path(absolute_path).as_uri()
+            self.url: str = pathlib.Path(absolute_path).as_uri()
 
             self.path = absolute_path
         

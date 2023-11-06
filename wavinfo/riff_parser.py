@@ -12,17 +12,6 @@ class WavInfoEOFError(EOFError):
 
 class ListChunkDescriptor(namedtuple('ListChunkDescriptor', 'signature children')):
     pass
-    # def find(self, chunk_path):
-    #     if len(chunk_path) > 1:
-    #         for chunk in self.children:
-    #             if type(chunk) is ListChunkDescriptor and \
-    #                     chunk.signature is chunk_path[0]:
-    #                 return chunk.find(chunk_path[1:])
-    #     else:
-    #         for chunk in self.children:
-    #             if type(chunk) is ChunkDescriptor and \
-    #                     chunk.ident is chunk_path[0]:
-    #                 return chunk
 
 
 class ChunkDescriptor(namedtuple('ChunkDescriptor', 'ident start length rf64_context')):
@@ -59,6 +48,7 @@ def parse_chunk(stream, rf64_context=None):
         if rf64_context is None and ident in {b'RF64', b'BW64'}:
             rf64_context = parse_rf64(stream=stream, signature=ident)
 
+        assert rf64_context is not None
         data_size = rf64_context.bigchunk_table[ident]
 
     displacement = data_size
@@ -66,8 +56,11 @@ def parse_chunk(stream, rf64_context=None):
         displacement += 1
 
     if ident in {b'RIFF', b'LIST', b'RF64', b'BW64'}:
-        return parse_list_chunk(stream=stream, length=data_size, rf64_context=rf64_context)
+        return parse_list_chunk(stream=stream, length=data_size,
+                                rf64_context=rf64_context)
+
     else:
         data_start = stream.tell()
         stream.seek(displacement, 1)
-        return ChunkDescriptor(ident=ident, start=data_start, length=data_size, rf64_context=rf64_context)
+        return ChunkDescriptor(ident=ident, start=data_start, length=data_size, 
+                               rf64_context=rf64_context)
