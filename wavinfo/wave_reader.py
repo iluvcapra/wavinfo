@@ -152,7 +152,8 @@ class WavInfoReader:
                               )
 
     def _get_info(self, f, encoding):
-        finder = (chunk.signature for chunk in self.main_list if type(chunk) is ListChunkDescriptor)
+        finder = (chunk.signature for chunk in self.main_list \
+            if type(chunk) is ListChunkDescriptor)
 
         if b'INFO' in finder:
             return WavInfoChunkReader(f, encoding)
@@ -164,15 +165,23 @@ class WavInfoReader:
     def _get_adm(self, f):
         axml = self._find_chunk_data(b'axml', f, default_none=True)
         chna = self._find_chunk_data(b'chna', f, default_none=True)
-        return WavADMReader(axml_data=axml, chna_data=chna) if axml and chna else None
+        return WavADMReader(axml_data=axml, chna_data=chna) \
+            if axml and chna else None
 
     def _get_dbmd(self, f):
         dbmd_data = self._find_chunk_data(b'dbmd', f, default_none=True)
-        return WavDolbyMetadataReader(dbmd_data=dbmd_data) if dbmd_data else None
+        return WavDolbyMetadataReader(dbmd_data=dbmd_data) \
+            if dbmd_data else None
 
     def _get_ixml(self, f):
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
         return WavIXMLFormat(ixml_data.rstrip(b'\0')) if ixml_data else None
+
+    def _get_cue(self, f):
+        cue = self._find_chunk_data(b'cue ', f, default_none=True)
+        labl = self._find_chunk_data(b'labl', f, default_none=True)
+        ltxt = self._find_chunk_data(b'ltxt', f, default_none=True)
+        assert False, "cue metadata implementation in progress"
 
     def walk(self) -> Generator[str,str,Any]: #FIXME: this should probably be named "iter()"
         """
@@ -180,7 +189,7 @@ class WavInfoReader:
         
         :yields: tuples of the *scope*, *key*, and *value* of
             each metadatum. The *scope* value will be one of
-            "fmt", "data", "ixml", "bext", "info", "dolby", or "adm".
+            "fmt", "data", "ixml", "bext", "info", "dolby", "cue" or "adm".
         """
 
         scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'dolby')
