@@ -26,8 +26,6 @@ WavAudioFormat = namedtuple('WavAudioFormat',
 class WavInfoReader:
     """
     Parse a WAV audio file for metadata.
-
-    
     """
 
     def __init__(self, path, info_encoding='latin_1', bext_encoding='ascii'):
@@ -39,8 +37,10 @@ class WavInfoReader:
             file handle to an open file.
 
         :param info_encoding: 
-            The text encoding of the INFO metadata fields.
-            latin_1/Win CP1252 has always been a pretty good guess for this.
+            The text encoding of the INFO, LABL and other RIFF-defined metadata 
+            fields. latin_1/ISO 8859-1/Win CP819 is the safest assumption for 
+            this; chunks that define their own encoding explicitly (like LTXT)
+            will override this setting.
 
         :param bext_encoding: 
             The text encoding to use when decoding the string
@@ -100,6 +100,7 @@ class WavInfoReader:
         self.adm  = self._get_adm(wavfile)
         self.info = self._get_info(wavfile, encoding=self.info_encoding)
         self.dolby = self._get_dbmd(wavfile)
+        self.cue = self._get_cue(wavfile)
         self.data = self._describe_data()
 
     def _find_chunk_data(self, ident, from_stream, default_none=False):
