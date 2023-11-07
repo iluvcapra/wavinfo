@@ -12,7 +12,7 @@ import encodings
 from .riff_parser import ChunkDescriptor
 
 from struct import unpack, calcsize
-from typing import Optional, NamedTuple, List, Dict, Any
+from typing import Optional, Tuple,  NamedTuple, List, Dict, Any, Generator
 
 #: Country Codes used in the RIFF standard to resolve locale. These codes 
 #: appear in CSET and LTXT metadata.
@@ -212,15 +212,30 @@ class WavCuesReader:
         return WavCuesReader(cues=cue_list, labels=label_list,
                              ranges=range_list, notes=note_list)
 
+    def each_cue(self) -> Generator[Tuple[int, int], None, None]:
+        """
+        Iterate through each cue. 
+        :yields: the cue's ``name`` and ``sample_offset``
+        """
+        for cue in self.cues:
+            yield (cue.name, cue.sample_offset)
+
+    def label_and_note(self, cue_ident: int) -> Tuple[Optional[str], Optional[str]]:
+        """
+        Get the label and note (extended comment) for a cue.
+        :param cue_ident: the cue's name, it's unique identifying number
+        :returns: a tuple of the the cue's label (if present) and note (if 
+            present)
+        """
+        label = next((l.text for l in self.labels if l.name == cue_ident), None)
+        note = next((n.text for n in self.notes if n.name == cue_ident), None)
+        return (label, note)
+
     def to_dict(self) -> Dict[str, Any]:
         return dict(cues=[c.__dict__ for c in self.cues],
                     labels=[l.__dict__ for l in self.labels],
                     ranges=[r.__dict__ for r in self.ranges],
                     notes=[n.__dict__ for n in self.notes])
-
-
-
-
 
 
 
