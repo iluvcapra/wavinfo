@@ -35,6 +35,6 @@ iXML
 
 RIFF Metadata
 -------------
-* `1991. Multimedia Programming Interface and Data Specifications 1.0<https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf>`_
+* `1991. Multimedia Programming Interface and Data Specifications 1.0 <https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf>`_
 * `Exiftool Documentation <https://exiftool.org/TagNames/RIFF.html#Info_docs>`_
 
