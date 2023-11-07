@@ -28,6 +28,14 @@ class TestCue(TestCase):
                 self.assertEqual("Marker 1", label)
                 self.assertIsNone(note)
 
+    def test_range(self):
+        file = "tests/test_files/cue_chunks/izotoperx_cues_test.wav"
+        w1 = wavinfo.WavInfoReader(file)
+        self.assertIsNotNone(w1.cues)
+        assert w1.cues is not None
+
+        self.assertEqual(w1.cues.range(3), 10000) 
+
     def test_encoding_fallback(self):
         """
         Added this after I noticed that iZotope RX seems to just encode "notes"

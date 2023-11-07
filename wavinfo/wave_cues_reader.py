@@ -221,17 +221,30 @@ class WavCuesReader:
         for cue in self.cues:
             yield (cue.name, cue.sample_offset)
 
-    def label_and_note(self, cue_ident: int) -> Tuple[Optional[str], Optional[str]]:
+    def label_and_note(self, cue_ident: int) -> Tuple[Optional[str],
+                                                      Optional[str]]: 
         """
         Get the label and note (extended comment) for a cue.
 
-        :param cue_ident: the cue's name, it's unique identifying number
+        :param cue_ident: the cue's name, its unique identifying number
         :returns: a tuple of the the cue's label (if present) and note (if
             present) 
         """
-        label = next((l.text for l in self.labels if l.name == cue_ident), None)
-        note = next((n.text for n in self.notes if n.name == cue_ident), None)
+        label = next((l.text for l in self.labels 
+                      if l.name == cue_ident), None)
+        note = next((n.text for n in self.notes 
+                     if n.name == cue_ident), None)
         return (label, note)
+
+    def range(self, cue_ident: int) -> Optional[int]:
+        """
+        Get the length of the time range for a cue, if it has one.
+
+        :param cue_ident: the cue's name, its unique identifying number
+        :returns: the length of the marker's range, or `None`
+        """
+        return next((r.length for r in self.ranges 
+                     if r.name == cue_ident), None)
 
     def to_dict(self) -> Dict[str, Any]:
         return dict(cues=[c.__dict__ for c in self.cues],
