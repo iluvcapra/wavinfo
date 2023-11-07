@@ -6,7 +6,7 @@
 
 The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] 
 and extract extended metadata, with an emphasis on film, video and 
-professional music production metadata.
+professional music production.
 
 
 ## Metadata Support
