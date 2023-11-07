@@ -9,6 +9,11 @@ class TestCue(TestCase):
         return super().setUp()
 
     def test_encoding_fallback(self):
+        """
+        Added this after I noticed that iZotope RX seems to just encode "notes"
+        as utf-8 without bothering to dump this info into the ltxt or 
+        specifying an encoding by some other means.
+        """
         file = "tests/test_files/cue_chunks/izotoperx_cues_test.wav"
         w = wavinfo.WavInfoReader(file, info_encoding='utf-8')
         expected = ("Лорем ипсум долор сит амет, тимеам вивендум хас ет, "  
