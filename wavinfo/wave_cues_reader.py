@@ -169,7 +169,7 @@ class WavCuesReader:
     notes: List[NoteEntry]
 
     @classmethod
-    def merge(cls, f,
+    def read_all(cls, f,
               cues: Optional[ChunkDescriptor], 
               labls: List[ChunkDescriptor],
               ltxts: List[ChunkDescriptor], 

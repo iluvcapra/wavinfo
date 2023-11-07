@@ -204,7 +204,7 @@ class WavInfoReader:
             ltxts = [c for c in adtl.children if c.ident == b'ltxt']
             notes = [c for c in adtl.children if c.ident == b'note']
 
-        return WavCuesReader.merge(f, cue, labls, ltxts, notes, 
+        return WavCuesReader.read_all(f, cue, labls, ltxts, notes, 
                                    fallback_encoding=self.info_encoding)
 
     def walk(self) -> Generator[str,str,Any]: #FIXME: this should probably be named "iter()"
@@ -216,7 +216,8 @@ class WavInfoReader:
             "fmt", "data", "ixml", "bext", "info", "dolby", "cues" or "adm".
         """
 
-        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'cues', 'dolby')
+        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'cues', 
+                 'dolby')
 
         for scope in scopes:
             if scope in ['fmt', 'data']:
