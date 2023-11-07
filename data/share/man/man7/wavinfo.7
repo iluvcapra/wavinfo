@@ -1,0 +1,190 @@
+.TH waveinfo 7 "2023-11-07" "Jamie Hardt" "Miscellaneous Information Manuals"
+.SH NAME
+wavinfo \- information about wave sound file metadata
+.\" .SH DESCRIPTION
+.SH CHUNK MENAGERIE
+A list of chunks that you may find in a wave file from our experience.
+.SS Essential WAV Chunks 
+.IP fmt 
+Defines the format of the audio in the 
+.I data 
+chunk: the audio codec, the sample rate, bit depth, channel count, block 
+alignment and other data. May take an "extended" form, with additional data 
+(such as channel speaker assignments) if there are more than two channels in 
+the file or if it is a compressed format.
+.IP data 
+The audio data itself. PCM audio data is always stored as interleaved samples.
+.IP JUNK 
+A region of the file not currently in use. Clients sometimes add these before
+the 
+.I data
+chunk in order to align the beginning of the audio data with a memory page 
+boundary (this can make memory-mapped reads from a wave file a little more 
+efficient). A 
+.I JUNK 
+chunk is often placed at the beginning of a WAVE file to reserve space for 
+a 
+.I ds64 
+chunk that will be written to the file at the end of recording, in the event 
+that after the file is finalized, it exceeds the RIFF size limit. Thus a WAVE 
+file can be upgraded in-place to an RF64 without re-writing the audio data.
+.IP fact 
+Fact chunks record the number of samples in the decoded audio stream. It's only
+present in WAVE files that contain compressed audio.
+.IP "LIST or list"
+(Both have been seen) Not a chunk type itself but signals to a RIFF parser that 
+this chunk contains chunks itself. A LIST chunk's payload will begin with a 
+four-character code identifying the form of the list, and is then followed
+by chunks of the standard key-length-data form, which may themselves be 
+LISTs that themselves contain child chunks. WAVE files don't tend to have a 
+very deep heirarchy of chunks, compared to AVI files.
+.SS RIFF Metadata 
+The RIFF container format has a metadata system common to all RIFF files, WAVE
+being the most common at present, AVI being another very common format
+historically.
+.IP INFO 
+A 
+.I LIST 
+form containing a flat list of chunks, each containing text metadata. The role
+of the string, like "Artist", "Composer", "Comment", "Engineer" etc. are given
+by the four-character code: "Artist" is 
+.IR IART , 
+Composer is 
+.IR ICMP , 
+engineer is 
+.IR IENG , 
+Comment is 
+.IR ICMT ,
+etc.
+.IP cue
+A binary list of cues, which are timed points within the audio data.
+.IP adtl
+A 
+.I LIST 
+form containing text labels 
+.RI ( labl )
+for the cues in the 
+.I cue 
+chunk, "notes" 
+.RI ( note ,
+which are structurally identical to 
+.I labl 
+but hosts tend to use notes for longer text), and "length text"
+.I ltxt 
+metadata records, which can give a cue a length, making it a range, and a text 
+field that defines its own encoding.
+.IP CSET
+Defines the character set for all text fields in 
+.IR INFO ,  
+.I adtl 
+and other RIFF-defined text fields. By default, all of the text in RIFF 
+metadata fields is Windows Latin 1/ISO 8859-1, though as time passes many 
+clients have simply taken to sticking UTF-8 into these fields. The 
+.I CSET 
+cannot represent UTF-8 as a valid option for text encoding, it only speaks 
+Windows codepages, and we've never seen one in a WAVE file in any event and 
+it's vanishingly likely an audio app would recognize one if it saw it.
+.SS Broadcast-WAVE Metadata
+Broadcast-WAVE is a set of extensions to WAVE files to facilitate media 
+production maintained by the EBU.
+.IP bext
+A multi-field structure containing mostly fixed-width text data capturing
+essential production information: a 256 character free description field,
+originator name and a unique reference, recording date and time, a frame-based
+timestamp for sample-accurate recording time, and a coding history record. The
+extended form of the structure can hold a SMPTE UMID (a kind of UUID, which 
+may also contain timestamp and geolocation data) and pre-computed program 
+loudness measurements. 
+.IP peak
+A binary data structure containing the peak envelope for the audio data, for 
+use by clients to generate a waveform overview.
+.SS Audio Definition Model Metadata
+Audio Definition Model (ADM) metadata is a metadata standard for audio 
+broadcast and distribution maintained by the ITU.
+.IP chna
+A binary list that associates individual channels in the file to entities
+in the ADM XML document stored in the 
+.I axml 
+chunk. A 
+.I chna 
+chunk will always appear with an 
+.I axml
+chunk and vice versa.
+.IP axml
+Contains an XML document with Audio Definition Model metadata. ADM metadata 
+describes the program the WAVE file belongs to, role, channel assignment,
+and encoding properties of individual channels in the WAVE file, and if the 
+WAVE file contains object-based audio, it will also give all of the positioning
+and panning automation envelopes.
+.IP bxml 
+This is defined by the ITU as a gzip-compressed version of the 
+.I axml 
+chunk.
+.IP sxml 
+This is a hybrid binary/gzip-compressed-XML chunk that associates ADM 
+documents with timed ranges of a WAVE file.
+.SS Dolby Metadata
+.IP dbmd 
+Records hints for Dolby playback applications for downmixing, level 
+normalization and other things.
+.SS Proprietary Chunks 
+.IP ovwf 
+.B (Pro Tools)
+Pre-computed waveform overview data.
+.IP regn 
+.B (Pro Tools)
+Region and cue point metadata.
+.SS Chunks of Unknown Purpose
+.IP elm1 
+.IP minf 
+.IP umid
+.SH HISTORY
+The oldest document that defines the form of a Wave file is the 
+.I Multimedia Programming Interface and Data Specifications 1.0
+of August 1991.
+.\" .SH REFERENCES
+.\" .SS ESSENTIAL FILE FORMAT
+.\" .TP 
+.\" .UR https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf
+.\" Multimedia Programming Interface and Data Specifications 1.0
+.\" .UE 
+.\" The original definition of the 
+.\" .I RIFF 
+.\" container, the 
+.\" .I WAVE 
+.\" form, the original metadata facilites, and things like language, country and
+.\" dialect enumerations.
+.\" .TP 
+.\" .UR https://datatracker.ietf.org/doc/html/rfc2361
+.\" RFC 2361
+.\" .UE
+.\" A large RFC compilation of all of the known (in 1998) audio encoding formats 
+.\" in use. 104 different codecs are documented with a name, the corresponding 
+.\" magic number, and a vendor contact name, phone number and address (no 
+.\" emails, strangely). Almost all of these are of historical interest only.
+.\" .SS RF64/Extended WAVE Format 
+.\"
+.\" .TP
+.\" .UR https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.2088-1-201910-I!!PDF-E.pdf
+.\" ITU Recommendation BS.2088-1-2019
+.\" .UE
+.\" BS.2088 gives a detailed description of the internals of an RF64 file, 
+.\" .I ds64 
+.\" structure and all formal requirements. It also defines the use of 
+.\" .IR <axml> ,
+.\" .IR <bxml> ,
+.\" .IR <sxml> ,
+.\" and
+.\" .I <chna>
+.\" metadata chunks for the carriage of Audio Definition Model metadata.
+.\" .TP 
+.\" .UR https://tech.ebu.ch/docs/tech/tech3306.pdf 
+.\" EBU Tech 3306 "RF64: An Extended File Format for Audio Data"
+.\" .UE
+.\" Version 1 of Tech 3306 laid out the 
+.\" .I RF64 
+.\" extended WAVE 
+.\" file format almost identically to 
+.\" .IR BS.2088 ,
+.\" Version 2 of the standard wholly adopted 
+.\" .IR BS.2088 .

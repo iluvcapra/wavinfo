@@ -55,6 +55,9 @@ wavinfo = 'wavinfo.__main__:main'
 [project.scripts]
 wavinfo = "wavinfo.__main__:main"
 
+[tool.flit.external-data]
+directory = "data"
+
 [tool.pyright]
 typeCheckingMode = "basic"
 

@@ -1,0 +1,74 @@
+.TH wavinfo 1 "2023-11-07" "Jamie Hardt" "User Manuals"
+.SH NAME 
+wavinfo \- probe wave files for metadata
+.SH SYNOPSIS
+.SY wavinfo
+.I "[\-\-adm]"
+.I "[\-\-ixml]"
+.I FILE ...
+.SH DESCRIPTION
+.B wavinfo 
+extracts embedded metadata from WAVE and RF64/WAVE sound files, with an
+emphasis on film, video and professional music production metadata.
+.SH OPTIONS
+.IP "(no options)"
+With no options, 
+.B wavinfo 
+will emit a JSON (Javascript Object Notation) object containing all 
+detected metadata.
+.IP "\-\-adm"
+Output any Audio Definition Model (ADM) metadata in 
+.BR FILE .
+.IP "\-\-ixml"
+Output any iXML metdata in 
+.BR FILE .
+.IP "\-h, \-\-help"
+Print brief help.
+.SH DETAILED DESCRIPTION
+.B wavinfo 
+collects metadata according to different 
+.IR scopes .
+.SS METADATA SCOPES
+.IP fmt
+Basic audio properties: sample format, sample rate, channel count, etc.
+.IP data
+Size and frame count of the WAVE file's 
+.I data 
+segment.
+.IP cues
+Timed cue points, labels, notes and time ranges.
+.IP bext 
+Broadcast-WAV metadata: description, originator, date and time, UMID.
+.IP ixml 
+A selection of parsed iXML fields: track list, project, scene, take, tape,
+family name, family uid. For the full iXML document use the 
+.IR \-\-ixml 
+command option.
+.IP adm 
+EBU Audio Definition Model (ADM) metadata: Programme, channels. For the full 
+ADM 
+.I <axml>
+document use the 
+.IR \-\-adm 
+command option.
+.IP dolby
+Dolby bitstream and Atmos metadata.
+.IP info 
+INFO metadata fields: IART (artist), ICMT (comment), etc.
+.SH EXIT STATUS
+.IP 0
+On user quit.
+.SH AUTHOR
+Jamie Hardt 
+.UR https://github.com/iluvcapra
+.UE
+.SH BUGS
+Issue submissions, feature requests, pull requests and other contributions 
+are welcome and should be directed at 
+.BR wavinfo 's
+home page on GitHub:
+.RS 4
+.UR https://github.com/iluvcapra/wavinfo 
+.UE
+.\" .SH SEE ALSO
+.\" .BR "ffmpeg" "(1),"
