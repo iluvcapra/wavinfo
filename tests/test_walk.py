@@ -1,6 +1,7 @@
 import unittest
 import wavinfo
 
+import glob
 
 class TestWalk(unittest.TestCase):
     def test_walk_metadata(self):
@@ -20,6 +21,17 @@ class TestWalk(unittest.TestCase):
 
         self.assertTrue(tested_data and tested_format)
 
+    def test_walk_all(self):
+        for file in glob.glob('tests/test_files/**/*.wav'):
+            info = wavinfo.WavInfoReader(file)
+            
+            try:
+                for _, _, _ in info.walk():
+                    pass 
+            except:
+                self.fail(f"Failed to walk metadata in file {file}")
+
+        
 
 if __name__ == '__main__':
     unittest.main()
