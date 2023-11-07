@@ -130,7 +130,7 @@ class LabelEntry(NamedTuple):
     @classmethod
     def read(cls, data: bytes, encoding: str):
         return cls(name=unpack("<I", data[0:4])[0],
-                   text=data[4:].decode(encoding))
+                   text=data[4:].decode(encoding).rstrip("\0"))
 
 
 NoteEntry = LabelEntry
@@ -166,12 +166,14 @@ class WavCuesReader:
     cues: List[CueEntry]
     labels: List[LabelEntry]
     ranges: List[RangeLabel]
+    notes: List[NoteEntry]
 
     @classmethod
     def merge(cls, f,
               cues: Optional[ChunkDescriptor], 
               labls: List[ChunkDescriptor],
               ltxts: List[ChunkDescriptor], 
+              notes: List[ChunkDescriptor],
               fallback_encoding: str) -> 'WavCuesReader':
         
         cue_list = []
@@ -200,13 +202,21 @@ class WavCuesReader:
                                 fallback_encoding=fallback_encoding)
             )
 
+        note_list = []
+        for note in notes:
+            note_list.append(
+                NoteEntry.read(note.read_data(f),
+                               encoding=fallback_encoding)
+            )
+
         return WavCuesReader(cues=cue_list, labels=label_list,
-                             ranges=range_list)
+                             ranges=range_list, notes=note_list)
 
     def to_dict(self) -> Dict[str, Any]:
         return dict(cues=[c.__dict__ for c in self.cues],
                     labels=[l.__dict__ for l in self.labels],
-                    ranges=[r.__dict__ for r in self.ranges])
+                    ranges=[r.__dict__ for r in self.ranges],
+                    notes=[n.__dict__ for n in self.notes])
 
 
 

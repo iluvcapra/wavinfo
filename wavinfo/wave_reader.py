@@ -198,11 +198,13 @@ class WavInfoReader:
         adtl = self._find_list_chunk(b'adtl')
         labls = []
         ltxts = []
+        notes = []
         if adtl is not None:
-            labls = [child for child in adtl.children if child.ident == b'labl']
-            ltxts = [child for child in adtl.children if child.ident == b'ltxt']
+            labls = [c for c in adtl.children if c.ident == b'labl']
+            ltxts = [c for c in adtl.children if c.ident == b'ltxt']
+            notes = [c for c in adtl.children if c.ident == b'note']
 
-        return WavCuesReader.merge(f, cue, labls, ltxts, 
+        return WavCuesReader.merge(f, cue, labls, ltxts, notes, 
                                    fallback_encoding=self.info_encoding)
 
     def walk(self) -> Generator[str,str,Any]: #FIXME: this should probably be named "iter()"
