@@ -30,6 +30,8 @@ as described by `EBU Rec 128`_.
 .. _EBU 3285 v2: https://tech.ebu.ch/publications/tech3285s2
 .. _EBU Rec 128: https://tech.ebu.ch/publications/r128
 
+Example
+-------
 ..  code:: python
 
     print(info.bext.description)
