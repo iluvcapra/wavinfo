@@ -20,8 +20,8 @@ music library software.
     print("INFO Comment:",   bullet.info.comment)
 
 
-String Encoding of Cue Metadata
-"""""""""""""""""""""""""""""""
+String Encoding of INFO Metadata
+""""""""""""""""""""""""""""""""
 
 Info metadata fields will be decoded using the string encoding passed to
 :py:meth:`WavInfoReader's<wavinfo.wave_reader.WaveInfoReader.__init__>`
