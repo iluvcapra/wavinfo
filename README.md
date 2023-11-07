@@ -22,7 +22,8 @@ professional music production.
 * [iXML][ixml] production recorder metadata, including project, scene, and 
   take tags, recorder notes and file family information.
   * iXML `STEINBERG` sound library attributes.
-* Wave embedded cue markers, cue marker labels, notes and timed ranges.
+* Wave embedded cue markers, cue marker labels, notes and timed ranges as used
+  by Zoom, iZotope RX, etc.
 * Most of the common [RIFF INFO][info-tags] metadata fields.
 * The __wav format__ is also parsed, so you can access the basic sample rate 
   and channel count information.
