@@ -23,7 +23,7 @@ import wavinfo
 # -- Project information -----------------------------------------------------
 
 project = u'wavinfo'
-copyright = u'2022, Jamie Hardt'
+copyright = u'2018-2023, Jamie Hardt'
 author = u'Jamie Hardt'
 
 # The short X.Y version
