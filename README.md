@@ -15,7 +15,6 @@ professional music production.
 
 * [Broadcast-WAVE][bext] metadata, including embedded program
   loudness, coding history and [SMPTE UMID][smpte_330m2011].
-* Wave embedded cue markers, cue marker labels, notes and timed ranges.
 * [Audio Definition Model (ADM)][adm] track metadata and schema, including 
   channel, pack formats, 
   object, content and programme.
@@ -23,6 +22,7 @@ professional music production.
 * [iXML][ixml] production recorder metadata, including project, scene, and 
   take tags, recorder notes and file family information.
   * iXML `STEINBERG` sound library attributes.
+* Wave embedded cue markers, cue marker labels, notes and timed ranges.
 * Most of the common [RIFF INFO][info-tags] metadata fields.
 * The __wav format__ is also parsed, so you can access the basic sample rate 
   and channel count information.
