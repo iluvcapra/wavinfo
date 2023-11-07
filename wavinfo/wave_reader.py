@@ -38,10 +38,8 @@ class WavInfoReader:
             file handle to an open file.
 
         :param info_encoding: 
-            The text encoding of the INFO, LABL and other RIFF-defined metadata 
-            fields. latin_1/ISO 8859-1/Win CP819 is the safest assumption for 
-            this; chunks that define their own encoding explicitly (like LTXT)
-            will override this setting.
+            The text encoding of the ``INFO``, ``LABL`` and other RIFF-defined
+            metadata fields. 
 
         :param bext_encoding: 
             The text encoding to use when decoding the string
