@@ -27,9 +27,6 @@ professional music production.
 * The __wav format__ is also parsed, so you can access the basic sample rate 
   and channel count information.
 
-In progress:
-* Pro Tools __embedded regions__.
-
 [bext]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html
 [smpte_330m2011]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html#wavinfo.wave_bext_reader.WavBextReader.umid
 [adm]:https://wavinfo.readthedocs.io/en/latest/scopes/adm.html
