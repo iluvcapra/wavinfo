@@ -247,10 +247,26 @@ class WavCuesReader:
                      if r.name == cue_ident), None)
 
     def to_dict(self) -> Dict[str, Any]:
-        return dict(cues=[c._asdict() for c in self.cues],
-                    labels=[l._asdict() for l in self.labels],
-                    ranges=[r._asdict() for r in self.ranges],
-                    notes=[n._asdict() for n in self.notes])
+        retval = dict()
+
+        for n, t in self.each_cue():
+            retval[n] = dict()
+            retval[n]['frame'] = t
+            label, note = self.label_and_note(n)
+            r = self.range(n)
+
+            if label is not None:
+                retval[n]['label'] = label
+            if note is not None:
+                retval[n]['note'] = note  
+            if r is not None:
+                retval[n]['length'] = r 
+        
+        return retval 
+        # return dict(cues=[c._asdict() for c in self.cues],
+        #             labels=[l._asdict() for l in self.labels],
+        #             ranges=[r._asdict() for r in self.ranges],
+        #             notes=[n._asdict() for n in self.notes])
 
 
 
