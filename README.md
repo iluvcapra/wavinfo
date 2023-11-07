@@ -16,7 +16,8 @@ professional music production.
 * [Broadcast-WAVE][bext] metadata, including embedded program
   loudness, coding history and [SMPTE UMID][smpte_330m2011].
 * Wave embedded cue markers, cue marker labels, notes and timed ranges.
-* [ADM][adm] track metadata and schema, including channel, pack formats, 
+* [Audio Definition Model (ADM)][adm] track metadata and schema, including 
+  channel, pack formats, 
   object, content and programme.
 * [Dolby Digital Plus][ebu3285s6] and Dolby Atmos `dbmd` metadata.
 * [iXML][ixml] production recorder metadata, including project, scene, and 
