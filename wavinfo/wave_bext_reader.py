@@ -1,5 +1,5 @@
 import struct
-from .umid_parser import UMIDParser
+# from .umid_parser import UMIDParser
 
 from typing import Optional
 
@@ -80,11 +80,12 @@ class WavBextReader:
             self.max_shortterm_loudness = unpacked[12] / 100.0
 
     def to_dict(self):
-        if self.umid is not None:
-            umid_parsed = UMIDParser(self.umid)
-            umid_str = umid_parsed.basic_umid_to_str()
-        else:
-            umid_str = None
+        # if self.umid is not None:
+        #     umid_parsed = UMIDParser(self.umid)
+        #     umid_str = umid_parsed.basic_umid_to_str()
+        # else:
+            
+        umid_str = None
 
         return {'description': self.description,
                 'originator': self.originator,

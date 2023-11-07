@@ -1,18 +1,18 @@
-from functools import reduce
+# from functools import reduce
 
 
-def binary_to_string(binary_value):
-    return reduce(lambda val, el: val + "{:02x}".format(el), binary_value, '')
+# def binary_to_string(binary_value):
+#     return reduce(lambda val, el: val + "{:02x}".format(el), binary_value, '')
 
 
-class UMIDParser:
-    """
-    Parse a raw binary SMPTE 330M Universal Materials Identifier
-
-    This implementation is based on SMPTE ST 330:2011
-    """
-    def __init__(self, raw_umid: bytes):
-        self.raw_umid = raw_umid
+# class UMIDParser:
+#     """
+#     Parse a raw binary SMPTE 330M Universal Materials Identifier
+#
+#     This implementation is based on SMPTE ST 330:2011
+#     """
+#     def __init__(self, raw_umid: bytes):
+#         self.raw_umid = raw_umid
     #
     # @property
     # def universal_label(self) -> bytearray:
@@ -22,8 +22,8 @@ class UMIDParser:
     # def basic_umid(self):
     #     return self.raw_umid[0:32]
 
-    def basic_umid_to_str(self):
-        return binary_to_string(self.raw_umid[0:32])
+    # def basic_umid_to_str(self):
+    #     return binary_to_string(self.raw_umid[0:32])
     #
     # @property
     # def universal_label_is_valid(self) -> bool:
