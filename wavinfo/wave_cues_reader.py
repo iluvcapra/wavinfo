@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import encodings
 from .riff_parser import ChunkDescriptor
 
-from struct import unpack, unpack_from, calcsize
-from typing import Optional, NamedTuple, List
+from struct import unpack, calcsize
+from typing import Optional, NamedTuple, List, Dict, Any
 
 #: Country Codes used in the RIFF standard to resolve locale. These codes 
 #: appear in CSET and LTXT metadata.
@@ -113,8 +113,8 @@ class CueEntry(NamedTuple):
 
     @classmethod
     def read(cls, data: bytes) -> 'CueEntry':
-        assert len(data) == calcsize(cls.Format), \
-            "cue data size incorrect, expected {calcsize(cls.Format)} found {len(cues_data)}"
+        assert len(data) == cls.format_size(), \
+            f"cue data size incorrect, expected {calcsize(cls.Format)} found {len(data)}"
 
         parsed = unpack(cls.Format, data)
 
@@ -178,12 +178,13 @@ class WavCuesReader:
         if cues is not None:
             cues_data = cues.read_data(f)
             assert len(cues_data) >= 4, "cue metadata too short"
-            cues_count = unpack("<I", cues_data)
-            
             offset = calcsize("<I")
-            for _ in cues_count:
-                cue_bytes = cues_data[offset: CueEntry.format_size() ]
+            cues_count = unpack("<I", cues_data[0:offset])
+            
+            for _ in range(cues_count[0]):
+                cue_bytes = cues_data[offset: offset + CueEntry.format_size()]
                 cue_list.append(CueEntry.read(cue_bytes))
+                offset += CueEntry.format_size()
 
         label_list = []
         for labl in labls:
@@ -201,6 +202,12 @@ class WavCuesReader:
 
         return WavCuesReader(cues=cue_list, labels=label_list,
                              ranges=range_list)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return dict(cues=[c.__dict__ for c in self.cues],
+                    labels=[l.__dict__ for l in self.labels],
+                    ranges=[r.__dict__ for r in self.ranges])
+
 
 
 

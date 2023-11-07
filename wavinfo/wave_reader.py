@@ -73,6 +73,9 @@ class WavInfoReader:
         #: RIFF INFO metadata.
         self.info :Optional[WavInfoChunkReader]= None
 
+        #: RIFF CUE, LABL and LTXT metadata.
+        self.cues :Optional[WavCuesReader] = None
+
         if hasattr(path, 'read'):
             self.get_wav_info(path)
             self.url = 'about:blank'
@@ -102,7 +105,7 @@ class WavInfoReader:
         self.adm  = self._get_adm(wavfile)
         self.info = self._get_info(wavfile, encoding=self.info_encoding)
         self.dolby = self._get_dbmd(wavfile)
-        # self.cue = self._get_cue(wavfile)
+        self.cues = self._get_cue(wavfile)
         self.data = self._describe_data()
 
     def _find_chunk_data(self, ident, from_stream, default_none=False) -> Optional[bytes]:
@@ -188,15 +191,19 @@ class WavInfoReader:
         return WavIXMLFormat(ixml_data.rstrip(b'\0')) if ixml_data else None
 
     def _get_cue(self, f):
-        cue = next((cue_chunk for cue_chunk in self.main_list if cue_chunk.ident == b'cue '), None)
+        cue = next((cue_chunk for cue_chunk in self.main_list if \
+            type(cue_chunk) is ChunkDescriptor and \
+            cue_chunk.ident == b'cue '), None)
+
         adtl = self._find_list_chunk(b'adtl')
         labls = []
         ltxts = []
         if adtl is not None:
-            labls = [child.read_data(f) for child in adtl.children if child.ident == b'labl']
-            ltxts = [child.read_data(f) for child in adtl.children if child.ident == b'ltxt']
+            labls = [child for child in adtl.children if child.ident == b'labl']
+            ltxts = [child for child in adtl.children if child.ident == b'ltxt']
 
-        return WavCuesReader.merge(f, cue, labls, ltxts)
+        return WavCuesReader.merge(f, cue, labls, ltxts, 
+                                   fallback_encoding=self.info_encoding)
 
     def walk(self) -> Generator[str,str,Any]: #FIXME: this should probably be named "iter()"
         """
@@ -204,10 +211,10 @@ class WavInfoReader:
         
         :yields: tuples of the *scope*, *key*, and *value* of
             each metadatum. The *scope* value will be one of
-            "fmt", "data", "ixml", "bext", "info", "dolby", "cue" or "adm".
+            "fmt", "data", "ixml", "bext", "info", "dolby", "cues" or "adm".
         """
 
-        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'dolby')
+        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'cues', 'dolby')
 
         for scope in scopes:
             if scope in ['fmt', 'data']:
