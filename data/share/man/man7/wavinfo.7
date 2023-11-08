@@ -79,7 +79,9 @@ of chunks, and should accept any file as long as the obligatory
 and 
 .I data
 chunks
-are present. It's not unheard-of to see a naive implementor expect 
+are present. 
+.PP
+It's not unheard-of to see a naive implementor expect 
 .B only
 these chunks, in this order, and to hard-code the offsets of the short
 .I fmt
@@ -90,6 +92,45 @@ checked when evaluating a new tool, just to make sure the developer
 didn't do this. Many coding examples and WAVE file explainers from the
 90s and early aughts give the basic layout of a WAVE file and naive devs
 go along with it.
+.SS Encoding and Decoding Text Metadata
+.PP
+Modern metadata systems, anything developed since the late aughts, will 
+defer encoding to an XML parser so when dealing with
+.I ixml 
+or
+.I axml
+so a client can mostly ignore this problem.
+.PP
+The most established metadata systems are older than this though, and
+so the entire weight of text encoding history falls upon the client.
+.PP
+The original WAVE specification, a part of the Microsoft/IBM Multimedia
+interface of 1991, was written at a time when Windows was an ascendant
+and soon-to-be dominant desktop environment. Audio files were almost 
+never shared via LANs or the Internet or any other way. 
+When audio files were shared, among the miniscule number of people
+who did this, it was via BBS or usenet. Users at this time may have 
+ripped them from CDs, but the cost of hard drives and low quality of 
+compressed formats at the time made this little more than a curiosity.
+There was no 
+.I CDBaby or 
+.I CDDB
+to download and populate metadata from at this time.
+.PP
+So, the 
+.I INFO
+and 
+.I cue
+metadata systems, which are by far the most prevalent and supported, 
+were published two years before the so-called "Endless September" of 
+1993 when the Internet became mainstream, when Unicode was still a 
+twinkle in the eye, and two years before Ariana Grande was born.   
+.PP
+The safest assumption, and the mandate of the Microsoft, is that all
+text metadata, by default, be encoded in Windows codepage 819, 
+a.k.a. ISO Latin alphabet 1, or ISO 8859-1. This covers most Western 
+European scripts but excludes all of Asia, Russia and most of the European 
+Near East, the Middle East.
 .SH CHUNK MENAGERIE
 A list of chunks that you may find in a wave file from our experience.
 .SS Essential WAV Chunks 
