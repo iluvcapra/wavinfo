@@ -25,9 +25,10 @@ professional music production.
 * Wave embedded [cue markers][cues], cue marker labels, notes and timed ranges as used
   by Zoom, iZotope RX, etc.
 * Most of the common [RIFF INFO][info-tags] metadata fields.
-* The __wav format__ is also parsed, so you can access the basic sample rate 
+* The [wav format][format] is also parsed, so you can access the basic sample rate 
   and channel count information.
 
+[format]:https://wavinfo.readthedocs.io/en/latest/classes.html#wavinfo.wave_reader.WavAudioFormat
 [cues]:https://wavinfo.readthedocs.io/en/latest/scopes/cue.html
 [bext]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html
 [smpte_330m2011]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html#wavinfo.wave_bext_reader.WavBextReader.umid
