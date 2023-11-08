@@ -1,4 +1,4 @@
-.TH waveinfo 7 "2023-11-07" "Jamie Hardt" "Miscellaneous Information Manuals"
+.TH waveinfo 7 "2023-11-08" "Jamie Hardt" "Miscellaneous Information Manuals"
 .SH NAME
 wavinfo \- information about wave sound file metadata
 .\" .SH DESCRIPTION
@@ -14,6 +14,7 @@ alignment and other data. May take an "extended" form, with additional data
 the file or if it is a compressed format.
 .IP data 
 The audio data itself. PCM audio data is always stored as interleaved samples.
+.SS Auxiliary WAV Chunks
 .IP JUNK 
 A region of the file not currently in use. Clients sometimes add these before
 the 
@@ -38,6 +39,24 @@ four-character code identifying the form of the list, and is then followed
 by chunks of the standard key-length-data form, which may themselves be 
 LISTs that themselves contain child chunks. WAVE files don't tend to have a 
 very deep heirarchy of chunks, compared to AVI files.
+.SS Extensions for Large Files 
+.IP RF64
+An RF64 file has affordances to hold chunks larger than four gigabytes.
+RF64 is designed so that a RIFF WAVE file can be in-place upgraded to an 
+RF64 without having to rewrite any audio or metadata that may already be 
+written. An RF64 file begins with an 
+.I RF64 LIST
+form instead of a 
+.I RIFF 
+form. This is immediately followed by the obligatory...
+.IP ds64 
+In RF64 files, the ds64 chunk begins the chunk list (in fact it must appear at 
+a fixed offset) and provides a list of 64-bit chunk sizes for any chunks in the
+file that exceed four gigabytes. In an RF64 file, any chunk that exceeds the 
+32 bit size restriction will set its length field (after the identifier) to 
+.I 0xFFFFFFFF
+and will write its true size into the list in 
+.IR ds64 .
 .SS RIFF Metadata 
 The RIFF container format has a metadata system common to all RIFF files, WAVE
 being the most common at present, AVI being another very common format
@@ -73,14 +92,14 @@ but hosts tend to use notes for longer text), and "length text"
 .I ltxt 
 metadata records, which can give a cue a length, making it a range, and a text 
 field that defines its own encoding.
-.IP CSET
+.IP cset
 Defines the character set for all text fields in 
 .IR INFO ,  
 .I adtl 
 and other RIFF-defined text fields. By default, all of the text in RIFF 
 metadata fields is Windows Latin 1/ISO 8859-1, though as time passes many 
 clients have simply taken to sticking UTF-8 into these fields. The 
-.I CSET 
+.I cset 
 cannot represent UTF-8 as a valid option for text encoding, it only speaks 
 Windows codepages, and we've never seen one in a WAVE file in any event and 
 it's vanishingly likely an audio app would recognize one if it saw it.
@@ -117,13 +136,14 @@ and encoding properties of individual channels in the WAVE file, and if the
 WAVE file contains object-based audio, it will also give all of the positioning
 and panning automation envelopes.
 .IP bxml 
-This is defined by the ITU as a gzip-compressed version of the 
+A gzip-compressed version of the 
 .I axml 
 chunk.
 .IP sxml 
-This is a hybrid binary/gzip-compressed-XML chunk that associates ADM 
+A hybrid binary/gzip-compressed-XML chunk that associates ADM 
 documents with timed ranges of a WAVE file.
 .SS Dolby Metadata
+Dolby metadata appears in Dolby Atmos Master ADM WAVE files.
 .IP dbmd 
 Records hints for Dolby playback applications for downmixing, level 
 normalization and other things.
@@ -138,6 +158,7 @@ Region and cue point metadata.
 .IP elm1 
 .IP minf 
 .IP umid
+Doesn't actually hold a SMPTE UMID!
 .SH HISTORY
 The oldest document that defines the form of a Wave file is the 
 .I Multimedia Programming Interface and Data Specifications 1.0
