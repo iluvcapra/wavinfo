@@ -163,19 +163,46 @@ Doesn't actually hold a SMPTE UMID!
 The oldest document that defines the form of a Wave file is the 
 .I Multimedia Programming Interface and Data Specifications 1.0
 of August 1991.
-.\" .SH REFERENCES
-.\" .SS ESSENTIAL FILE FORMAT
-.\" .TP 
-.\" .UR https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf
-.\" Multimedia Programming Interface and Data Specifications 1.0
-.\" .UE 
-.\" The original definition of the 
-.\" .I RIFF 
-.\" container, the 
-.\" .I WAVE 
-.\" form, the original metadata facilites, and things like language, country and
-.\" dialect enumerations.
-.\" .TP 
+.SH REFERENCES
+.SS Essential File Format
+.TP  
+.B Multimedia Programming Interface and Data Specifications 1.0. Microsoft Corporation, 1991.
+The original definition of the 
+.I RIFF 
+container, the 
+.I WAVE 
+form, the original metadata facilites (like 
+.IR INFO " and " cue ),
+and things like language, country and
+dialect enumerations. This document also contains descriptions of certain
+variations on the WAVE, such as 
+.I LIST wavl
+and compressed WAVE files that are so rare in practice as to be virtually
+non-existent.
+.TP 
+.B ITU Recommendation BS.2088-1-2019 \- Long-form file format for the international exchange of audio programme mterials with metadata. ITU 2019.
+Formalized the RF64 file format, ADM carrier chunks like 
+.IR axml 
+and 
+.IR chna .
+Formally supercedes the previous standard for RF64, 
+.BR "EBU 3306 v1" .
+One oddity with this standard is it defines the file header for an extended 
+WAVE file to be 
+.IR BW64 ,
+but this is never seen in practice.
+.TP 
+.B RFC 2361 \- WAVE and AVI Codec Registries. IETF Network Working Group, 1998.
+Gives a throughly exhaustive list of all of the codecs that Microsoft had
+assigned to vendor WAVE files as of 1998. At the time, numerous hardware
+vendors, sound card and chip manufacturers, sound software developers and 
+others all provided their own slightly-different adaptive PCM codecs, linear
+predictive compression codes, DCTs and other things, and Microsoft would issue 
+these vendors WAVE codec magic numbers. Almost all of these are no longer in 
+use, the only ones one ever encounters in the modern era are integer PCM 
+(0x01), floating-point PCM (0x03) and the extended format marker (0xFFFFFFFF).
+There are over a hundred codecs assigned, however, a roll-call of failed
+software and hardware brands.
 .\" .UR https://datatracker.ietf.org/doc/html/rfc2361
 .\" RFC 2361
 .\" .UE
