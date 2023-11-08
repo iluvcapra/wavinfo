@@ -98,7 +98,14 @@ LanguageDialectCodes = """0 0 None Indicated
 
 
 class CueEntry(NamedTuple):
+    """
+    A ``cue`` element structure.
+    """
+    #: Cue "name" or id number 
     name: int
+    #: Cue position, as a frame count in the play order of the WAVE file. In 
+    #: principle this can be affected by playlists and ``wavl`` chunk 
+    #: placement.
     position: int
     chunk_id: bytes
     chunk_start: int
@@ -114,7 +121,8 @@ class CueEntry(NamedTuple):
     @classmethod
     def read(cls, data: bytes) -> 'CueEntry':
         assert len(data) == cls.format_size(), \
-            f"cue data size incorrect, expected {calcsize(cls.Format)} found {len(data)}"
+            (f"cue data size incorrect, expected {calcsize(cls.Format)}" 
+             "found {len(data)}")
 
         parsed = unpack(cls.Format, data)
 
@@ -124,6 +132,9 @@ class CueEntry(NamedTuple):
 
 
 class LabelEntry(NamedTuple):
+    """
+    A ``labl`` structure.
+    """
     name: int
     text: str
 
@@ -137,6 +148,9 @@ NoteEntry = LabelEntry
 
 
 class RangeLabel(NamedTuple):
+    """
+    A ``ltxt`` structure.
+    """
     name: int
     length: int
     purpose: str
@@ -163,9 +177,17 @@ class RangeLabel(NamedTuple):
 
 @dataclass
 class WavCuesReader:
+
+    #: Every *cue* entry in the file
     cues: List[CueEntry]
+
+    #: Every ``labl`` in the file
     labels: List[LabelEntry]
+
+    #: Every ``ltxt`` in the file
     ranges: List[RangeLabel]
+
+    #: Every ``note`` in the file
     notes: List[NoteEntry]
 
     @classmethod
