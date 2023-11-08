@@ -17,11 +17,14 @@ instance of :class:`WaveInfoReader`.
     
     adm_metadata = info.adm
     ixml_metadata = info.ixml
-    
+   
+WavInfoReader Class Documentation
+--------------------------------------
 
 .. module:: wavinfo
     :noindex:
 
 .. autoclass:: wavinfo.wave_reader.WavInfoReader
    :members:
+   :special-members: __init__
 
