@@ -178,7 +178,7 @@ class RangeLabel(NamedTuple):
 @dataclass
 class WavCuesReader:
 
-    #: Every *cue* entry in the file
+    #: Every ``cue`` entry in the file
     cues: List[CueEntry]
 
     #: Every ``labl`` in the file
