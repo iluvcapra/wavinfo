@@ -26,7 +26,7 @@ class MainTest(unittest.TestCase):
 
     def test_ixml(self):
         with patch.object(sys, 'argv', 
-                          ['TEST', 'tests/test_files/sounddevices/A101_1.WAV']):
+                          ['TEST', '--ixml', 'tests/test_files/sounddevices/A101_1.WAV']):
             try:
                 main()
             except:
