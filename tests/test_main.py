@@ -18,7 +18,7 @@ class MainTest(unittest.TestCase):
 
     def test_a_file(self):
         for path in glob.glob("tests/test_files/**/*.wav"):
-            with patch.object(sys, 'argv', [path]):
+            with patch.object(sys, 'argv', ["TEST", path]):
                 try:
                     main()
                 except:
@@ -26,7 +26,7 @@ class MainTest(unittest.TestCase):
 
     def test_ixml(self):
         with patch.object(sys, 'argv', 
-                          ['tests/test_files/sounddevices/A101_1.WAV']):
+                          ['TEST', 'tests/test_files/sounddevices/A101_1.WAV']):
             try:
                 main()
             except:
