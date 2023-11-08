@@ -4,7 +4,7 @@ wavinfo \- everything you ever wanted to know about WAVE metadata but were
 afraid to ask
 .SH DESCRIPTION
 .PP
-The WAVE file format is forwards-compatible, apart from audio data it can 
+The WAVE file format is forwards-compatible. Apart from audio data, it can 
 hold arbitrary blocks of bytes which clients will automatically ignore 
 unless they recognize them and know how to read them.
 .PP
@@ -14,10 +14,10 @@ divided into segments or
 .BR chunks ,
 which a client parser can either read or skip without reading. Chunks have 
 an identifier, or signature: a four-character-code which informs a client
-what kind of chunk it is, and a length, which gives the client enough 
-information to skip over the chunk and find the next chunk in the file,
-in the case the client doesn't care about it or doesn't know how to read
-it.
+what kind of chunk it is, and a length. Based on this information, a client
+can look at the identifier and decide if it knows how to read that chunk or
+if it wants to. If it doesn't, it can simply read the length and skip
+past it.
 .PP
 Some chunks are mandated by the Microsoft standard, specifically
 .I fmt 
@@ -27,12 +27,12 @@ in the case of PCM-encoded WAVE files. Other chunks, like
 .I cue
 or
 .I bext
-are optional, and hold metadata. Chunks can also nest inside other 
-chunks, a special identifier 
+are optional, and hold metadata. 
+.PP
+Chunks can also nest inside other chunks, a special identifier 
 .I LIST 
-is used to indicate these. A WAVE file
-is a recursive list: a top level list of chunks, where chunks may contain
-a list of chunks themselves.
+is used to indicate these. A WAVE file is a recursive list: a top level 
+list of chunks, where chunks may contain a list of chunks themselves.
 .SS Order of Metadata Chunks in a WAVE File
 .PP
 Chunks in a WAVE file can appear in any order, and a capable parser can 
