@@ -4,7 +4,9 @@
 
 # wavinfo
 
-The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] and extract extended metadata, with an emphasis on film, video and professional music production metadata.
+The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] 
+and extract extended metadata, with an emphasis on film, video and 
+professional music production.
 
 
 ## Metadata Support
@@ -13,17 +15,18 @@ The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] an
 
 * [Broadcast-WAVE][bext] metadata, including embedded program
   loudness, coding history and [SMPTE UMID][smpte_330m2011].
-* [ADM][adm] track metadata and schema, including channel, pack formats, object, content and programme.
+* [Audio Definition Model (ADM)][adm] track metadata and schema, including 
+  channel, pack formats, 
+  object, content and programme.
 * [Dolby Digital Plus][ebu3285s6] and Dolby Atmos `dbmd` metadata.
-* [iXML][ixml] production recorder metadata, including project, scene, and take tags, recorder notes
-  and file family information.
+* [iXML][ixml] production recorder metadata, including project, scene, and 
+  take tags, recorder notes and file family information.
   * iXML `STEINBERG` sound library attributes.
+* Wave embedded cue markers, cue marker labels, notes and timed ranges as used
+  by Zoom, iZotope RX, etc.
 * Most of the common [RIFF INFO][info-tags] metadata fields.
-* The __wav format__ is also parsed, so you can access the basic sample rate and channel count
-  information.
-
-In progress:
-* Pro Tools __embedded regions__.
+* The __wav format__ is also parsed, so you can access the basic sample rate 
+  and channel count information.
 
 [bext]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html
 [smpte_330m2011]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html#wavinfo.wave_bext_reader.WavBextReader.umid
@@ -57,4 +60,5 @@ $ wavinfo test_files/A101_1.WAV
 
 ## Other Resources
 
-* For other file formats and ID3 decoding, look at [audio-metadata](https://github.com/thebigmunch/audio-metadata).
+* For other file formats and ID3 decoding, 
+  look at [audio-metadata](https://github.com/thebigmunch/audio-metadata).

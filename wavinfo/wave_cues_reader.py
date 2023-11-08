@@ -12,7 +12,7 @@ import encodings
 from .riff_parser import ChunkDescriptor
 
 from struct import unpack, calcsize
-from typing import Optional, NamedTuple, List, Dict, Any
+from typing import Optional, Tuple,  NamedTuple, List, Dict, Any, Generator
 
 #: Country Codes used in the RIFF standard to resolve locale. These codes 
 #: appear in CSET and LTXT metadata.
@@ -130,7 +130,7 @@ class LabelEntry(NamedTuple):
     @classmethod
     def read(cls, data: bytes, encoding: str):
         return cls(name=unpack("<I", data[0:4])[0],
-                   text=data[4:].decode(encoding))
+                   text=data[4:].decode(encoding).rstrip("\0"))
 
 
 NoteEntry = LabelEntry
@@ -166,12 +166,14 @@ class WavCuesReader:
     cues: List[CueEntry]
     labels: List[LabelEntry]
     ranges: List[RangeLabel]
+    notes: List[NoteEntry]
 
     @classmethod
-    def merge(cls, f,
+    def read_all(cls, f,
               cues: Optional[ChunkDescriptor], 
               labls: List[ChunkDescriptor],
               ltxts: List[ChunkDescriptor], 
+              notes: List[ChunkDescriptor],
               fallback_encoding: str) -> 'WavCuesReader':
         
         cue_list = []
@@ -200,17 +202,71 @@ class WavCuesReader:
                                 fallback_encoding=fallback_encoding)
             )
 
+        note_list = []
+        for note in notes:
+            note_list.append(
+                NoteEntry.read(note.read_data(f),
+                               encoding=fallback_encoding)
+            )
+
         return WavCuesReader(cues=cue_list, labels=label_list,
-                             ranges=range_list)
+                             ranges=range_list, notes=note_list)
+
+    def each_cue(self) -> Generator[Tuple[int, int], None, None]:
+        """
+        Iterate through each cue. 
+
+        :yields: the cue's ``name`` and ``sample_offset``
+        """
+        for cue in self.cues:
+            yield (cue.name, cue.sample_offset)
+
+    def label_and_note(self, cue_ident: int) -> Tuple[Optional[str],
+                                                      Optional[str]]: 
+        """
+        Get the label and note (extended comment) for a cue.
+
+        :param cue_ident: the cue's name, its unique identifying number
+        :returns: a tuple of the the cue's label (if present) and note (if
+            present) 
+        """
+        label = next((l.text for l in self.labels 
+                      if l.name == cue_ident), None)
+        note = next((n.text for n in self.notes 
+                     if n.name == cue_ident), None)
+        return (label, note)
+
+    def range(self, cue_ident: int) -> Optional[int]:
+        """
+        Get the length of the time range for a cue, if it has one.
+
+        :param cue_ident: the cue's name, its unique identifying number
+        :returns: the length of the marker's range, or `None`
+        """
+        return next((r.length for r in self.ranges 
+                     if r.name == cue_ident), None)
 
     def to_dict(self) -> Dict[str, Any]:
-        return dict(cues=[c.__dict__ for c in self.cues],
-                    labels=[l.__dict__ for l in self.labels],
-                    ranges=[r.__dict__ for r in self.ranges])
+        retval = dict()
 
+        for n, t in self.each_cue():
+            retval[n] = dict()
+            retval[n]['frame'] = t
+            label, note = self.label_and_note(n)
+            r = self.range(n)
 
-
-
+            if label is not None:
+                retval[n]['label'] = label
+            if note is not None:
+                retval[n]['note'] = note  
+            if r is not None:
+                retval[n]['length'] = r 
+        
+        return retval 
+        # return dict(cues=[c._asdict() for c in self.cues],
+        #             labels=[l._asdict() for l in self.labels],
+        #             ranges=[r._asdict() for r in self.ranges],
+        #             notes=[n._asdict() for n in self.notes])
 
 
 

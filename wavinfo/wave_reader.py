@@ -38,10 +38,8 @@ class WavInfoReader:
             file handle to an open file.
 
         :param info_encoding: 
-            The text encoding of the INFO, LABL and other RIFF-defined metadata 
-            fields. latin_1/ISO 8859-1/Win CP819 is the safest assumption for 
-            this; chunks that define their own encoding explicitly (like LTXT)
-            will override this setting.
+            The text encoding of the ``INFO``, ``LABL`` and other RIFF-defined
+            metadata fields. 
 
         :param bext_encoding: 
             The text encoding to use when decoding the string
@@ -73,7 +71,7 @@ class WavInfoReader:
         #: RIFF INFO metadata.
         self.info :Optional[WavInfoChunkReader]= None
 
-        #: RIFF CUE, LABL and LTXT metadata.
+        #: RIFF cues markers, labels, and notes.
         self.cues :Optional[WavCuesReader] = None
 
         if hasattr(path, 'read'):
@@ -137,25 +135,12 @@ class WavInfoReader:
     def _get_format(self, f):
         fmt_data = self._find_chunk_data(b'fmt ', f)
         assert fmt_data is not None, "Fmt data not found, not a valid wav file"
-        # The format chunk is
-        # audio_format    U16
-        # channel_count   U16
-        # sample_rate     U32   Note an integer
-        # byte_rate       U32   == SampleRate * NumChannels * BitsPerSample/8
-        # block_align     U16   == NumChannels * BitsPerSample/8
-        # bits_per_sampl  U16
+
         packstring = "<HHIIHH"
         rest_starts = struct.calcsize(packstring)
 
         unpacked = struct.unpack(packstring, fmt_data[:rest_starts])
 
-        # 0x0001	WAVE_FORMAT_PCM	PCM
-        # 0x0003	WAVE_FORMAT_IEEE_FLOAT	IEEE float
-        # 0x0006	WAVE_FORMAT_ALAW	8-bit ITU-T G.711 A-law
-        # 0x0007	WAVE_FORMAT_MULAW	8-bit ITU-T G.711 µ-law
-        # 0xFFFE	WAVE_FORMAT_EXTENSIBLE	Determined by SubFormat
-
-        # https://sno.phy.queensu.ca/~phil/exiftool/TagNames/RIFF.html
         return WavAudioFormat(audio_format=unpacked[0],
                               channel_count=unpacked[1],
                               sample_rate=unpacked[2],
@@ -198,11 +183,13 @@ class WavInfoReader:
         adtl = self._find_list_chunk(b'adtl')
         labls = []
         ltxts = []
+        notes = []
         if adtl is not None:
-            labls = [child for child in adtl.children if child.ident == b'labl']
-            ltxts = [child for child in adtl.children if child.ident == b'ltxt']
+            labls = [c for c in adtl.children if c.ident == b'labl']
+            ltxts = [c for c in adtl.children if c.ident == b'ltxt']
+            notes = [c for c in adtl.children if c.ident == b'note']
 
-        return WavCuesReader.merge(f, cue, labls, ltxts, 
+        return WavCuesReader.read_all(f, cue, labls, ltxts, notes, 
                                    fallback_encoding=self.info_encoding)
 
     def walk(self) -> Generator[str,str,Any]: #FIXME: this should probably be named "iter()"
@@ -214,7 +201,8 @@ class WavInfoReader:
             "fmt", "data", "ixml", "bext", "info", "dolby", "cues" or "adm".
         """
 
-        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'cues', 'dolby')
+        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'cues', 
+                 'dolby')
 
         for scope in scopes:
             if scope in ['fmt', 'data']:
