@@ -1,7 +1,95 @@
 .TH waveinfo 7 "2023-11-08" "Jamie Hardt" "Miscellaneous Information Manuals"
 .SH NAME
-wavinfo \- information about wave sound file metadata
-.\" .SH DESCRIPTION
+wavinfo \- everything you ever wanted to know about WAVE metadata but were
+afraid to ask
+.SH DESCRIPTION
+.PP
+The WAVE file format is forwards-compatible, apart from audio data it can 
+hold arbitrary blocks of bytes which clients will automatically ignore 
+unless they recognize them and know how to read them.
+.PP
+Without saying too much about the structure and parsing of WAVE files 
+themselves, a subject beyond the scope of this document, WAVE files are 
+divided into segments or 
+.BR chunks ,
+which a client parser can either read or skip without reading. Chunks have 
+an identifier, or signature: a four-character-code which informs a client
+what kind of chunk it is, and a length, which gives the client enough 
+information to skip over the chunk and find the next chunk in the file,
+in the case the client doesn't care about it or doesn't know how to read
+it.
+.PP
+Some chunks are mandated by the Microsoft standard, specifically
+.I fmt 
+and
+.I data
+in the case of PCM-encoded WAVE files. Other chunks, like 
+.I cue
+or
+.I bext
+are optional, and hold metadata. Chunks can also nest inside other 
+chunks, a special identifier 
+.I LIST 
+is used to indicate these. A WAVE file
+is a recursive list: a top level list of chunks, where chunks may contain
+a list of chunks themselves.
+.SS Order of Metadata Chunks in a WAVE File
+.PP
+Chunks in a WAVE file can appear in any order, and a capable parser can 
+accept them appearing in any order, however authorities give guidance on
+where chunks should be placed, when creating a new WAVE file.
+.PP
+.IP 1)
+For all new WAVE files, clients should always place an empty chunk, a
+so-called
+.I JUNK
+chunk, in the first position in the top-level list of a WAVE file, and
+it should be sized large enough to hold a 
+.I ds64
+chunk record. This will allow clients to upgrade the file to a RF64
+WAVE file 
+.BR in-place ,
+without having to re-write the file or audio data.
+.IP 2)
+Older authorites recommend placing metadata before the audio data, so 
+clients reading the file sequentially will hit it before having to seek
+through the audio. This may have improved metadata read performance at one
+time.
+.IP 3)
+Older authorities also recommend inserting 
+.I JUNK
+before the 
+.I data 
+chunk, sized in such a way so that the first byte of the
+.I data
+payload lands immediately at 0x1000 (4096), because this was a common 
+factor of the page boundaries of many operating systems and architectures.
+This could optimize the audio I/O performance in certain situations. 
+.IP 4)
+Modern implemenations (we're looking at 
+.B Pro Tools
+here) tend to place the Broadcast-WAVE
+.I bext
+metadata before the data, followed by the data itself, and then other
+data after that.
+.PP
+Clients reading WAVE files should be tolerant and accept any configuration
+of chunks, and should accept any file as long as the obligatory
+.I fmt
+and 
+.I data
+chunks
+are present. It's not unheard-of to see a naive implementor expect 
+.B only
+these chunks, in this order, and to hard-code the offsets of the short
+.I fmt
+chunk and 
+.I data
+chunk into their program, and this is something that should always be
+checked when evaluating a new tool, just to make sure the developer
+didn't do this. Many coding examples and WAVE file explainers from the
+90s and early aughts give the basic layout of a WAVE file and naive devs
+go along with it.
 .SH CHUNK MENAGERIE
 A list of chunks that you may find in a wave file from our experience.
 .SS Essential WAV Chunks 
