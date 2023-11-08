@@ -70,17 +70,17 @@ but hosts tend to use notes for longer text), and "length text"
 .I ltxt 
 metadata records, which can give a cue a length, making it a range, and a text 
 field that defines its own encoding.
-.IP CSET
+.IP cset
 Defines the character set for all text fields in 
 .IR INFO ,  
 .I adtl 
 and other RIFF-defined text fields. By default, all of the text in RIFF 
 metadata fields is Windows Latin 1/ISO 8859-1, though as time passes many 
 clients have simply taken to sticking UTF-8 into these fields. The 
-.I CSET 
+.I cset 
 cannot represent UTF-8 as a valid option for text encoding, it only speaks 
-Windows codepages, and we've never seen one in a WAVE file in any event and 
-it's vanishingly likely an audio app would recognize one if it saw it.
+Windows codepages, and we've never seen one in a WAVE file in any event, and 
+it's unlikely an audio app would recognize one if it saw it.
 .SS Broadcast-WAVE Metadata
 Broadcast-WAVE is a set of extensions to WAVE files to facilitate media 
 production maintained by the EBU.
@@ -194,41 +194,28 @@ metadata (Suppl. 6), and other things.
 .TP 
 .B SMPTE 330M-2011 \- Unique Material Identifier. SMPTE, 2011.
 Describes the format of the SMPTE UMID field, a 32- or 64-byte UUID used to 
-identify media files. Broadcast-WAVE files conforming to 
+identify media files. UMIDs are usually a dumb number in their 32-byte form, 
+but the extended form can encode a high-precision timestamp (with options for 
+epoch and timescale) and geolocation information. Broadcast-WAVE files 
+conforming to 
 .B "EBU 3285 v2"
 have a SMPTE UMID embedded in the 
 .I bext 
 chunk.
-.\" .UR https://datatracker.ietf.org/doc/html/rfc2361
-.\" RFC 2361
-.\" .UE
-.\" A large RFC compilation of all of the known (in 1998) audio encoding formats 
-.\" in use. 104 different codecs are documented with a name, the corresponding 
-.\" magic number, and a vendor contact name, phone number and address (no 
-.\" emails, strangely). Almost all of these are of historical interest only.
-.\" .SS RF64/Extended WAVE Format 
-.\"
-.\" .TP
-.\" .UR https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.2088-1-201910-I!!PDF-E.pdf
-.\" ITU Recommendation BS.2088-1-2019
-.\" .UE
-.\" BS.2088 gives a detailed description of the internals of an RF64 file, 
-.\" .I ds64 
-.\" structure and all formal requirements. It also defines the use of 
-.\" .IR <axml> ,
-.\" .IR <bxml> ,
-.\" .IR <sxml> ,
-.\" and
-.\" .I <chna>
-.\" metadata chunks for the carriage of Audio Definition Model metadata.
-.\" .TP 
-.\" .UR https://tech.ebu.ch/docs/tech/tech3306.pdf 
-.\" EBU Tech 3306 "RF64: An Extended File Format for Audio Data"
-.\" .UE
-.\" Version 1 of Tech 3306 laid out the 
-.\" .I RF64 
-.\" extended WAVE 
-.\" file format almost identically to 
-.\" .IR BS.2088 ,
-.\" Version 2 of the standard wholly adopted 
-.\" .IR BS.2088 .
+.SS Audio Definition Model 
+.TP 
+.B ITU Recommendation BS.2076-2-2019 \- Audio definition model. ITU, 2019.
+Defines the Audio Definition Model, entities, relationships and properties. If
+you ever had any questions about how ADM works, this is where you would start.
+.SS iXML Metadata 
+.TP 
+.B iXML Specification v3.01. Gallery Software, 2021.
+iXML is a standard for embedding mostly human-created metadata into WAVE files,
+and mostly with an emphasis on location sound recorders used on film and 
+television productions. Frustratingly the developer has never published a DTD 
+or schema validation or strict formal standard, and encourages vendors to just
+do whatever, but most of the heavily-traveled metadata fields are standardized,
+for recording information like a recording's scene, take, recording notes,
+circled or alt status. iXML also has a system of 
+.B "families"
+for associating several WAVE files together into one recording.
