@@ -30,13 +30,13 @@ source for all WAVE file metadata.
 * The __wav format__ is also parsed, so you can access the basic sample rate 
   and channel count information.
 
-[bext]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html
-[smpte_330m2011]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html#wavinfo.wave_bext_reader.WavBextReader.umid
-[adm]:https://wavinfo.readthedocs.io/en/latest/scopes/adm.html
-[ebu3285s6]:https://wavinfo.readthedocs.io/en/latest/scopes/dolby.html
-[ixml]:https://wavinfo.readthedocs.io/en/latest/scopes/ixml.html
-[info-tags]:https://wavinfo.readthedocs.io/en/latest/scopes/info.html
-[eburf64]:https://tech.ebu.ch/docs/tech/tech3306v1_1.pdf
+[bext]: https://wavinfo.readthedocs.io/en/latest/scopes/bext.html
+[smpte_330m2011]: https://wavinfo.readthedocs.io/en/latest/scopes/bext.html#wavinfo.wave_bext_reader.WavBextReader.umid
+[adm]: https://wavinfo.readthedocs.io/en/latest/scopes/adm.html
+[ebu3285s6]: https://wavinfo.readthedocs.io/en/latest/scopes/dolby.html
+[ixml]: https://wavinfo.readthedocs.io/en/latest/scopes/ixml.html
+[info-tags]: https://wavinfo.readthedocs.io/en/latest/scopes/info.html
+[eburf64]: https://tech.ebu.ch/docs/tech/tech3306v1_1.pdf
 
 
 ## How To Use
@@ -59,6 +59,12 @@ The package also installs a shell command:
 ```sh
 $ wavinfo test_files/A101_1.WAV
 ```
+
+## Contributions!
+
+Any new or different kind of metadata you find, or any 
+new or different use of exising metadata you encounter, please submit
+an Issue or Pull Request!
 
 ## Other Resources
 
