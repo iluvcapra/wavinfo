@@ -13,6 +13,7 @@ from .wave_adm_reader import WavADMReader
 from .wave_dbmd_reader import WavDolbyMetadataReader
 from .wave_cues_reader import WavCuesReader
 
+
 #: Calculated statistics about the audio data.
 class WavDataDescriptor(NamedTuple):
     byte_count: int
