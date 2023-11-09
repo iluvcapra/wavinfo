@@ -1,4 +1,4 @@
-.TH waveinfo 7 "2023-11-08" "Jamie Hardt" "Miscellaneous Information Manuals"
+.TH waveinfo 7 "2023-11-09" "Jamie Hardt" "Miscellaneous Information Manuals"
 .SH NAME 
 wavinfo \- WAVE file metadata
 .SH SYNOPSIS
@@ -89,10 +89,10 @@ chunks, in this order, and to hard-code the offsets of the short
 .I fmt
 chunk and 
 .I data
-chunk into their program, and this is something that should always be checked
-when evaluating a new tool, just to make sure the developer didn't do this.
-Many coding examples and WAVE file explainers from the 90s and early aughts
-give the basic layout of a WAVE file, and naive devs go along with it.
+chunk into their program. This is something that should always be checked when
+evaluating a new tool, just to make sure the developer didn't do this. Many
+coding examples and WAVE file explainers from the 90s and early aughts give the
+basic layout of a WAVE file, and naive devs go along with it.
 .SS Encoding and Decoding Text Metadata
 .\" .PP
 .\" Modern metadata systems, anything developed since the late aughts, will defer
@@ -124,11 +124,12 @@ give the basic layout of a WAVE file, and naive devs go along with it.
 .\" Internet became mainstream, when Unicode was still a twinkle in the eye, and
 .\" two years before Ariana Grande was born.   
 .PP
-The safest assumption, and the mandate of the Microsoft, is that all text
-metadata, by default, be encoded in Windows codepage 819, a.k.a. ISO Latin
-alphabet 1, or ISO 8859-1. This covers most Western European scripts but
-excludes all of Asia, Russia, most of the European Near East, the Middle
-East.
+The safest assumption, and the mandate of Microsoft, is that all text metadata,
+by default, be encoded in 
+.B Windows codepage 819, 
+a.k.a. ISO Latin alphabet 1, or ISO 8859-1. This covers most Western European
+scripts but excludes all of Asia, Russia, most of the European Near East, the
+Middle East.
 .PP 
 To account for this, Microsoft proposed a few conventions, none of which have 
 been adopted with any consistency among clients of the WAVE file standard.
@@ -136,9 +137,9 @@ been adopted with any consistency among clients of the WAVE file standard.
 The RIFF standard defines a 
 .I cset 
 chunk which declares a Windows codepage for character encoding, along with a 
-native country code, language and dialect, which clients should use for
-determining text information. We have never seen a WAVE
-file with a 
+native country code, language and dialect, which clients can use for
+determining text encoding, date, time and numeric formats, and so on. We have
+never seen a WAVE file with a 
 .I cest 
 chunk.
 .IP 2)
@@ -147,7 +148,9 @@ Relevant to audio files are the
 .I ltxt 
 chunk, which encodes a country, language, dialect and codepage along with a
 time range text note. We have never seen the text field on one of these 
-filled-out either.
+filled-out either, clients we've see use 
+.IR labl " and " note 
+chunks for text annotations, exclusively.
 .PP 
 Some clients, in our experience, simply write UTF-8 into 
 .IR cue ,
@@ -156,11 +159,19 @@ and
 .I note 
 fields without any kind of framing.
 .PP 
-A practical solution is to assume either ISO Latin 1, Windows CP 859 or Windows
-CP 1252, and allow the client or user to override this based on its own
-inferences. The 
+A practical solution is to assume either ISO Latin 1, Windows CP 859 or 
+.BR "Windows CP 1252" , 
+and allow the client or user to override this based on its own inferences. The 
 .I chardet 
-python package may provide useable guesses for text encoding, YMMV.
+python package may provide useable guesses for unknonw text encoding, YMMV.
+.PP 
+More modern metadata systems for WAVE files, like 
+.BR ADM " or " iXML ,
+are based on XML and so defer encoding to the XML parser. 
+.B Broadcast-WAVE 
+text metadata is spec'd by the EBU to be encoded in 7-bit ASCII, but you can
+count on clients to probably write UTF-8 or Latin 1, depending on its
+complexity and vintage and other factors.
 .SH CHUNK MENAGERIE
 A list of chunks that you may find in a wave file from our experience.
 .SS Essential WAV Chunks 
@@ -215,7 +226,12 @@ Comment is
 .IR ICMT ,
 etc.
 .IP cue
-A binary list of cues, which are timed points within the audio data.
+A binary list of cues, which are timed points within the audio data. One caveat
+to cues is that they are 32-bit integers, like most of the other numeric fields
+in WAVE files, which implies cues may not be able to address every frame in an 
+RF64 file. In that case, 
+.I iXML 
+also can hold timed notes, that might be the best alternative.
 .IP "LIST form adtl"
 Contains text labels 
 .RI ( labl )
@@ -279,6 +295,17 @@ chunk.
 .IP sxml 
 This is a hybrid binary/gzip-compressed-XML chunk that associates ADM 
 documents with timed ranges of a WAVE file.
+.SS Recorder Metadata
+.IP iXML 
+An XML document in the Gallery Software iXML standard. iXML is designed
+specifically for recording on-set slate information, like scene and take,
+project title, select / alt / NG status, and textual channel descriptions,
+among some other things. iXML also tracks "families" and "UIDs" of WAVE files 
+that a recorder client can use to associate mutiple WAVE files into one 
+recording; before RF64 some production recorders would break long recordings
+at the size limit, create a new WAVE that continues the recording, and then 
+link them in the same family as contiguious. Non-interleaved multi-channel
+recordings could also be assciated with each other in this way.
 .SS Dolby Metadata
 Dolby metadata is present in Dolby Atmos master ADM WAVE files.
 .IP dbmd 
@@ -373,8 +400,4 @@ iXML is a standard for embedding mostly human-created metadata into WAVE files,
 and mostly with an emphasis on location sound recorders used on film and 
 television productions. Frustratingly the developer has never published a DTD 
 or schema validation or strict formal standard, and encourages vendors to just
-do whatever, but most of the heavily-traveled metadata fields are standardized,
-for recording information like a recording's scene, take, recording notes,
-circled or alt status. iXML also has a system of 
-.B "families"
-for associating several WAVE files together into one recording.
+do whatever, but most of the heavily-traveled metadata fields are standardized.
