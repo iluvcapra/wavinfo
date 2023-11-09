@@ -1,10 +1,12 @@
-from optparse import OptionParser, OptionGroup
 import datetime
 from . import WavInfoReader
 from . import __version__
+
+from optparse import OptionParser
 import sys
 import json
 from enum import Enum
+
 
 class MyJSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -13,23 +15,25 @@ class MyJSONEncoder(json.JSONEncoder):
         else:
             return super().default(o)
 
+
 class MissingDataError(RuntimeError):
     pass
+
 
 def main():
     parser = OptionParser()
 
     parser.usage = 'wavinfo (--adm | --ixml) <FILE> +'
 
-    # parser.add_option('-f', dest='output_format', help='Set the output format',
-    #                   default='json',
-    #                   metavar='FORMAT')
+    parser.add_option('--adm', dest='adm',
+                      help='Output ADM XML',
+                      default=False,
+                      action='store_true')
 
-    parser.add_option('--adm', dest='adm', help='Output ADM XML', 
-        default=False, action='store_true')
-
-    parser.add_option('--ixml', dest='ixml', help='Output iXML',
-        default=False, action='store_true')
+    parser.add_option('--ixml', dest='ixml',
+                      help='Output iXML',
+                      default=False,
+                      action='store_true')
 
     (options, args) = parser.parse_args(sys.argv)
     for arg in args[1:]:
@@ -47,9 +51,9 @@ def main():
                     raise MissingDataError("ixml")
             else:
                 ret_dict = {
-                    'filename': arg, 
-                    'run_date': datetime.datetime.now().isoformat() , 
-                    'application': "wavinfo " + __version__, 
+                    'filename': arg,
+                    'run_date': datetime.datetime.now().isoformat(),
+                    'application': "wavinfo " + __version__,
                     'scopes': {}
                     }
                 for scope, name, value in this_file.walk():
@@ -60,8 +64,8 @@ def main():
 
                 json.dump(ret_dict, cls=MyJSONEncoder, fp=sys.stdout, indent=2)
         except MissingDataError as e:
-            print("MissingDataError: Missing metadata (%s) in file %s" % \
-                    (e, arg), file=sys.stderr)
+            print("MissingDataError: Missing metadata (%s) in file %s" %
+                  (e, arg), file=sys.stderr)
             continue
         except Exception as e:
             raise e

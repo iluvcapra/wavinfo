@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import struct
 import os
 from typing import Optional, Generator, Any, NamedTuple
@@ -14,19 +14,22 @@ from .wave_dbmd_reader import WavDolbyMetadataReader
 from .wave_cues_reader import WavCuesReader
 
 #: Calculated statistics about the audio data.
+
+
 class WavDataDescriptor(NamedTuple):
-    byte_count: int 
+    byte_count: int
     frame_count: int
 
 
 #: The format of the audio samples.
 class WavAudioFormat(NamedTuple):
-    audio_format: int 
-    channel_count: int 
-    sample_rate: int 
-    byte_rate: int 
+    audio_format: int
+    channel_count: int
+    sample_rate: int
+    byte_rate: int
     block_align: int
     bits_per_sample: int
+
 
 class WavInfoReader:
     """
@@ -50,39 +53,39 @@ class WavInfoReader:
             fields of the Broadcast-WAV extension. Per EBU 3285 this is ASCII
             but this parameter is available to you if you encounter a weirdo.
         """
-        
+
         self.info_encoding = info_encoding
         self.bext_encoding = bext_encoding
-        
+
         #: Wave audio data format.
-        self.fmt :Optional[WavAudioFormat] = None
+        self.fmt: Optional[WavAudioFormat] = None
 
         #: Statistics of the `data` section.
-        self.data :Optional[WavDataDescriptor] = None
+        self.data: Optional[WavDataDescriptor] = None
 
         #: Broadcast-Wave metadata.
-        self.bext :Optional[WavBextReader] = None
+        self.bext: Optional[WavBextReader] = None
 
         #: iXML metadata.
-        self.ixml :Optional[WavIXMLFormat] = None
+        self.ixml: Optional[WavIXMLFormat] = None
 
         #: ADM Audio Definiton Model metadata.
-        self.adm :Optional[WavADMReader]= None
+        self.adm: Optional[WavADMReader] = None
 
         #: Dolby bitstream metadata.
-        self.dolby :Optional[WavDolbyMetadataReader] = None
+        self.dolby: Optional[WavDolbyMetadataReader] = None
 
         #: RIFF INFO metadata.
-        self.info :Optional[WavInfoChunkReader]= None
+        self.info: Optional[WavInfoChunkReader] = None
 
         #: RIFF cues markers, labels, and notes.
-        self.cues :Optional[WavCuesReader] = None
+        self.cues: Optional[WavCuesReader] = None
 
         if hasattr(f, 'read'):
             self.get_wav_info(f)
             self.url = 'about:blank'
             self.path = repr(f)
-            
+
         else:
             absolute_path = os.path.abspath(f)
 
@@ -90,13 +93,13 @@ class WavInfoReader:
             self.url: str = pathlib.Path(absolute_path).as_uri()
 
             self.path = absolute_path
-        
+
             with open(f, 'rb') as f:
                 self.get_wav_info(f)
-            
+
     def get_wav_info(self, wavfile):
         chunks = parse_chunk(wavfile)
-        assert type(chunks) is ListChunkDescriptor  
+        assert type(chunks) is ListChunkDescriptor
 
         self.main_list = chunks.children
         wavfile.seek(0)
@@ -104,16 +107,16 @@ class WavInfoReader:
         self.fmt = self._get_format(wavfile)
         self.bext = self._get_bext(wavfile, encoding=self.bext_encoding)
         self.ixml = self._get_ixml(wavfile)
-        self.adm  = self._get_adm(wavfile)
+        self.adm = self._get_adm(wavfile)
         self.info = self._get_info(wavfile, encoding=self.info_encoding)
         self.dolby = self._get_dbmd(wavfile)
         self.cues = self._get_cue(wavfile)
         self.data = self._describe_data()
 
-    def _find_chunk_data(self, ident, from_stream, 
+    def _find_chunk_data(self, ident, from_stream,
                          default_none=False) -> Optional[bytes]:
-        top_chunks = (chunk for chunk in self.main_list \
-            if type(chunk) is ChunkDescriptor and chunk.ident == ident)
+        top_chunks = (chunk for chunk in self.main_list
+                      if type(chunk) is ChunkDescriptor and chunk.ident == ident)
 
         chunk_descriptor = next(top_chunks, None) \
             if default_none else next(top_chunks)
@@ -122,19 +125,19 @@ class WavInfoReader:
             if chunk_descriptor else None
 
     def _find_list_chunk(self, signature) -> Optional[ListChunkDescriptor]:
-        top_chunks = (chunk for chunk in self.main_list \
-            if type(chunk) is ListChunkDescriptor and \
-                chunk.signature == signature)
+        top_chunks = (chunk for chunk in self.main_list
+                      if type(chunk) is ListChunkDescriptor and
+                      chunk.signature == signature)
 
         return next(top_chunks, None)
 
     def _describe_data(self):
-        data_chunk = next(c for c in self.main_list \
-            if type(c) is ChunkDescriptor and c.ident == b'data')
+        data_chunk = next(c for c in self.main_list
+                          if type(c) is ChunkDescriptor and c.ident == b'data')
 
         assert isinstance(self.fmt, WavAudioFormat)
         return WavDataDescriptor(
-            byte_count=data_chunk.length, 
+            byte_count=data_chunk.length,
             frame_count=int(data_chunk.length / self.fmt.block_align))
 
     def _get_format(self, f):
@@ -155,8 +158,8 @@ class WavInfoReader:
                               )
 
     def _get_info(self, f, encoding):
-        finder = (chunk.signature for chunk in self.main_list \
-            if type(chunk) is ListChunkDescriptor)
+        finder = (chunk.signature for chunk in self.main_list
+                  if type(chunk) is ListChunkDescriptor)
 
         if b'INFO' in finder:
             return WavInfoChunkReader(f, encoding)
@@ -181,9 +184,9 @@ class WavInfoReader:
         return WavIXMLFormat(ixml_data.rstrip(b'\0')) if ixml_data else None
 
     def _get_cue(self, f):
-        cue = next((cue_chunk for cue_chunk in self.main_list if \
-            type(cue_chunk) is ChunkDescriptor and \
-            cue_chunk.ident == b'cue '), None)
+        cue = next((cue_chunk for cue_chunk in self.main_list if
+                    type(cue_chunk) is ChunkDescriptor and
+                    cue_chunk.ident == b'cue '), None)
 
         adtl = self._find_list_chunk(b'adtl')
         labls = []
@@ -194,20 +197,21 @@ class WavInfoReader:
             ltxts = [c for c in adtl.children if c.ident == b'ltxt']
             notes = [c for c in adtl.children if c.ident == b'note']
 
-        return WavCuesReader.read_all(f, cue, labls, ltxts, notes, 
-                                   fallback_encoding=self.info_encoding)
+        return WavCuesReader.read_all(f, cue, labls, ltxts, notes,
+                                      fallback_encoding=self.info_encoding)
 
-    def walk(self) -> Generator[str,str,Any]: #FIXME: this should probably be named "iter()"
+    # FIXME: this should probably be named "iter()"
+    def walk(self) -> Generator[str, str, Any]:
         """
         Walk all of the available metadata fields.
-        
+
         :yields: tuples of the *scope*, *key*, and *value* of
             each metadatum. The *scope* value will be one of
             "fmt", "data", "ixml", "bext", "info", "dolby", "cues" or "adm".
         """
 
-        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'cues', 
-                 'dolby')
+        scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'cues',
+                  'dolby')
 
         for scope in scopes:
             if scope in ['fmt', 'data']:
@@ -216,11 +220,12 @@ class WavInfoReader:
                     yield scope, field, attr.__getattribute__(field)
 
             else:
-                dict = self.__getattribute__(scope).to_dict() if self.__getattribute__(scope) else {}
+                dict = self.__getattribute__(scope).to_dict(
+                ) if self.__getattribute__(scope) else {}
                 for key in dict.keys():
                     yield scope, key, dict[key]
-        
+
     def __repr__(self):
-        return 'WavInfoReader({}, {}, {})'.format(self.path, 
-                                                  self.info_encoding, 
+        return 'WavInfoReader({}, {}, {})'.format(self.path,
+                                                  self.info_encoding,
                                                   self.bext_encoding)
