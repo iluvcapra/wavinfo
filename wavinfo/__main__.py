@@ -60,7 +60,8 @@ def main():
 
                 json.dump(ret_dict, cls=MyJSONEncoder, fp=sys.stdout, indent=2)
         except MissingDataError as e:
-            print("MissingDataError: Missing metadata (%s) in file %s" % (e, arg), file=sys.stderr)
+            print("MissingDataError: Missing metadata (%s) in file %s" % \
+                    (e, arg), file=sys.stderr)
             continue
         except Exception as e:
             raise e

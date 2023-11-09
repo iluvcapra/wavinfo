@@ -22,7 +22,8 @@ def parse_rf64(stream, signature = b'RF64') -> RF64Context:
     assert(len(ds64_data) >= ds64_fields_size)
 
     riff_size, data_size, sample_count, length_lookup_table = struct.unpack(
-        ds64_field_spec, ds64_data[0:ds64_fields_size])
+        ds64_field_spec, ds64_data[0:ds64_fields_size]
+        )
 
     bigchunk_table = {}
     chunksize64format = "<4sL"
