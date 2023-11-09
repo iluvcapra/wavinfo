@@ -1,7 +1,7 @@
 References
 ==========
 
-A complete list of technical references and commentary is available as man page
+A complete list of technical references and commentary is available as a man page
 and is installed as wavinfo(7) when you install `wavinfo` via pip.
 
 Wave File Format
