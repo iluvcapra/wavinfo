@@ -34,7 +34,7 @@ def main():
     (options, args) = parser.parse_args(sys.argv)
     for arg in args[1:]:
         try:
-            this_file = WavInfoReader(path=arg)
+            this_file = WavInfoReader(f=arg)
             if options.adm:
                 if this_file.adm:
                     sys.stdout.write(this_file.adm.xml_str())
