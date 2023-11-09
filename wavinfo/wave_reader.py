@@ -40,15 +40,15 @@ class WavInfoReader:
         """
         Create a new reader object.
 
-        :param path: 
-            A pathlike object or IO to the wav file you wish to probe or a 
+        :param path:
+            A pathlike object or IO to the wav file you wish to probe or a
             file handle to an open file.
 
-        :param info_encoding: 
+        :param info_encoding:
             The text encoding of the ``INFO``, ``LABL`` and other RIFF-defined
-            metadata fields. 
+            metadata fields.
 
-        :param bext_encoding: 
+        :param bext_encoding:
             The text encoding to use when decoding the string
             fields of the Broadcast-WAV extension. Per EBU 3285 this is ASCII
             but this parameter is available to you if you encounter a weirdo.
@@ -116,7 +116,8 @@ class WavInfoReader:
     def _find_chunk_data(self, ident, from_stream,
                          default_none=False) -> Optional[bytes]:
         top_chunks = (chunk for chunk in self.main_list
-                      if type(chunk) is ChunkDescriptor and chunk.ident == ident)
+                      if type(chunk) is ChunkDescriptor and
+                      chunk.ident == ident)
 
         chunk_descriptor = next(top_chunks, None) \
             if default_none else next(top_chunks)

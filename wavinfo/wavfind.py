@@ -9,10 +9,12 @@ import sys
 def main():
     parser = OptionParser()
 
-    parser.usage = "wavfind [--scene=SCENE] [--take=TAKE] [--desc=DESC] <PATH> +"
+    parser.usage = ("wavfind [--scene=SCENE] [--take=TAKE] [--desc=DESC] "
+                    "<PATH> +")
 
     primaries = OptionGroup(parser, title="Search Predicates",
-                            description="Argument values can be globs, and are logically-AND'ed.")
+                            description="Argument values can be globs, "
+                            "and are logically-AND'ed.")
 
     primaries.add_option("--scene",
                          help='Search for this scene',

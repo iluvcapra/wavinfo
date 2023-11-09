@@ -233,7 +233,8 @@ class WavIXMLFormat:
     def family_uid(self) -> Optional[str]:
         """
         The globally-unique ID for this file family. This may be in the format
-        of a GUID, or an EBU Rec 9 source identifier, or some other dumb number.
+        of a GUID, or an EBU Rec 9 source identifier, or some other dumb
+        number.
         """
         return self._get_text_value("FILE_SET/FAMILY_UID")
 
