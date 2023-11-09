@@ -7,9 +7,9 @@
 # wavinfo
 
 The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] 
-and extract extended metadata, with an emphasis on film, video and 
-professional music production.
-
+and extract extended metadata. `wavinfo` has an emphasis on film, video and 
+professional music production but aspires to be the encyclopedic and final 
+source for all WAVE file metadata.
 
 ## Metadata Support
 
@@ -24,12 +24,15 @@ professional music production.
 * [iXML][ixml] production recorder metadata, including project, scene, and 
   take tags, recorder notes and file family information.
   * iXML `STEINBERG` sound library attributes.
-* Wave embedded cue markers, cue marker labels, notes and timed ranges as used
+* Wave embedded [cue markers][cues], cue marker labels, notes and timed ranges as used
   by Zoom, iZotope RX, etc.
 * Most of the common [RIFF INFO][info-tags] metadata fields.
-* The __wav format__ is also parsed, so you can access the basic sample rate 
+* The [wav format][format] is also parsed, so you can access the basic sample rate 
   and channel count information.
 
+
+[format]:https://wavinfo.readthedocs.io/en/latest/classes.html#wavinfo.wave_reader.WavAudioFormat
+[cues]:https://wavinfo.readthedocs.io/en/latest/scopes/cue.html
 [bext]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html
 [smpte_330m2011]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html#wavinfo.wave_bext_reader.WavBextReader.umid
 [adm]:https://wavinfo.readthedocs.io/en/latest/scopes/adm.html
@@ -59,6 +62,12 @@ The package also installs a shell command:
 ```sh
 $ wavinfo test_files/A101_1.WAV
 ```
+
+## Contributions!
+
+Any new or different kind of metadata you find, or any 
+new or different use of exising metadata you encounter, please submit
+an Issue or Pull Request!
 
 ## Other Resources
 

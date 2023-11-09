@@ -29,3 +29,12 @@ Class Reference
 
 .. autoclass:: wavinfo.wave_cues_reader.WavCuesReader
    :members:
+
+.. autoclass:: wavinfo.wave_cues_reader.CueEntry
+   :members:
+
+.. autoclass:: wavinfo.wave_cues_reader.LabelEntry
+   :members:
+
+.. autoclass:: wavinfo.wave_cues_reader.NoteEntry
+   :members:
