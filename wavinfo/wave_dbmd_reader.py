@@ -356,7 +356,7 @@ class DolbyDigitalPlusMetadata:
                 )
 
         def dialnorm_info(b):
-            return (b & 0x80) > 0, b & 0x40 > 0, b & 0x20 > 0,\
+            return (b & 0x80) > 0, b & 0x40 > 0, b & 0x20 > 0, \
                 DolbyDigitalPlusMetadata.DialnormLevel(b & 0x1f)
 
         def langcod(b) -> int:
@@ -364,7 +364,7 @@ class DolbyDigitalPlusMetadata:
 
         def audio_prod_info(b):
             return (b & 0x80) > 0, \
-                DolbyDigitalPlusMetadata.MixLevel(b & 0x7c >> 2),\
+                DolbyDigitalPlusMetadata.MixLevel(b & 0x7c >> 2), \
                 DolbyDigitalPlusMetadata.RoomType(b & 0x3)
 
         # loro_center_downmix_level, loro_surround_downmix_level
