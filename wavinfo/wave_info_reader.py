@@ -10,7 +10,7 @@ class WavInfoChunkReader:
 
         f.seek(0)
         parsed_chunks = parse_chunk(f)
-        assert type(parsed_chunks) == ListChunkDescriptor
+        assert type(parsed_chunks) is ListChunkDescriptor
 
         list_chunks = [chunk for chunk in parsed_chunks.children
                        if type(chunk) is ListChunkDescriptor]
