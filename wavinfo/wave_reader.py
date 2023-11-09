@@ -193,9 +193,12 @@ class WavInfoReader:
         ltxts = []
         notes = []
         if adtl is not None:
-            labls = [c for c in adtl.children if c.ident == b'labl']
-            ltxts = [c for c in adtl.children if c.ident == b'ltxt']
-            notes = [c for c in adtl.children if c.ident == b'note']
+            labls = [c for c in adtl.children 
+                     if type(c) is ChunkDescriptor and c.ident == b'labl']
+            ltxts = [c for c in adtl.children 
+                     if type(c) is ChunkDescriptor and c.ident == b'ltxt']
+            notes = [c for c in adtl.children 
+                     if type(c) is ChunkDescriptor and c.ident == b'note']
 
         return WavCuesReader.read_all(f, cue, labls, ltxts, notes,
                                       fallback_encoding=self.info_encoding)
