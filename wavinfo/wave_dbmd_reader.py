@@ -349,15 +349,14 @@ class DolbyDigitalPlusMetadata:
             pass
 
         def surround_config(b):
-            return DolbyDigitalPlusMetadata\
-                    .CenterDownMixLevel(b & 0x30 >> 4),\
-                    DolbyDigitalPlusMetadata\
-                .SurroundDownMixLevel(b & 0xc >> 2), \
-                DolbyDigitalPlusMetadata\
-                .DolbySurroundEncodingMode(b & 0x3)
+            return (
+                DolbyDigitalPlusMetadata.CenterDownMixLevel(b & 0x30 >> 4),
+                DolbyDigitalPlusMetadata.SurroundDownMixLevel(b & 0xc >> 2),
+                DolbyDigitalPlusMetadata.DolbySurroundEncodingMode(b & 0x3)
+                )
 
         def dialnorm_info(b):
-            return (b & 0x80) > 0, b & 0x40 > 0, b & 0x20 > 0, \
+            return (b & 0x80) > 0, b & 0x40 > 0, b & 0x20 > 0,\
                 DolbyDigitalPlusMetadata.DialnormLevel(b & 0x1f)
 
         def langcod(b) -> int:
@@ -436,33 +435,33 @@ class DolbyDigitalPlusMetadata:
         data_rate = datarate(buffer[25:27])
         reserved(buffer[27:69])
 
-        return DolbyDigitalPlusMetadata(program_id=pid,
-                                        lfe_on=lfe_on,
-                                        bitstream_mode=bitstream_mode,
-                                        audio_coding_mode=audio_coding_mode,
-                                        center_downmix_level=center_downmix_level,
-                                        surround_downmix_level=surround_downmix_level,
-                                        dolby_surround_encoded=dolby_surround_encoded,
-                                        langcode_present=langcode_present,
-                                        copyright_bitstream=copyright_bitstream,
-                                        original_bitstream=original_bitstream,
-                                        dialnorm=dialnorm,
-                                        langcode=langcode,
-                                        prod_info_exists=prod_info_exists,
-                                        mixlevel=mixlevel,
-                                        roomtype=roomtype,
-                                        loro_center_downmix_level=loro_center_downmix_level,
-                                        loro_surround_downmix_level=loro_surround_downmix_level,
-                                        downmix_mode=downmix_mode,
-                                        ltrt_center_downmix_level=ltrt_center_downmix_level,
-                                        ltrt_surround_downmix_level=ltrt_surround_downmix_level,
-                                        surround_ex_mode=surround_ex_mode,
-                                        dolby_headphone_encoded=dolby_headphone_encoded,
-                                        ad_converter_type=ad_converter_type,
-                                        compression_profile=compression,
-                                        dynamic_range=dynamic_range,
-                                        stream_dependency=stream_info,
-                                        datarate_kbps=data_rate)
+        return DolbyDigitalPlusMetadata(
+                 program_id=pid, lfe_on=lfe_on,
+                 bitstream_mode=bitstream_mode,
+                 audio_coding_mode=audio_coding_mode,
+                 center_downmix_level=center_downmix_level,
+                 surround_downmix_level=surround_downmix_level,
+                 dolby_surround_encoded=dolby_surround_encoded,
+                 langcode_present=langcode_present,
+                 copyright_bitstream=copyright_bitstream,
+                 original_bitstream=original_bitstream,
+                 dialnorm=dialnorm,
+                 langcode=langcode,
+                 prod_info_exists=prod_info_exists,
+                 mixlevel=mixlevel,
+                 roomtype=roomtype,
+                 loro_center_downmix_level=loro_center_downmix_level,
+                 loro_surround_downmix_level=loro_surround_downmix_level,
+                 downmix_mode=downmix_mode,
+                 ltrt_center_downmix_level=ltrt_center_downmix_level,
+                 ltrt_surround_downmix_level=ltrt_surround_downmix_level,
+                 surround_ex_mode=surround_ex_mode,
+                 dolby_headphone_encoded=dolby_headphone_encoded,
+                 ad_converter_type=ad_converter_type,
+                 compression_profile=compression,
+                 dynamic_range=dynamic_range,
+                 stream_dependency=stream_info,
+                 datarate_kbps=data_rate)
 
 
 @dataclass
@@ -489,9 +488,10 @@ class DolbyAtmosMetadata:
 
     @classmethod
     def load(cls, data: bytes):
-        assert len(data) == cls.SEGMENT_LENGTH, ("DolbyAtmosMetadata segment "
-                                                 "is incorrect length, "
-                                                 "expected %i actual was %i") % (cls.SEGMENT_LENGTH, len(data))
+
+        assert len(data) == cls.SEGMENT_LENGTH
+        # (f"DolbyAtmosMetadata segment is incorrect length, "
+        #  f"expected {cls.SEGMENT_LENGTH} actual was {len(data)}")
 
         h = BytesIO(data)
 
@@ -565,7 +565,8 @@ class DolbyAtmosSupplementalMetadata:
             render_modes.append(binaural_mode)
 
         return DolbyAtmosSupplementalMetadata(object_count=object_count,
-                                              render_modes=render_modes, trim_modes=trim_modes)
+                                              render_modes=render_modes,
+                                              trim_modes=trim_modes)
 
 
 class WavDolbyMetadataReader:
