@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 import struct
 import os
-from collections import namedtuple
-
-from typing import Optional, Generator, Any
+from typing import Optional, Generator, Any, NamedTuple
 
 import pathlib
 
@@ -16,13 +14,19 @@ from .wave_dbmd_reader import WavDolbyMetadataReader
 from .wave_cues_reader import WavCuesReader
 
 #: Calculated statistics about the audio data.
-WavDataDescriptor = namedtuple('WavDataDescriptor', 'byte_count frame_count')
+class WavDataDescriptor(NamedTuple):
+    byte_count: int 
+    frame_count: int
+
 
 #: The format of the audio samples.
-WavAudioFormat = namedtuple('WavAudioFormat',
-                            ['audio_format', 'channel_count', 'sample_rate',
-                             'byte_rate',  'block_align',  'bits_per_sample'])
-
+class WavAudioFormat(NamedTuple):
+    audio_format: int 
+    channel_count: int 
+    sample_rate: int 
+    byte_rate: int 
+    block_align: int
+    bits_per_sample: int
 
 class WavInfoReader:
     """
@@ -106,7 +110,8 @@ class WavInfoReader:
         self.cues = self._get_cue(wavfile)
         self.data = self._describe_data()
 
-    def _find_chunk_data(self, ident, from_stream, default_none=False) -> Optional[bytes]:
+    def _find_chunk_data(self, ident, from_stream, 
+                         default_none=False) -> Optional[bytes]:
         top_chunks = (chunk for chunk in self.main_list \
             if type(chunk) is ChunkDescriptor and chunk.ident == ident)
 
@@ -216,4 +221,6 @@ class WavInfoReader:
                     yield scope, key, dict[key]
         
     def __repr__(self):
-        return 'WavInfoReader({}, {}, {})'.format(self.path, self.info_encoding, self.bext_encoding)
+        return 'WavInfoReader({}, {}, {})'.format(self.path, 
+                                                  self.info_encoding, 
+                                                  self.bext_encoding)

@@ -5,7 +5,6 @@ from typing import Optional
 from enum import IntEnum
 from typing import NamedTuple
 
-# IXMLTrack = namedtuple('IXMLTrack', ['channel_index', 'interleave_index', 'name', 'function'])
 
 class IXMLTrack(NamedTuple):
     channel_index: int 
