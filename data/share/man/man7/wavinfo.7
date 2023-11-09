@@ -1,19 +1,179 @@
-.TH waveinfo 7 "2023-11-07" "Jamie Hardt" "Miscellaneous Information Manuals"
-.SH NAME
-wavinfo \- information about wave sound file metadata
-.\" .SH DESCRIPTION
+.TH waveinfo 7 "2023-11-08" "Jamie Hardt" "Miscellaneous Information Manuals"
+.SH NAME 
+wavinfo \- WAVE file metadata
+.SH SYNOPSIS
+Everything you ever wated to know about WAVE metadata but were afraid to ask. 
+.SH DESCRIPTION 
+.PP
+The WAVE file format is forwards-compatible. Apart from audio data, it can 
+hold arbitrary blocks of bytes which clients will automatically ignore 
+unless they recognize them and know how to read them.
+.PP
+Without saying too much about the structure and parsing of WAVE files 
+themselves \- a subject beyond the scope of this document \- WAVE files are 
+divided into segments or 
+.BR chunks ,
+which a client parser can either read or skip without reading. Chunks have 
+an identifier, or signature: a four-character-code that tells a client what
+kind of chunk it is, and a length. Based on this information, a client can look
+at the identifier and decide if it knows how to read that chunk and if it wants
+to. If it doesn't, it can simply read the length and skip past it.
+.PP
+Some chunks are mandated by the Microsoft standard, specifically
+.I fmt 
+and
+.I data
+in the case of PCM-encoded WAVE files. Other chunks, like 
+.I cue
+or
+.IR bext ,
+are optional, and optional chunks usually hold metadata. 
+.PP
+Chunks can also nest inside other chunks, a special identifier 
+.I LIST 
+is used to indicate these. A WAVE file is a recursive list: a top level 
+list of chunks, where chunks may contain a list of chunks themselves.
+.SS Order of Metadata Chunks in a WAVE File
+.PP
+Chunks in a WAVE file can appear in any order, and a capable parser can 
+accept them appearing in any order, however authorities give guidance on
+where chunks should be placed, when creating a new WAVE file.
+.PP
+.IP 1)
+For all new WAVE files, clients should always place an empty chunk, a
+so-called
+.I JUNK
+chunk, in the first position in the top-level list of a WAVE file, and
+it should be sized large enough to hold a 
+.I ds64
+chunk record. This will allow clients to upgrade the file to a RF64
+WAVE file 
+.BR in-place ,
+without having to re-write the file or audio data.
+.IP 2)
+Older authorites recommend placing metadata before the audio data, so clients
+reading the file sequentially will hit it before having to seek through the
+audio. This may improve metadata read performance on certain architecures.
+.IP 3)
+Older authorities also recommend inserting 
+.I JUNK
+before the 
+.I data 
+chunk, sized so that the first byte of the
+.I data
+payload lands immediately at 0x1000 (4096), because this was a common 
+factor of the page boundaries of many operating systems and architectures. This
+may optimize the audio I/O performance in certain situations. 
+.IP 4)
+Modern implemenations (we're looking at 
+.B Pro Tools
+here) tend to place the Broadcast-WAVE
+.I bext
+metadata before the data, followed by the data itself, and then other data
+after that.
+.\" .PP
+.\" Clients reading WAVE files should be tolerant and accept any configuration of
+.\" chunks, and should accept any file as long as the obligatory
+.\" .I fmt
+.\" and 
+.\" .I data
+.\" chunks
+.\" are present. 
+.PP
+It's not unheard-of to see a naive implementor expect 
+.B only
+.I fmt 
+and 
+.I data 
+chunks, in this order, and to hard-code the offsets of the short
+.I fmt
+chunk and 
+.I data
+chunk into their program, and this is something that should always be checked
+when evaluating a new tool, just to make sure the developer didn't do this.
+Many coding examples and WAVE file explainers from the 90s and early aughts
+give the basic layout of a WAVE file, and naive devs go along with it.
+.SS Encoding and Decoding Text Metadata
+.\" .PP
+.\" Modern metadata systems, anything developed since the late aughts, will defer
+.\" encoding to an XML parser, so when dealing with
+.\" .I ixml 
+.\" or
+.\" .I axml
+.\" so a client can mostly ignore this problem.
+.\" .PP
+.\" The most established metadata systems are older than this though, and so the
+.\" entire weight of text encoding history falls upon the client.
+.\" .PP
+.\" The original WAVE specification, a part of the Microsoft/IBM Multimedia
+.\" interface of 1991, was written at a time when Windows was an ascendant and
+.\" soon-to-be dominant desktop environment. Audio files were almost 
+.\" never shared via LANs or the Internet or any other way. When audio files were
+.\" shared, among the miniscule number of people who did this, it was via BBS or
+.\" Usenet. Users at this time may have ripped them from CDs, but the cost of hard
+.\" drives and low quality of compressed formats at the time made this little more
+.\" than a curiosity. There was no CDBaby or CDDB to download and populate metadata
+.\" from at this time.
+.\" .PP
+.\" So, the 
+.\" .I INFO
+.\" and 
+.\" .I cue
+.\" metadata systems, which are by far the most prevalent and supported, were
+.\" published two years before the so-called "Endless September" of 1993 when the
+.\" Internet became mainstream, when Unicode was still a twinkle in the eye, and
+.\" two years before Ariana Grande was born.   
+.PP
+The safest assumption, and the mandate of the Microsoft, is that all text
+metadata, by default, be encoded in Windows codepage 819, a.k.a. ISO Latin
+alphabet 1, or ISO 8859-1. This covers most Western European scripts but
+excludes all of Asia, Russia, most of the European Near East, the Middle
+East.
+.PP 
+To account for this, Microsoft proposed a few conventions, none of which have 
+been adopted with any consistency among clients of the WAVE file standard.
+.IP 1)
+The RIFF standard defines a 
+.I cset 
+chunk which declares a Windows codepage for character encoding, along with a 
+native country code, language and dialect, which clients should use for
+determining text information. We have never seen a WAVE
+file with a 
+.I cest 
+chunk.
+.IP 2)
+Certain RIFF chunks allow the writing client to override the default encoding.
+Relevant to audio files are the 
+.I ltxt 
+chunk, which encodes a country, language, dialect and codepage along with a
+time range text note. We have never seen the text field on one of these 
+filled-out either.
+.PP 
+Some clients in our experience simply write UTF-8 into 
+.IR cue ,
+.IR labl ,
+and
+.I note 
+fields without any kind of framing.
+.PP 
+The practical solution at this time is to assume either ISO Latin 1, Windows 
+CP 859 or Windows CP 1252, and allow the client or user to override this based 
+on its own inferences. The 
+.I chardet 
+python package may provide useable guesses for text encoding, YMMV.
 .SH CHUNK MENAGERIE
 A list of chunks that you may find in a wave file from our experience.
 .SS Essential WAV Chunks 
 .IP fmt 
 Defines the format of the audio in the 
 .I data 
-chunk: the audio codec, the sample rate, bit depth, channel count, block 
-alignment and other data. May take an "extended" form, with additional data 
-(such as channel speaker assignments) if there are more than two channels in 
+chunk: the audio codec, the sample rate, bit depth, channel count, block
+alignment and other data. May take an "extended" form, with additional data
+(such as channel speaker assignments) if there are more than two channels in
 the file or if it is a compressed format.
 .IP data 
 The audio data itself. PCM audio data is always stored as interleaved samples.
+.SS Optional WAVE Chunks
 .IP JUNK 
 A region of the file not currently in use. Clients sometimes add these before
 the 
@@ -42,10 +202,8 @@ very deep heirarchy of chunks, compared to AVI files.
 The RIFF container format has a metadata system common to all RIFF files, WAVE
 being the most common at present, AVI being another very common format
 historically.
-.IP INFO 
-A 
-.I LIST 
-form containing a flat list of chunks, each containing text metadata. The role
+.IP "LIST form INFO"
+A flat list of chunks, each containing text metadata. The role
 of the string, like "Artist", "Composer", "Comment", "Engineer" etc. are given
 by the four-character code: "Artist" is 
 .IR IART , 
@@ -58,10 +216,8 @@ Comment is
 etc.
 .IP cue
 A binary list of cues, which are timed points within the audio data.
-.IP adtl
-A 
-.I LIST 
-form containing text labels 
+.IP "LIST form adtl"
+Contains text labels 
 .RI ( labl )
 for the cues in the 
 .I cue 
@@ -73,17 +229,17 @@ but hosts tend to use notes for longer text), and "length text"
 .I ltxt 
 metadata records, which can give a cue a length, making it a range, and a text 
 field that defines its own encoding.
-.IP CSET
+.IP cset
 Defines the character set for all text fields in 
 .IR INFO ,  
 .I adtl 
 and other RIFF-defined text fields. By default, all of the text in RIFF 
 metadata fields is Windows Latin 1/ISO 8859-1, though as time passes many 
 clients have simply taken to sticking UTF-8 into these fields. The 
-.I CSET 
+.I cset 
 cannot represent UTF-8 as a valid option for text encoding, it only speaks 
-Windows codepages, and we've never seen one in a WAVE file in any event and 
-it's vanishingly likely an audio app would recognize one if it saw it.
+Windows codepages, and we've never seen one in a WAVE file in any event, and 
+it's unlikely an audio app would recognize one if it saw it.
 .SS Broadcast-WAVE Metadata
 Broadcast-WAVE is a set of extensions to WAVE files to facilitate media 
 production maintained by the EBU.
@@ -124,6 +280,7 @@ chunk.
 This is a hybrid binary/gzip-compressed-XML chunk that associates ADM 
 documents with timed ranges of a WAVE file.
 .SS Dolby Metadata
+Dolby metadata is present in Dolby Atmos master ADM WAVE files.
 .IP dbmd 
 Records hints for Dolby playback applications for downmixing, level 
 normalization and other things.
@@ -138,53 +295,86 @@ Region and cue point metadata.
 .IP elm1 
 .IP minf 
 .IP umid
-.SH HISTORY
-The oldest document that defines the form of a Wave file is the 
-.I Multimedia Programming Interface and Data Specifications 1.0
-of August 1991.
-.\" .SH REFERENCES
-.\" .SS ESSENTIAL FILE FORMAT
-.\" .TP 
-.\" .UR https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf
-.\" Multimedia Programming Interface and Data Specifications 1.0
-.\" .UE 
-.\" The original definition of the 
-.\" .I RIFF 
-.\" container, the 
-.\" .I WAVE 
-.\" form, the original metadata facilites, and things like language, country and
-.\" dialect enumerations.
-.\" .TP 
-.\" .UR https://datatracker.ietf.org/doc/html/rfc2361
-.\" RFC 2361
-.\" .UE
-.\" A large RFC compilation of all of the known (in 1998) audio encoding formats 
-.\" in use. 104 different codecs are documented with a name, the corresponding 
-.\" magic number, and a vendor contact name, phone number and address (no 
-.\" emails, strangely). Almost all of these are of historical interest only.
-.\" .SS RF64/Extended WAVE Format 
-.\"
-.\" .TP
-.\" .UR https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.2088-1-201910-I!!PDF-E.pdf
-.\" ITU Recommendation BS.2088-1-2019
-.\" .UE
-.\" BS.2088 gives a detailed description of the internals of an RF64 file, 
-.\" .I ds64 
-.\" structure and all formal requirements. It also defines the use of 
-.\" .IR <axml> ,
-.\" .IR <bxml> ,
-.\" .IR <sxml> ,
-.\" and
-.\" .I <chna>
-.\" metadata chunks for the carriage of Audio Definition Model metadata.
-.\" .TP 
-.\" .UR https://tech.ebu.ch/docs/tech/tech3306.pdf 
-.\" EBU Tech 3306 "RF64: An Extended File Format for Audio Data"
-.\" .UE
-.\" Version 1 of Tech 3306 laid out the 
-.\" .I RF64 
-.\" extended WAVE 
-.\" file format almost identically to 
-.\" .IR BS.2088 ,
-.\" Version 2 of the standard wholly adopted 
-.\" .IR BS.2088 .
+.SH REFERENCES
+(Note: We're not including URLs in this list, the title and standard number 
+should be sufficient to find almost all of these documents. The ITU, EBU and 
+IETF standards documents are freely-available.)
+.SS Essential File Format
+.TP  
+.B Multimedia Programming Interface and Data Specifications 1.0. Microsoft Corporation, 1991.
+The original definition of the 
+.I RIFF 
+container, the 
+.I WAVE 
+form, the original metadata facilites (like 
+.IR INFO " and " cue ),
+and things like language, country and
+dialect enumerations. This document also contains descriptions of certain
+variations on the WAVE, such as 
+.I LIST wavl
+and compressed WAVE files that are so rare in practice as to be virtually
+non-existent.
+.TP 
+.B ITU Recommendation BS.2088-1-2019 \- Long-form file format for the international exchange of audio programme mterials with metadata. ITU 2019.
+Formalized the RF64 file format, ADM carrier chunks like 
+.IR axml 
+and 
+.IR chna .
+Formally supercedes the previous standard for RF64, 
+.BR "EBU 3306 v1" .
+One oddity with this standard is it defines the file header for an extended 
+WAVE file to be 
+.IR BW64 ,
+but this is never seen in practice.
+.TP 
+.B RFC 2361 \- WAVE and AVI Codec Registries. IETF Network Working Group, 1998.
+Gives an exhaustive list of all of the codecs that Microsoft had assigned to
+vendor WAVE files as of 1998. At the time, numerous hardware vendors, sound
+card and chip manufacturers, sound software developers and others all provided
+their own slightly-different adaptive PCM codecs, linear predictive compression
+codes, DCTs and other things, and Microsoft would issue these vendors WAVE
+codec magic numbers. Almost all of these are no longer in use, the only ones
+one ever encounters in the modern era are integer PCM (0x01), floating-point
+PCM (0x03) and the extended format marker (0xFFFFFFFF). There are over a
+hundred codecs assigned, however, a roll-call of failed software and hardware
+brands.
+.SS Broadcast WAVE Format
+.TP 
+.B EBU Tech 3285 \- Specification of the Broadcast Wave Format (BWF). EBU, 2011.
+Defines the elements of a Broadcast WAVE file, the 
+.I bext 
+metadata chunk structure, allowed sample formats and other things. Over the 
+years the EBU has published numerous supplements covering extensions to the 
+format, such as embedding SMPTE UMIDs, pre-calculated loudness data (EBU Tech 
+3285 v2), 
+.I peak 
+waveform overview data (Suppl. 3), ADM metadata (Suppl. 5 and 7), Dolby master 
+metadata (Suppl. 6), and other things.
+.TP 
+.B SMPTE 330M-2011 \- Unique Material Identifier. SMPTE, 2011.
+Describes the format of the SMPTE UMID field, a 32- or 64-byte UUID used to 
+identify media files. UMIDs are usually a dumb number in their 32-byte form, 
+but the extended form can encode a high-precision timestamp (with options for 
+epoch and timescale) and geolocation information. Broadcast-WAVE files 
+conforming to 
+.B "EBU 3285 v2"
+have a SMPTE UMID embedded in the 
+.I bext 
+chunk.
+.SS Audio Definition Model 
+.TP 
+.B ITU Recommendation BS.2076-2-2019 \- Audio definition model. ITU, 2019.
+Defines the Audio Definition Model, entities, relationships and properties. If
+you ever had any questions about how ADM works, this is where you would start.
+.SS iXML Metadata 
+.TP 
+.B iXML Specification v3.01. Gallery Software, 2021.
+iXML is a standard for embedding mostly human-created metadata into WAVE files,
+and mostly with an emphasis on location sound recorders used on film and 
+television productions. Frustratingly the developer has never published a DTD 
+or schema validation or strict formal standard, and encourages vendors to just
+do whatever, but most of the heavily-traveled metadata fields are standardized,
+for recording information like a recording's scene, take, recording notes,
+circled or alt status. iXML also has a system of 
+.B "families"
+for associating several WAVE files together into one recording.
