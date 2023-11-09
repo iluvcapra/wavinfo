@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 import wavinfo
-from wavinfo.wave_dbmd_reader import SegmentType, DolbyAtmosMetadata, DolbyDigitalPlusMetadata
+from wavinfo.wave_dbmd_reader import SegmentType, DolbyDigitalPlusMetadata
 
 class TestDolby(TestCase):
     def setUp(self):
@@ -19,8 +19,10 @@ class TestDolby(TestCase):
         d = t1.dolby
         assert d is not None
 
-        ddp = [x for x in d.segment_list if x[0] == SegmentType.DolbyDigitalPlus]
-        atmos = [x for x in d.segment_list if x[0] == SegmentType.DolbyAtmos]
+        ddp = [x for x in d.segment_list \
+                if x[0] == SegmentType.DolbyDigitalPlus]
+        atmos = [x for x in d.segment_list \
+                if x[0] == SegmentType.DolbyAtmos]
 
         self.assertEqual(len(ddp), 1)
         self.assertEqual(len(atmos), 1)
@@ -38,8 +40,13 @@ class TestDolby(TestCase):
         d = t1.dolby
         assert d is not None
         ddp = d.dolby_digital_plus()
-        self.assertEqual(len(ddp), 1, "Failed to find exactly one Dolby Digital Plus metadata segment")
-        self.assertTrue( ddp[0].audio_coding_mode, DolbyDigitalPlusMetadata.AudioCodingMode.CH_ORD_3_2 )
+        self.assertEqual(len(ddp), 1, 
+                         ("Failed to find exactly one Dolby Digital Plus " 
+                          "metadata segment")
+                         )
+
+        self.assertTrue( ddp[0].audio_coding_mode, 
+                        DolbyDigitalPlusMetadata.AudioCodingMode.CH_ORD_3_2 )
         self.assertTrue( ddp[0].lfe_on)
         
     def test_atmos(self):
@@ -47,6 +54,7 @@ class TestDolby(TestCase):
         d = t1.dolby
         assert d is not None
         atmos = d.dolby_atmos()
-        self.assertEqual(len(atmos), 1, "Failed to find exactly one Atmos metadata segment")
+        self.assertEqual(len(atmos), 1, 
+                         "Failed to find exactly one Atmos metadata segment")
 
     

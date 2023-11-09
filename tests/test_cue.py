@@ -12,6 +12,7 @@ class TestCue(TestCase):
         file1 = "tests/test_files/cue_chunks/STE-000.wav"
         w1 = wavinfo.WavInfoReader(file1)
         self.assertIsNotNone(w1.cues)
+        assert w1.cues is not None
         vals = list(w1.cues.each_cue())
         self.assertEqual(vals, [(1,29616),(2,74592),(3,121200)])
 

@@ -13,7 +13,9 @@ class TestWaveInfo(TestCase):
     def test_sanity(self):
         for wav_file in all_files():
             info = wavinfo.WavInfoReader(wav_file)
-            self.assertEqual(info.__repr__(), 'WavInfoReader({}, latin_1, ascii)'.format(os.path.abspath(wav_file)))
+            self.assertEqual(info.__repr__(), 
+                             'WavInfoReader({}, latin_1, ascii)'
+                             .format(os.path.abspath(wav_file)))
             self.assertIsNotNone(info)
 
     def test_fmt_against_ffprobe(self):
@@ -24,14 +26,21 @@ class TestWaveInfo(TestCase):
             assert info.fmt is not None
             assert ffprobe_info is not None
 
-            self.assertEqual(info.fmt.channel_count, ffprobe_info['streams'][0]['channels'])
-            self.assertEqual(info.fmt.sample_rate, int(ffprobe_info['streams'][0]['sample_rate']))
-            self.assertEqual(info.fmt.bits_per_sample, int(ffprobe_info['streams'][0]['bits_per_sample']))
+            self.assertEqual(info.fmt.channel_count, 
+                             ffprobe_info['streams'][0]['channels'])
+            self.assertEqual(info.fmt.sample_rate, 
+                             int(ffprobe_info['streams'][0]['sample_rate']))
+            self.assertEqual(info.fmt.bits_per_sample, 
+                             int(ffprobe_info['streams'][0]['bits_per_sample']
+                                 ))
 
             if info.fmt.audio_format == 1:
-                self.assertTrue(ffprobe_info['streams'][0]['codec_name'].startswith('pcm'))
+                self.assertTrue(ffprobe_info['streams'][0]['codec_name']\
+                        .startswith('pcm'))
                 streams = ffprobe_info['streams'][0]
-                byte_rate = int(streams['sample_rate']) * streams['channels'] * int(streams['bits_per_sample']) / 8
+                byte_rate = int(streams['sample_rate']) * \
+                        streams['channels'] * \
+                        int(streams['bits_per_sample']) / 8
                 self.assertEqual(info.fmt.byte_rate, byte_rate)
 
     def test_data_against_ffprobe(self):
@@ -40,7 +49,8 @@ class TestWaveInfo(TestCase):
             ffprobe_info = cast(Dict[str,Any], ffprobe(wav_file))
             assert ffprobe_info is not None
             assert info.data is not None
-            self.assertEqual(info.data.frame_count, int(ffprobe_info['streams'][0]['duration_ts']))
+            self.assertEqual(info.data.frame_count, 
+                             int(ffprobe_info['streams'][0]['duration_ts']))
 
     def test_bext_against_ffprobe(self):
         for wav_file in all_files():
@@ -50,39 +60,63 @@ class TestWaveInfo(TestCase):
 
             if info.bext:
                 if 'comment' in ffprobe_info['format']['tags']:
-                    self.assertEqual(info.bext.description, ffprobe_info['format']['tags']['comment'])
+                    self.assertEqual(info.bext.description, 
+                                     ffprobe_info['format']['tags']\
+                                             ['comment'])
                 else:
                     self.assertEqual(info.bext.description, '')
 
                 if 'encoded_by' in ffprobe_info['format']['tags']:
-                    self.assertEqual(info.bext.originator, ffprobe_info['format']['tags']['encoded_by'])
+                    self.assertEqual(info.bext.originator, 
+                                     ffprobe_info['format']['tags']\
+                                             ['encoded_by'])
                 else:
                     self.assertEqual(info.bext.originator, '')
 
                 if 'originator_reference' in ffprobe_info['format']['tags']:
-                    self.assertEqual(info.bext.originator_ref, ffprobe_info['format']['tags']['originator_reference'])
+                    self.assertEqual(info.bext.originator_ref, 
+                                     ffprobe_info['format']['tags']\
+                                             ['originator_reference'])
                 else:
                     self.assertEqual(info.bext.originator_ref, '')
 
                 # these don't always reflect the bext info
-                # self.assertEqual(info.bext.originator_date, ffprobe_info['format']['tags']['date'])
-                # self.assertEqual(info.bext.originator_time, ffprobe_info['format']['tags']['creation_time'])
-                self.assertEqual(info.bext.time_reference, int(ffprobe_info['format']['tags']['time_reference']))
+                # self.assertEqual(info.bext.originator_date, 
+                # ffprobe_info['format']['tags']['date'])
+                # self.assertEqual(info.bext.originator_time, 
+                # ffprobe_info['format']['tags']['creation_time'])
+                self.assertEqual(info.bext.time_reference, 
+                                 int(ffprobe_info['format']['tags']\
+                                         ['time_reference']))
 
                 if 'coding_history' in ffprobe_info['format']['tags']:
-                    self.assertEqual(info.bext.coding_history, ffprobe_info['format']['tags']['coding_history'])
+                    self.assertEqual(info.bext.coding_history, 
+                                     ffprobe_info['format']['tags']\
+                                             ['coding_history'])
                 else:
                     self.assertEqual(info.bext.coding_history, '')
 
     def test_ixml(self):
-        expected = {'A101_4.WAV': {'project': 'BMH', 'scene': 'A101', 'take': '4',
-                                   'tape': '18Y12M31', 'family_uid': 'USSDVGR1112089007124015008231000'},
-                    'A101_3.WAV': {'project': 'BMH', 'scene': 'A101', 'take': '3',
-                                   'tape': '18Y12M31', 'family_uid': 'USSDVGR1112089007124014008228300'},
-                    'A101_2.WAV': {'project': 'BMH', 'scene': 'A101', 'take': '2',
-                                   'tape': '18Y12M31', 'family_uid': 'USSDVGR1112089007124004008218600'},
-                    'A101_1.WAV': {'project': 'BMH', 'scene': 'A101', 'take': '1',
-                                   'tape': '18Y12M31', 'family_uid': 'USSDVGR1112089007124001008206300'},
+        expected = {'A101_4.WAV': {'project': 'BMH', 
+                                   'scene': 'A101', 'take': '4',
+                                   'tape': '18Y12M31', 
+                                   'family_uid': 
+                                   'USSDVGR1112089007124015008231000'},
+                    'A101_3.WAV': {'project': 'BMH', 
+                                   'scene': 'A101', 'take': '3',
+                                   'tape': '18Y12M31', 
+                                   'family_uid': 
+                                   'USSDVGR1112089007124014008228300'},
+                    'A101_2.WAV': {'project': 'BMH', 
+                                   'scene': 'A101', 'take': '2',
+                                   'tape': '18Y12M31', 
+                                   'family_uid':        
+                                   'USSDVGR1112089007124004008218600'},
+                    'A101_1.WAV': {'project': 'BMH', 
+                                   'scene': 'A101', 'take': '1',
+                                   'tape': '18Y12M31', 
+                                   'family_uid': 
+                                   'USSDVGR1112089007124001008206300'},
                     }
 
         for wav_file in all_files():
@@ -112,7 +146,8 @@ class TestWaveInfo(TestCase):
             assert info.ixml.steinberg is not None
             self.assertIsNotNone(info.ixml.steinberg.audio_speaker_arrangement)
             self.assertEqual(info.ixml.steinberg.sample_format_size, 3) 
-            self.assertEqual(info.ixml.steinberg.media_company, "https://github.com/iluvcapra/wavinfo")
+            self.assertEqual(info.ixml.steinberg.media_company, 
+                             "https://github.com/iluvcapra/wavinfo")
             self.assertFalse(info.ixml.steinberg.media_drop_frames)
             self.assertEqual(info.ixml.steinberg.media_duration, 1200.0)
 
@@ -124,7 +159,8 @@ class TestWaveInfo(TestCase):
         self.assertIsNone(info.ixml.steinberg)
 
     def test_info_metadata(self):
-        file_with_metadata = 'tests/test_files/sound_grinder_pro/new_camera bumb 1.wav'
+        file_with_metadata = \
+                'tests/test_files/sound_grinder_pro/new_camera bumb 1.wav'
         self.assertTrue(os.path.exists(file_with_metadata))
         info = wavinfo.WavInfoReader(file_with_metadata).info
 
@@ -138,7 +174,8 @@ class TestWaveInfo(TestCase):
         self.assertEqual(info.software, 'Sound Grinder Pro')
         self.assertEqual(info.created_date, '2010-12-28')
         self.assertEqual(info.engineer, 'JPH')
-        self.assertEqual(info.keywords, 'Sound Effect, movement, microphone, bump')
+        self.assertEqual(info.keywords,
+                         'Sound Effect, movement, microphone, bump')
         self.assertEqual(info.title, 'camera bumb 1')
         self.assertEqual(type(info.to_dict()), dict)
         self.assertEqual(type(info.__repr__()), str)

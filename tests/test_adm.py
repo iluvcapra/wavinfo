@@ -15,17 +15,20 @@ class TestADMWave(TestCase):
         adm = info.adm
         self.assertIsNotNone(adm)
 
+        assert adm is not None
         self.assertEqual(len(adm.channel_uids), 14)
 
     def test_to_dict(self):
         info = wavinfo.WavInfoReader(self.protools_adm_wav)
         adm = info.adm
+        assert adm is not None
         dict = adm.to_dict()
         self.assertIsNotNone(dict)
     
     def test_programme(self):
         info = wavinfo.WavInfoReader(self.protools_adm_wav)
         adm = info.adm
+        assert adm is not None
         pdict = adm.programme()
         self.assertIn("programme_id", pdict.keys())
         self.assertIn("programme_name", pdict.keys())
@@ -37,7 +40,7 @@ class TestADMWave(TestCase):
     def test_track_info(self):
         info = wavinfo.WavInfoReader(self.protools_adm_wav)
         adm = info.adm
-
+        assert adm is not None
         t1 = adm.track_info(0)
         self.assertTrue("channel_format_name" in t1.keys())
         self.assertEqual("RoomCentricLeft", t1["channel_format_name"])
