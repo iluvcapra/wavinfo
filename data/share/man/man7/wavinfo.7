@@ -16,7 +16,7 @@ divided into segments or
 which a client parser can either read or skip without reading. Chunks have 
 an identifier, or signature: a four-character-code that tells a client what
 kind of chunk it is, and a length. Based on this information, a client can look
-at the identifier and decide if it knows how to read that chunk and if it wants
+at the identifier and decide if it knows how to read a chunk and if it wants
 to. If it doesn't, it can simply read the length and skip past it.
 .PP
 Some chunks are mandated by the Microsoft standard, specifically
@@ -33,11 +33,11 @@ Chunks can also nest inside other chunks, a special identifier
 .I LIST 
 is used to indicate these. A WAVE file is a recursive list: a top level 
 list of chunks, where chunks may contain a list of chunks themselves.
-.SS Order of Metadata Chunks in a WAVE File
+.SS Order and Arrangement of Metadata Chunks in a WAVE File
 .PP
-Chunks in a WAVE file can appear in any order, and a capable parser can 
-accept them appearing in any order, however authorities give guidance on
-where chunks should be placed, when creating a new WAVE file.
+Chunks in a WAVE file can appear in any order, and a capable parser can accept
+them appearing in any order. However, authorities give guidance on where chunks
+should be placed when creating a new WAVE file.
 .PP
 .IP 1)
 For all new WAVE files, clients should always place an empty chunk, a
@@ -53,7 +53,7 @@ without having to re-write the file or audio data.
 .IP 2)
 Older authorites recommend placing metadata before the audio data, so clients
 reading the file sequentially will hit it before having to seek through the
-audio. This may improve metadata read performance on certain architecures.
+audio. This may improve metadata read performance on certain architectures.
 .IP 3)
 Older authorities also recommend inserting 
 .I JUNK
@@ -61,11 +61,11 @@ before the
 .I data 
 chunk, sized so that the first byte of the
 .I data
-payload lands immediately at 0x1000 (4096), because this was a common 
-factor of the page boundaries of many operating systems and architectures. This
-may optimize the audio I/O performance in certain situations. 
+payload lands immediately at 0x1000 (4096), because this was a common factor of
+the page boundaries of many operating systems and architectures. This may
+optimize the audio I/O performance in certain situations. 
 .IP 4)
-Modern implemenations (we're looking at 
+Modern implementations (we're looking at 
 .B Pro Tools
 here) tend to place the Broadcast-WAVE
 .I bext
@@ -149,16 +149,16 @@ chunk, which encodes a country, language, dialect and codepage along with a
 time range text note. We have never seen the text field on one of these 
 filled-out either.
 .PP 
-Some clients in our experience simply write UTF-8 into 
+Some clients, in our experience, simply write UTF-8 into 
 .IR cue ,
 .IR labl ,
 and
 .I note 
 fields without any kind of framing.
 .PP 
-The practical solution at this time is to assume either ISO Latin 1, Windows 
-CP 859 or Windows CP 1252, and allow the client or user to override this based 
-on its own inferences. The 
+A practical solution is to assume either ISO Latin 1, Windows CP 859 or Windows
+CP 1252, and allow the client or user to override this based on its own
+inferences. The 
 .I chardet 
 python package may provide useable guesses for text encoding, YMMV.
 .SH CHUNK MENAGERIE
