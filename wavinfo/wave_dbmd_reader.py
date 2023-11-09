@@ -208,8 +208,8 @@ class DolbyDigitalPlusMetadata:
 
     class PreferredDownMixMode(Enum):
         """
-        Indicates the creating engineer's preference of what the receiver should
-        downmix.
+        Indicates the creating engineer's preference of what the receiver 
+        should downmix.
         § 4.3.8.1
         """
         NOT_INDICATED = 0b00
@@ -386,7 +386,8 @@ class DolbyDigitalPlusMetadata:
 
         # downmix_mode, ltrt_center_downmix_level, ltrt_surround_downmix_level
         def ext_bsi1_word2(b):
-            return DolbyDigitalPlusMetadata.PreferredDownMixMode(b & 0xC0 >> 6), \
+            return DolbyDigitalPlusMetadata\
+                    .PreferredDownMixMode(b & 0xC0 >> 6), \
                 DolbyDigitalPlusMetadata.DownMixLevelToken(b & 0x38 >> 3), \
                 DolbyDigitalPlusMetadata.DownMixLevelToken(b & 0x7)
 
@@ -423,14 +424,19 @@ class DolbyDigitalPlusMetadata:
         pid = program_id(buffer[0])
         lfe_on, bitstream_mode, audio_coding_mode = program_info(buffer[1])
         ddplus_reserved1(buffer[2:2])
-        center_downmix_level, surround_downmix_level, dolby_surround_encoded = surround_config(buffer[4])
-        langcode_present, copyright_bitstream, original_bitstream, dialnorm = dialnorm_info(buffer[5])
+        center_downmix_level, surround_downmix_level, \
+                dolby_surround_encoded = surround_config(buffer[4])
+        langcode_present, copyright_bitstream, original_bitstream, \
+                dialnorm = dialnorm_info(buffer[5])
         langcode = langcod(buffer[6])
         prod_info_exists, mixlevel, roomtype = audio_prod_info(buffer[7])
 
-        loro_center_downmix_level, loro_surround_downmix_level = ext_bsi1_word1(buffer[8])
-        downmix_mode, ltrt_center_downmix_level, ltrt_surround_downmix_level = ext_bsi1_word2(buffer[9])
-        surround_ex_mode, dolby_headphone_encoded, ad_converter_type = ext_bsi2_word1(buffer[10])
+        loro_center_downmix_level, \
+                loro_surround_downmix_level = ext_bsi1_word1(buffer[8])
+        downmix_mode, ltrt_center_downmix_level, \
+                ltrt_surround_downmix_level = ext_bsi1_word2(buffer[9])
+        surround_ex_mode, dolby_headphone_encoded, \
+                ad_converter_type = ext_bsi2_word1(buffer[10])
 
         ddplus_reserved2(buffer[11:14])
         compression = compr1(buffer[14])
@@ -494,8 +500,9 @@ class DolbyAtmosMetadata:
 
     @classmethod
     def load(cls, data: bytes):
-        assert len(data) == cls.SEGMENT_LENGTH, "DolbyAtmosMetadata segment "\
-            "is incorrect length, expected %i actual was %i" % (cls.SEGMENT_LENGTH, len(data)) 
+        assert len(data) == cls.SEGMENT_LENGTH, ("DolbyAtmosMetadata segment "
+            "is incorrect length, "
+            "expected %i actual was %i") % (cls.SEGMENT_LENGTH, len(data)) 
 
         h = BytesIO(data)
 
@@ -513,7 +520,9 @@ class DolbyAtmosMetadata:
         warp_mode = a_val & 0x7
 
         return DolbyAtmosMetadata(tool_name=toolname, 
-            tool_version=(major, minor, fix), warp_mode=DolbyAtmosMetadata.WarpMode(warp_mode))
+            tool_version=(major, minor, fix), 
+                                  warp_mode=DolbyAtmosMetadata\
+                                          .WarpMode(warp_mode))
 
         
 @dataclass
@@ -521,7 +530,8 @@ class DolbyAtmosSupplementalMetadata:
     """
     Dolby Atmos supplemental metadata segment.
 
-    https://github.com/DolbyLaboratories/dbmd-atmos-parser/blob/master/dbmd_atmos_parse/src/dbmd_atmos_parse.c
+    https://github.com/DolbyLaboratories/dbmd-atmos-parser/blob/
+    master/dbmd_atmos_parse/src/dbmd_atmos_parse.c
     """ 
 
     class BinauralRenderMode(Enum):
@@ -617,7 +627,8 @@ class WavDolbyMetadataReader:
             else:
                 seg_size = unpack("<H", h.read(2))[0]
                 seg_payload = h.read(seg_size)
-                expected_checksum = WavDolbyMetadataReader.segment_checksum(seg_payload, seg_size)
+                expected_checksum = WavDolbyMetadataReader\
+                        .segment_checksum(seg_payload, seg_size)
                 checksum = unpack("B", h.read(1))[0]
 
                 segment = seg_payload
@@ -628,7 +639,8 @@ class WavDolbyMetadataReader:
                 elif stype == SegmentType.DolbyAtmosSupplemental:
                     segment = DolbyAtmosSupplementalMetadata.load(segment)
                 
-                self.segment_list.append( (stype, checksum == expected_checksum, segment) )
+                self.segment_list\
+                .append((stype, checksum == expected_checksum, segment))
     
     def dolby_digital_plus(self) -> List[DolbyDigitalPlusMetadata]:
         """

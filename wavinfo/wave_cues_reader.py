@@ -114,7 +114,8 @@ class CueEntry(NamedTuple):
     @classmethod
     def read(cls, data: bytes) -> 'CueEntry':
         assert len(data) == cls.format_size(), \
-            f"cue data size incorrect, expected {calcsize(cls.Format)} found {len(data)}"
+            (f"cue data size incorrect, expected {calcsize(cls.Format)} " 
+            "found {len(data)}")
 
         parsed = unpack(cls.Format, data)
 

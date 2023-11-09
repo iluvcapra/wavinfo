@@ -8,17 +8,20 @@ class WavBextReader:
         """
         Read Broadcast-WAV extended metadata.
         :param bext_data: The bytes-like data.
-        :param encoding: The encoding to use when decoding the text fields of the
-                 BEXT metadata scope. According to EBU Rec 3285 this shall be ASCII.
+        :param encoding: The encoding to use when decoding the text fields of 
+            the BEXT metadata scope. According to EBU Rec 3285 this shall be 
+            ASCII.
         """
-        packstring = "<256s" + "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + "hhhhh" + "180s"
+        packstring = "<256s" + "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + \
+                "hhhhh" + "180s"
 
         rest_starts = struct.calcsize(packstring)
         unpacked = struct.unpack(packstring, bext_data[:rest_starts])
 
         def sanitize_bytes(b : bytes) -> str:
             # honestly can't remember why I'm stripping nulls this way
-            first_null = next((index for index, byte in enumerate(b) if byte == 0), None)
+            first_null = next((index for index, byte in enumerate(b) \
+                    if byte == 0), None)
             trimmed = b if first_null is None else b[:first_null]
             decoded = trimmed.decode(encoding)
             return decoded
@@ -50,8 +53,8 @@ class WavBextReader:
         #: BEXT version. 
         self.version : int = unpacked[6]
             
-        #: SMPTE 330M UMID of this audio file, 64 bytes are allocated though the UMID
-        #: may only be 32 bytes long.
+        #: SMPTE 330M UMID of this audio file, 64 bytes are allocated though 
+        #: the UMID may only be 32 bytes long.
         self.umid : Optional[bytes] = None
             
         #: EBU R128 Integrated loudness, in LUFS.
