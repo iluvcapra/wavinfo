@@ -1,10 +1,16 @@
 from lxml import etree as ET
 import io
-from collections import namedtuple
+# from collections import namedtuple
 from typing import Optional
 from enum import IntEnum
+from typing import NamedTuple
 
-IXMLTrack = namedtuple('IXMLTrack', ['channel_index', 'interleave_index', 'name', 'function'])
+
+class IXMLTrack(NamedTuple):
+    channel_index: int
+    interleave_index: int
+    name: str
+    function: str
 
 
 class SteinbergMetadata:
@@ -29,7 +35,7 @@ class SteinbergMetadata:
         CINE_71 = 27
         SDDS_70 = 24
         SDDS_71 = 26
-        MUSIC_60 = 21 #??
+        MUSIC_60 = 21  # ??
         MUSIC_61 = 23
         ATMOS_712 = 33
         ATMOS_504 = 35
@@ -72,7 +78,8 @@ class SteinbergMetadata:
         """
         `AudioSpeakerArrangement` property
         """
-        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'AudioSpeakerArrangement']/VALUE")
+        val = self.parsed.find(
+            "./ATTR_LIST/ATTR[NAME = 'AudioSpeakerArrangement']/VALUE")
         if val is not None:
             return type(self).AudioSpeakerArrangement(int(val.text))
 
@@ -81,7 +88,8 @@ class SteinbergMetadata:
         """
         AudioSampleFormatSize
         """
-        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'AudioSampleFormatSize']/VALUE")
+        val = self.parsed.find(
+            "./ATTR_LIST/ATTR[NAME = 'AudioSampleFormatSize']/VALUE")
         if val is not None:
             return int(val.text)
 
@@ -90,7 +98,8 @@ class SteinbergMetadata:
         """
         MediaCompany
         """
-        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'MediaCompany']/VALUE")
+        val = self.parsed.find(
+            "./ATTR_LIST/ATTR[NAME = 'MediaCompany']/VALUE")
         if val is not None:
             return val.text
 
@@ -99,7 +108,8 @@ class SteinbergMetadata:
         """
         MediaDropFrames
         """
-        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'MediaDropFrames']/VALUE")
+        val = self.parsed.find(
+            "./ATTR_LIST/ATTR[NAME = 'MediaDropFrames']/VALUE")
         if val is not None:
             return val.text == "1"
 
@@ -108,7 +118,8 @@ class SteinbergMetadata:
         """
         MediaDuration
         """
-        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'MediaDuration']/VALUE")
+        val = self.parsed.find(
+            "./ATTR_LIST/ATTR[NAME = 'MediaDuration']/VALUE")
         if val is not None:
             return float(val.text)
 
@@ -145,6 +156,7 @@ class WavIXMLFormat:
     """
     iXML recorder metadata.
     """
+
     def __init__(self, xml):
         """
         Parse iXML.
@@ -153,13 +165,13 @@ class WavIXMLFormat:
         self.source = xml
         xml_bytes = io.BytesIO(xml)
         parser = ET.XMLParser(recover=True)
-        self.parsed : ET.ElementTree = ET.parse(xml_bytes, parser=parser)
+        self.parsed: ET.ElementTree = ET.parse(xml_bytes, parser=parser)
 
     def _get_text_value(self, xpath) -> Optional[str]:
         e = self.parsed.find("./" + xpath)
         if e is not None:
             return e.text
-        else: 
+        else:
             return None
 
     def xml_str(self) -> str:
@@ -181,10 +193,13 @@ class WavIXMLFormat:
         """
         for track in self.parsed.find("./TRACK_LIST").iter():
             if track.tag == 'TRACK':
-                yield IXMLTrack(channel_index=track.xpath('string(CHANNEL_INDEX/text())'),
-                                interleave_index=track.xpath('string(INTERLEAVE_INDEX/text())'),
-                                name=track.xpath('string(NAME/text())'),
-                                function=track.xpath('string(FUNCTION/text())'))
+                yield IXMLTrack(
+                    channel_index=track.xpath('string(CHANNEL_INDEX/text())'),
+                    interleave_index=track.xpath(
+                        'string(INTERLEAVE_INDEX/text())'),
+                    name=track.xpath('string(NAME/text())'),
+                    function=track.xpath('string(FUNCTION/text())')
+                )
 
     @property
     def project(self) -> Optional[str]:
@@ -201,7 +216,7 @@ class WavIXMLFormat:
         return self._get_text_value("SCENE")
 
     @property
-    def take(self) ->  Optional[str]:
+    def take(self) -> Optional[str]:
         """
         Take number.
         """
@@ -218,7 +233,8 @@ class WavIXMLFormat:
     def family_uid(self) -> Optional[str]:
         """
         The globally-unique ID for this file family. This may be in the format
-        of a GUID, or an EBU Rec 9 source identifier, or some other dumb number.
+        of a GUID, or an EBU Rec 9 source identifier, or some other dumb
+        number.
         """
         return self._get_text_value("FILE_SET/FAMILY_UID")
 
@@ -240,11 +256,8 @@ class WavIXMLFormat:
             return None
 
     def to_dict(self):
-        return dict(track_list=list(map(lambda x: x._asdict(), self.track_list)), 
-            project=self.project,
-            scene=self.scene,
-            take=self.take,
-            tape=self.tape,
-            family_uid=self.family_uid,
-            family_name=self.family_name 
-            )
+        return dict(
+            track_list=list(map(lambda x: x._asdict(), self.track_list)),
+            project=self.project, scene=self.scene, take=self.take,
+            tape=self.tape, family_uid=self.family_uid,
+            family_name=self.family_name)

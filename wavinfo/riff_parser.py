@@ -1,7 +1,7 @@
-
+# from optparse import Option
 import struct
-from collections import namedtuple
-from .rf64_parser import parse_rf64
+from .rf64_parser import parse_rf64, RF64Context
+from typing import NamedTuple, Union, List, Optional
 
 
 class WavInfoEOFError(EOFError):
@@ -10,11 +10,17 @@ class WavInfoEOFError(EOFError):
         self.chunk_start = chunk_start
 
 
-class ListChunkDescriptor(namedtuple('ListChunkDescriptor', 'signature children')):
-    pass
+class ListChunkDescriptor(NamedTuple):
+    signature: bytes
+    children: List[Union['ChunkDescriptor', 'ListChunkDescriptor']]
 
 
-class ChunkDescriptor(namedtuple('ChunkDescriptor', 'ident start length rf64_context')):
+class ChunkDescriptor(NamedTuple):
+    ident: bytes
+    start: int
+    length: int
+    rf64_context: Optional[RF64Context]
+
     def read_data(self, from_stream) -> bytes:
         from_stream.seek(self.start)
         return from_stream.read(self.length)
@@ -49,8 +55,8 @@ def parse_chunk(stream, rf64_context=None):
             rf64_context = parse_rf64(stream=stream, signature=ident)
 
         assert rf64_context is not None, \
-            f"Sentinel data size 0xFFFFFFFF found outside of RF64 context"
-        
+            "Sentinel data size 0xFFFFFFFF found outside of RF64 context"
+
         data_size = rf64_context.bigchunk_table[ident]
 
     displacement = data_size
@@ -64,5 +70,7 @@ def parse_chunk(stream, rf64_context=None):
     else:
         data_start = stream.tell()
         stream.seek(displacement, 1)
-        return ChunkDescriptor(ident=ident, start=data_start, length=data_size,
+        return ChunkDescriptor(ident=ident,
+                               start=data_start,
+                               length=data_size,
                                rf64_context=rf64_context)
