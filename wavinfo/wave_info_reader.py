@@ -9,10 +9,13 @@ class WavInfoChunkReader:
 
         f.seek(0)
         parsed_chunks = parse_chunk(f)
+        assert type(parsed_chunks) == ListChunkDescriptor
 
-        list_chunks = [chunk for chunk in parsed_chunks.children if type(chunk) is ListChunkDescriptor]
+        list_chunks = [chunk for chunk in parsed_chunks.children 
+                if type(chunk) is ListChunkDescriptor]
 
-        self.info_chunk = next((chunk for chunk in list_chunks if chunk.signature == b'INFO'), None)
+        self.info_chunk = next((chunk for chunk in list_chunks 
+                                if chunk.signature == b'INFO'), None)
 
         #: 'ICOP' Copyright
         self.copyright : Optional[str] = self._get_field(f, b'ICOP')
@@ -49,7 +52,9 @@ class WavInfoChunkReader:
         self.commissioned : Optional[str] = self._get_field(f, b'ICMS')
 
     def _get_field(self, f, field_ident) -> Optional[str]:
-        search = next(((chunk.start, chunk.length) for chunk in self.info_chunk.children if chunk.ident == field_ident),
+        search = next(((chunk.start, chunk.length) \
+                for chunk in self.info_chunk.children \
+                if chunk.ident == field_ident),
                       None)
 
         if search is not None:

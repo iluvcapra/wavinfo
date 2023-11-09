@@ -10,7 +10,7 @@ Unless otherwise stated, all § references here are to
 from enum import IntEnum, Enum
 from struct import unpack
 from dataclasses import dataclass, asdict
-from typing import List, Optional, Tuple, Any, Union
+from typing import List, Tuple, Any, Union
 
 from io import BytesIO
 
