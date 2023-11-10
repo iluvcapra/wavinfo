@@ -35,6 +35,12 @@ class WavInfoWriter:
         else:
             self.file = open(f, "r+b")
 
+        self.file.seek(0, SEEK_SET)
+        main_list = parse_chunk(self.file)
+        assert isinstance(main_list, ListChunkDescriptor)
+        assert not main_list.is_rf64(), ("RF64 metadata writing is not "
+                                          "supported")
+
     def erase_chunk(self, ident: bytes, index: int):
         """
         Strike-out a chunk with a ``JUNK`` chunk, and then combine with 
