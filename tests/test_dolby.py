@@ -1,7 +1,9 @@
 from unittest import TestCase
 
 import wavinfo
-from wavinfo.wave_dbmd_reader import SegmentType, DolbyDigitalPlusMetadata
+from wavinfo.reader.wave_dbmd_reader import (
+        SegmentType, DolbyDigitalPlusMetadata
+        )
 
 class TestDolby(TestCase):
     def setUp(self):

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import wavinfo
+import wavinfo.reader
 
 class TestADMWave(TestCase):
 
