@@ -6,12 +6,12 @@ from typing import Optional, Generator, Any, NamedTuple
 import pathlib
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
-from .wave_ixml_reader import WavIXMLFormat
-from .wave_bext_reader import WavBextReader
-from .wave_info_reader import WavInfoChunkReader
-from .wave_adm_reader import WavADMReader
-from .wave_dbmd_reader import WavDolbyMetadataReader
-from .wave_cues_reader import WavCuesReader
+from ..scopes.wave_ixml_reader import WavIXMLFormat
+from ..scopes.wave_bext_reader import WavBextReader
+from ..scopes.wave_info_reader import WavInfoChunkReader
+from ..scopes.wave_adm_reader import WavADMReader
+from ..scopes.wave_dbmd_reader import WavDolbyMetadataReader
+from ..scopes.wave_cues_reader import WavCuesReader
 
 
 #: Calculated statistics about the audio data.

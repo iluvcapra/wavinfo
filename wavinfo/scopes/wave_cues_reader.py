@@ -8,7 +8,7 @@ IBM Corporation and Microsoft Corporation
 https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf
 """
 from dataclasses import dataclass
-from .riff_parser import ChunkDescriptor
+from ..reader.riff_parser import ChunkDescriptor
 
 from struct import unpack, calcsize
 from typing import Optional, Tuple,  NamedTuple, List, Dict, Any, Generator
