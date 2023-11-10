@@ -3,8 +3,8 @@ wave_writer.py
 
 """
 
-from typing_extensions import Buffer
-from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
+# from typing_extensions import Buffer
+from ..reader.riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 
 from enum import Enum
 from struct import pack
@@ -77,10 +77,10 @@ class WavInfoWriter:
         self.file.seek(target[0] - 4, SEEK_SET)
         head_size = at + at % 2
         tail_size = at - (head_size + 8)
-        self.file.write(pack("<H", head_size))
+        self.file.write(pack("<I", head_size))
         self.file.seek(at, SEEK_CUR)
         self.file.write(b"JUNK")
-        self.file.write(pack("<H", tail_size))
+        self.file.write(pack("<I", tail_size))
         self.file.flush()
         
     def _can_split_junk(self, index: int, at: int) -> bool:
@@ -134,7 +134,10 @@ class WavInfoWriter:
         """
         Append a new chunk at the end of the file.
         """
-        pass
+        self.file.seek(0, SEEK_SET)
+        main_list = parse_chunk(self.file)
+        assert isinstance(main_list, ListChunkDescriptor)
+        assert False, "Implementation in progress" # FIXME
 
     def _rubout_chunk(self, index: int):
         target = self._get_junk_at(index)
