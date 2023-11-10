@@ -9,7 +9,7 @@ from ..reader.riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescript
 from enum import Enum
 from struct import pack
 from io import BufferedRandom, SEEK_CUR, SEEK_SET
-from typing import Tuple, Optional
+from typing import Tuple
 
 
 class WavInfoWriter:

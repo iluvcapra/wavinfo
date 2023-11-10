@@ -15,7 +15,6 @@ class TestRf64(TestCase):
         return super().setUp()
 
     def test_open(self):
-
         for path in glob("tests/test_files/rf64/*.wav.gz"):
             gz = gzip.open(path)
             wav_info = wavinfo.WavInfoReader(gz)
