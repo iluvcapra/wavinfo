@@ -6,6 +6,14 @@ from enum import IntEnum
 from typing import NamedTuple
 
 
+def read(ixml_data: bytes) -> 'IXml':
+    return IXml(ixml_data)
+
+
+# def write():
+#     pass
+
+
 class IXMLTrack(NamedTuple):
     channel_index: int
     interleave_index: int
@@ -152,12 +160,12 @@ class SteinbergMetadata:
         pass
 
 
-class WavIXMLFormat:
+class IXml:
     """
     iXML recorder metadata.
     """
 
-    def __init__(self, xml):
+    def __init__(self, xml: bytes):
         """
         Parse iXML.
         :param xml: A bytes-like object containing the iXML payload.

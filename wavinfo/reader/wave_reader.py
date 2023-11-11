@@ -8,8 +8,7 @@ import pathlib
 # from wavinfo.reader.wave_dbmd_reader import DolbyDigitalPlusMetadata
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
-from ..scopes.wave_ixml_reader import WavIXMLFormat
-from ..scopes import bext, adm, dbmd
+from ..scopes import bext, adm, dbmd, ixml
 from ..scopes.wave_info_reader import WavInfoChunkReader
 from ..scopes.wave_cues_reader import WavCuesReader
 
@@ -66,13 +65,13 @@ class WavInfoReader:
         self.bext: Optional[bext.Bext] = None
 
         #: iXML metadata.
-        self.ixml: Optional[WavIXMLFormat] = None
+        self.ixml: Optional[ixml.IXml] = None
 
         #: ADM Audio Definiton Model metadata.
         self.adm: Optional[adm.AudioDefinitionModel] = None
 
         #: Dolby bitstream metadata.
-        self.dolby: Optional[DolbyDigitalPlusMetadata] = None
+        self.dolby: Optional[dbmd.DolbyMetadataList] = None
 
         #: RIFF INFO metadata.
         self.info: Optional[WavInfoChunkReader] = None
@@ -183,7 +182,7 @@ class WavInfoReader:
 
     def _get_ixml(self, f):
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
-        return WavIXMLFormat(ixml_data.rstrip(b'\0')) if ixml_data else None
+        return ixml.read(ixml_data.rstrip(b'\0')) if ixml_data else None
 
     def _get_cue(self, f):
         cue = next((cue_chunk for cue_chunk in self.main_list if
