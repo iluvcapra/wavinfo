@@ -175,7 +175,12 @@ class WavInfoReader:
 
     def _get_dbmd(self, f) -> Optional[dbmd.DolbyDigitalPlusMetadata]:
         dbmd_data = self._find_chunk_data(b'dbmd', f, default_none=True)
-        return dbmd.read(dbmd_data=dbmd_data) if dbmd_data else None
+        try:
+            return None
+        except AssertionError as e:
+            print(f"Assertion in file {self.url}")
+            raise e
+
 
     def _get_ixml(self, f):
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
