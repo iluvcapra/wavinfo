@@ -10,14 +10,14 @@ creating entity identifier (usually the recording application or equipment),
 the date and time of recording and a time reference for timecode
 synchronization.
 
-The :py:attr:`coding_history<wavinfo.wave_bext_reader.WavBextReader.coding_history>` 
+The :py:attr:`coding_history<wavinfo.scopes.wave_bext_reader.Bext.coding_history>` 
 is designed to contain a record of every conversion performed on the audio file.
 
 In this example (from a Sound Devices 702T) the bext metadata contains
 scene/take slating information in the
-:py:attr:`description<wavinfo.wave_bext_reader.WavBextReader.description>`. 
+:py:attr:`description<wavinfo.scopes.wave_bext_reader.Bext.description>`. 
 Here also the
-:py:attr:`originator_ref<wavinfo.wave_bext_reader.WavBextReader.originator_ref>`
+:py:attr:`originator_ref<wavinfo.scopes.wave_bext_reader.Bext.originator_ref>`
 is a serial number conforming to EBU Rec 99.
 
 If the bext metadata conforms to `EBU 3285 v1`_, it will contain the WAV's 32
@@ -81,6 +81,9 @@ Result:
 
 Class Reference
 ---------------
+
+.. autoclass:: wavinfo.scopes.bext_reader.Bext
+   :members:
 
 .. autoclass:: wavinfo.wave_bext_reader.WavBextReader
    :members:
