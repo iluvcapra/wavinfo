@@ -16,15 +16,15 @@ source for all WAVE file metadata.
 
 `wavinfo` reads:
 
-* [Broadcast-WAVE][bext] metadata, including embedded program
+* All defined [Broadcast-WAVE][bext] fields, including embedded program
   loudness, coding history and [SMPTE UMID][smpte_330m2011].
+* [iXML][ixml] production recorder metadata, including project, scene, and 
+  take tags, recorder notes and file family information.
 * All known [RIFF INFO][info-tags] metadata fields.
 * [Audio Definition Model (ADM)][adm] track metadata and schema, including 
   channel, pack formats, 
-  object, content and programme.
-* [Dolby Digital Plus][ebu3285s6] and Dolby Atmos `dbmd` metadata.
-* [iXML][ixml] production recorder metadata, including project, scene, and 
-  take tags, recorder notes and file family information.
+  object, content and programme, including [Dolby Digital Plus][ebu3285s6]
+  and Dolby Atmos `dbmd` metadata for re-renders and mixdowns.
   * iXML `STEINBERG` sound library attributes.
 * Wave embedded [cue markers][cues], cue marker labels, notes and timed ranges as used
   by Zoom, iZotope RX, etc.
