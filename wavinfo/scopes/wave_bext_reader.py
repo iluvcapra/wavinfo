@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import struct
 # from .umid_parser import UMIDParser
 
-from typing import Optional, TypedDict
+from typing import Optional 
 
 @dataclass
 class Bext:
@@ -73,6 +73,8 @@ class Bext:
                 'max_shortterm_loudness': self.max_shortterm_loudness
                 }
 
+PACK_FORMAT = "<256s" + "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + \
+            "hhhhh" + "180s"
 
 class WavBextReader:
     def __init__(self, encoding):
@@ -83,7 +85,7 @@ class WavBextReader:
         """
         self.encoding = encoding
     
-    def sanitize_bytes(self, b: bytes) -> str:
+    def _sanitize_bytes(self, b: bytes) -> str:
             # honestly can't remember why I'm stripping nulls this way
             first_null = next((index for index, byte in enumerate(b)
                                if byte == 0), None)
@@ -92,18 +94,16 @@ class WavBextReader:
             return decoded
     
     def read(self, bext_data) -> Bext:
-        packstring = "<256s" + "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + \
-            "hhhhh" + "180s"
-        rest_starts = struct.calcsize(packstring)
-        unpacked = struct.unpack(packstring, bext_data[:rest_starts])
+        rest_starts = struct.calcsize(PACK_FORMAT)
+        unpacked = struct.unpack(PACK_FORMAT, bext_data[:rest_starts])
 
-        retval = Bext(description=self.sanitize_bytes(unpacked[0]),
-                      originator=self.sanitize_bytes(unpacked[1]),
-                      originator_ref=self.sanitize_bytes(unpacked[2]),
-                      originator_date=self.sanitize_bytes(unpacked[3]),
-                      originator_time=self.sanitize_bytes(unpacked[4]),
+        retval = Bext(description=self._sanitize_bytes(unpacked[0]),
+                      originator=self._sanitize_bytes(unpacked[1]),
+                      originator_ref=self._sanitize_bytes(unpacked[2]),
+                      originator_date=self._sanitize_bytes(unpacked[3]),
+                      originator_time=self._sanitize_bytes(unpacked[4]),
                       time_reference=unpacked[5],
-                      coding_history=self.sanitize_bytes(bext_data[rest_starts:]),
+                      coding_history=self._sanitize_bytes(bext_data[rest_starts:]),
                       version=unpacked[6], umid= None, loudness_value= None,
                       loudness_range= None, max_true_peak= None,
                       max_momentary_loudness= None, max_shortterm_loudness=
@@ -127,3 +127,45 @@ class WavBextWriter:
 
     def __init__(self, encoding: str = 'ascii') -> None:
         self.encoding = encoding
+
+    def _encode_string(self, s: str) -> bytes:
+        retdata = s.encode(self.encoding)
+        return retdata
+
+    def write(self, bext: Bext) -> bytes:
+        fields = [self._encode_string(bext.description),
+                  self._encode_string(bext.originator),
+                  self._encode_string(bext.originator_ref),
+                  self._encode_string(bext.originator_date),
+                  self._encode_string(bext.originator_time),
+                  bext.time_reference,
+                  bext.version,
+                  ]
+
+        if bext.version in (1, 2):
+            fields.append(bext.umid)
+        else:
+            fields.append(b"\0")
+        
+
+        if bext.version == 2:
+            assert bext.loudness_value
+            assert bext.loudness_range
+            assert bext.max_true_peak
+            assert bext.max_momentary_loudness
+            assert bext.max_shortterm_loudness
+            fields.append(int(bext.loudness_value * 100))
+            fields.append(int(bext.loudness_range * 100))
+            fields.append(int(bext.max_true_peak * 100))
+            fields.append(int(bext.max_momentary_loudness * 100))
+            fields.append(int(bext.max_shortterm_loudness * 100))
+        else:
+            fields.extend([0, 0, 0, 0, 0])
+        
+        fields.append(b"\0")
+
+        # breakpoint()
+        leadin = struct.pack(PACK_FORMAT, *fields)
+
+        return leadin + self._encode_string(bext.coding_history)
+
