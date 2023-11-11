@@ -4,7 +4,7 @@
 
 [![codecov](https://codecov.io/gh/iluvcapra/wavinfo/branch/master/graph/badge.svg?token=9DZQfZENYv)](https://codecov.io/gh/iluvcapra/wavinfo)
 
-![GitHub last commit](https://img.shields.io/github/last-commit/iluvcapra/pycmx) [![Documentation Status](https://readthedocs.org/projects/wavinfo/badge/?version=latest)](https://wavinfo.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/github/license/iluvcapra/wavinfo.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/iluvcapra/wavinfo) [![Documentation Status](https://readthedocs.org/projects/wavinfo/badge/?version=latest)](https://wavinfo.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/github/license/iluvcapra/wavinfo.svg)
 
 # wavinfo
 
