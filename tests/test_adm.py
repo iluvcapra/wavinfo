@@ -16,7 +16,7 @@ class TestADMWave(TestCase):
         self.assertIsNotNone(adm)
 
         assert adm is not None
-        self.assertEqual(len(adm.channel_uids), 14)
+        self.assertEqual(len(adm.channel_entries), 14)
 
     def test_to_dict(self):
         info = wavinfo.WavInfoReader(self.protools_adm_wav)

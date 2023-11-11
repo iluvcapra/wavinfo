@@ -23,11 +23,9 @@ class TextBext(unittest.TestCase):
                                      max_momentary_loudness=-4.0,
                                      max_shortterm_loudness=-7.5)
 
-        w, r = (bext.WavBextWriter(), 
-                bext.WavBextReader(encoding='ascii'))
-        
-        bext_data = w.write(bext_struct)
-        received = r.read(bext_data)
+
+        bext_data = bext.write(bext_struct, encoding='ascii')
+        received = bext.read(bext_data, encoding='ascii')
         
         self.assertEqual(bext_struct.description, received.description)
         self.assertEqual(bext_struct.originator, received.originator)

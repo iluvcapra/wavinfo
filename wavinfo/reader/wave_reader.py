@@ -7,9 +7,8 @@ import pathlib
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 from ..scopes.wave_ixml_reader import WavIXMLFormat
-from ..scopes.bext import WavBextReader, Bext
+from ..scopes import bext, adm
 from ..scopes.wave_info_reader import WavInfoChunkReader
-from ..scopes.wave_adm_reader import WavADMReader
 from ..scopes.wave_dbmd_reader import WavDolbyMetadataReader
 from ..scopes.wave_cues_reader import WavCuesReader
 
@@ -63,13 +62,13 @@ class WavInfoReader:
         self.data: Optional[WavDataDescriptor] = None
 
         #: Broadcast-Wave metadata.
-        self.bext: Optional[Bext] = None
+        self.bext: Optional[bext.Bext] = None
 
         #: iXML metadata.
         self.ixml: Optional[WavIXMLFormat] = None
 
         #: ADM Audio Definiton Model metadata.
-        self.adm: Optional[WavADMReader] = None
+        self.adm: Optional[adm.AudioDefinitionModel] = None
 
         #: Dolby bitstream metadata.
         self.dolby: Optional[WavDolbyMetadataReader] = None
@@ -166,17 +165,12 @@ class WavInfoReader:
 
     def _get_bext(self, f, encoding):
         bext_data = self._find_chunk_data(b'bext', f, default_none=True)
-        if bext_data:
-            reader = WavBextReader(encoding)
-            return reader.read(bext_data)
-        else:
-            return None
+        return bext.read(bext_data, encoding) if bext_data else None
 
     def _get_adm(self, f):
         axml = self._find_chunk_data(b'axml', f, default_none=True)
         chna = self._find_chunk_data(b'chna', f, default_none=True)
-        return WavADMReader(axml_data=axml, chna_data=chna) \
-            if axml and chna else None
+        return adm.read(axml, chna) if axml and chna else None
 
     def _get_dbmd(self, f):
         dbmd_data = self._find_chunk_data(b'dbmd', f, default_none=True)
