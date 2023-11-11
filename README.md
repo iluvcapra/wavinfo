@@ -18,6 +18,7 @@ source for all WAVE file metadata.
 
 * [Broadcast-WAVE][bext] metadata, including embedded program
   loudness, coding history and [SMPTE UMID][smpte_330m2011].
+* All known [RIFF INFO][info-tags] metadata fields.
 * [Audio Definition Model (ADM)][adm] track metadata and schema, including 
   channel, pack formats, 
   object, content and programme.
@@ -27,7 +28,6 @@ source for all WAVE file metadata.
   * iXML `STEINBERG` sound library attributes.
 * Wave embedded [cue markers][cues], cue marker labels, notes and timed ranges as used
   by Zoom, iZotope RX, etc.
-* Most of the common [RIFF INFO][info-tags] metadata fields.
 * The [wav format][format] is also parsed, so you can access the basic sample rate 
   and channel count information.
 
