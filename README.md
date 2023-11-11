@@ -7,7 +7,7 @@
 
 # wavinfo
 
-__See the [note below](hd#version3-coming-soon) about version 3.__
+__See the [note below](#version3-coming-soon) about version 3.__
 
 The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] 
 and extract extended metadata. `wavinfo` has an emphasis on film, video and 
