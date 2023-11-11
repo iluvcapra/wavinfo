@@ -7,7 +7,7 @@ import pathlib
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 from ..scopes.wave_ixml_reader import WavIXMLFormat
-from ..scopes.wave_bext_reader import WavBextReader
+from ..scopes.wave_bext_reader import WavBextReader, Bext
 from ..scopes.wave_info_reader import WavInfoChunkReader
 from ..scopes.wave_adm_reader import WavADMReader
 from ..scopes.wave_dbmd_reader import WavDolbyMetadataReader
@@ -63,7 +63,7 @@ class WavInfoReader:
         self.data: Optional[WavDataDescriptor] = None
 
         #: Broadcast-Wave metadata.
-        self.bext: Optional[WavBextReader] = None
+        self.bext: Optional[Bext] = None
 
         #: iXML metadata.
         self.ixml: Optional[WavIXMLFormat] = None
@@ -166,7 +166,11 @@ class WavInfoReader:
 
     def _get_bext(self, f, encoding):
         bext_data = self._find_chunk_data(b'bext', f, default_none=True)
-        return WavBextReader(bext_data, encoding) if bext_data else None
+        if bext_data:
+            reader = WavBextReader(encoding)
+            return reader.read(bext_data)
+        else:
+            return None
 
     def _get_adm(self, f):
         axml = self._find_chunk_data(b'axml', f, default_none=True)
