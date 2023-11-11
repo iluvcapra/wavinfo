@@ -19,6 +19,7 @@ music production metadata.
    quickstart
    command_line
    scopes/*
+   version3
    classes
    references
 

@@ -181,7 +181,6 @@ class WavInfoReader:
             print(f"Assertion in file {self.url}")
             raise e
 
-
     def _get_ixml(self, f):
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
         return WavIXMLFormat(ixml_data.rstrip(b'\0')) if ixml_data else None
