@@ -35,11 +35,11 @@ class WavInfoReader:
     Parse a WAV audio file for metadata.
     """
 
-    def __init__(self, path, info_encoding='latin_1', bext_encoding='ascii'):
+    def __init__(self, f, info_encoding='latin_1', bext_encoding='ascii'):
         """
         Create a new reader object.
 
-        :param path:
+        :param f:
             A pathlike object or IO to the wav file you wish to probe or a
             file handle to an open file.
 
@@ -80,21 +80,21 @@ class WavInfoReader:
         #: RIFF cues markers, labels, and notes.
         self.cues: Optional[WavCuesReader] = None
 
-        if hasattr(path, 'read'):
-            self.get_wav_info(path)
+        if hasattr(f, 'read'):
+            self.get_wav_info(f)
             self.url = 'about:blank'
-            self.path = repr(path)
+            self.path = repr(f)
 
         else:
-            absolute_path = os.path.abspath(path)
+            absolute_path = os.path.abspath(f)
 
             #: `file://` url for the file.
             self.url: str = pathlib.Path(absolute_path).as_uri()
 
             self.path = absolute_path
 
-            with open(path, 'rb') as path:
-                self.get_wav_info(path)
+            with open(f, 'rb') as f:
+                self.get_wav_info(f)
 
     def get_wav_info(self, wavfile):
         chunks = parse_chunk(wavfile)
