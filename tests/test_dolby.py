@@ -21,21 +21,14 @@ class TestDolby(TestCase):
         d = t1.dolby
         assert d is not None
 
-        ddp = [x for x in d.segment_list \
+        ddp = [x for x in d.segments \
                 if x[0] == SegmentType.DolbyDigitalPlus]
-        atmos = [x for x in d.segment_list \
+        atmos = [x for x in d.segments \
                 if x[0] == SegmentType.DolbyAtmos]
 
         self.assertEqual(len(ddp), 1)
         self.assertEqual(len(atmos), 1)
 
-    def test_checksums(self):
-        t1 = wavinfo.WavInfoReader(self.test_file)
-        d = t1.dolby
-        assert d is not None
-
-        for seg in d.segment_list:
-            self.assertTrue(seg[1])
 
     def test_ddp(self):
         t1 = wavinfo.WavInfoReader(self.test_file)
@@ -50,6 +43,7 @@ class TestDolby(TestCase):
         self.assertTrue( ddp[0].audio_coding_mode, 
                         DolbyDigitalPlusMetadata.AudioCodingMode.CH_ORD_3_2 )
         self.assertTrue( ddp[0].lfe_on)
+
         
     def test_atmos(self):
         t1 = wavinfo.WavInfoReader(self.test_file)

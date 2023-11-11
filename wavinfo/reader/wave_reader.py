@@ -173,10 +173,10 @@ class WavInfoReader:
         chna = self._find_chunk_data(b'chna', f, default_none=True)
         return adm.read(axml, chna) if axml and chna else None
 
-    def _get_dbmd(self, f) -> Optional[dbmd.DolbyDigitalPlusMetadata]:
+    def _get_dbmd(self, f) -> Optional[dbmd.DolbyMetadataList]:
         dbmd_data = self._find_chunk_data(b'dbmd', f, default_none=True)
         try:
-            return None
+            return dbmd.read(dbmd_data) if dbmd_data else None
         except AssertionError as e:
             print(f"Assertion in file {self.url}")
             raise e

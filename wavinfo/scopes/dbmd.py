@@ -11,16 +11,93 @@ European Broadcasting Union
 from enum import IntEnum, Enum
 from struct import unpack
 from dataclasses import dataclass, asdict
-from typing import List, Tuple, Any, Union
+from typing import List, Tuple, Any, Union, cast
 
 from io import BytesIO
 
-def read(dbmd_data: bytes) -> 'DolbyDigitalPlusMetadata':
-    # check down around line 580
-    pass 
+def read(dbmd_data: bytes) -> 'DolbyMetadataList':
+    segment_list = []
+
+    h = BytesIO(dbmd_data)
+
+    v_vec = []
+    for _ in range(4):
+        b = h.read(1)
+        v_vec.insert(0, unpack("B", b)[0])
+    
+    version = cast(Tuple[int,int,int,int], tuple(v_vec[0:4]))
+
+    while True:
+        stype = SegmentType(unpack("B", h.read(1))[0])
+        if stype == SegmentType.EndMarker:
+            break
+        else:
+            seg_size = unpack("<H", h.read(2))[0]
+            seg_payload = h.read(seg_size)
+            expected_checksum = WavDolbyMetadataReader\
+                .segment_checksum(seg_payload, seg_size)
+            checksum = unpack("B", h.read(1))[0]
+            
+            assert checksum == expected_checksum, (f"Dolby metadata segment "
+                                                   "#{len(segment_list)} type "
+                                                   "{stype} did checksum did "
+                                                   "not match, expected "
+                                                   "{expected} was {checksum}."
+                                                   )
+
+            segment = seg_payload
+            if stype == SegmentType.DolbyDigitalPlus:
+                segment = DolbyDigitalPlusMetadata.load(segment)
+            elif stype == SegmentType.DolbyAtmos:
+                segment = DolbyAtmosMetadata.load(segment)
+            elif stype == SegmentType.DolbyAtmosSupplemental:
+                segment = DolbyAtmosSupplementalMetadata.load(segment)
+
+            segment_list.append((stype, segment))
+        
+    return DolbyMetadataList(version=version, segments=segment_list)
+
 
 # def write():
 #     pass
+
+
+@dataclass 
+class DolbyMetadataList:
+    version: Tuple[int, int, int, int]
+    segments: List[Tuple['SegmentType',Any]]
+
+    
+    def dolby_digital_plus(self) -> List['DolbyDigitalPlusMetadata']:
+        """
+        Every valid Dolby Digital Plus metadata segment in the file.
+        """
+        return [x[1] for x in self.segments
+                if x[0] == SegmentType.DolbyDigitalPlus and x[1]]
+
+    def dolby_atmos(self) -> List['DolbyAtmosMetadata']:
+        """
+        Every valid Dolby Atmos metadata segment in the file.
+        """
+        return [x[1] for x in self.segments
+                if x[0] == SegmentType.DolbyAtmos and x[1]]
+
+    def dolby_atmos_supplemental(self
+                                 ) -> List['DolbyAtmosSupplementalMetadata']: 
+        """
+        Every valid Dolby Atmos Supplemental metadata segment in the file.
+        """
+        return [x[1] for x in self.segments
+                if x[0] == SegmentType.DolbyAtmosSupplemental and x[1]]
+
+    def to_dict(self) -> dict:
+
+        ddp = map(lambda x: asdict(x), self.dolby_digital_plus())
+        atmos = map(lambda x: asdict(x), self.dolby_atmos())
+
+        return dict(dolby_digital_plus=list(ddp),
+                    dolby_atmos=list(atmos))
+
 
 class SegmentType(IntEnum):
     """
