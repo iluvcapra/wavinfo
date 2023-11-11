@@ -7,7 +7,7 @@ import pathlib
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 from ..scopes.wave_ixml_reader import WavIXMLFormat
-from ..scopes.wave_bext_reader import WavBextReader, Bext
+from ..scopes.bext import WavBextReader, Bext
 from ..scopes.wave_info_reader import WavInfoChunkReader
 from ..scopes.wave_adm_reader import WavADMReader
 from ..scopes.wave_dbmd_reader import WavDolbyMetadataReader
