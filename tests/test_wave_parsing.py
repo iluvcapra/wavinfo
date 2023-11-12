@@ -169,7 +169,6 @@ class TestWaveInfo(TestCase):
         self.assertEqual(info.artist, 'Jamie Hardt')
         self.assertEqual(info.copyright, 'Â© 2010 Jamie Hardt')
         self.assertEqual(info.product, 'Test Sounds')  # album
-        self.assertEqual(info.album, info.product)
         self.assertEqual(info.comment, 'Comments')
         self.assertEqual(info.software, 'Sound Grinder Pro')
         self.assertEqual(info.created_date, '2010-12-28')

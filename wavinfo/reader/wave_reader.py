@@ -8,8 +8,7 @@ import pathlib
 # from wavinfo.reader.wave_dbmd_reader import DolbyDigitalPlusMetadata
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
-from ..scopes import bext, adm, dbmd, ixml
-from ..scopes.wave_info_reader import WavInfoChunkReader
+from ..scopes import bext, adm, dbmd, ixml, info
 from ..scopes.wave_cues_reader import WavCuesReader
 
 
@@ -74,7 +73,7 @@ class WavInfoReader:
         self.dolby: Optional[dbmd.DolbyMetadataList] = None
 
         #: RIFF INFO metadata.
-        self.info: Optional[WavInfoChunkReader] = None
+        self.info: Optional[info.RiffInfo] = None
 
         #: RIFF cues markers, labels, and notes.
         self.cues: Optional[WavCuesReader] = None
@@ -130,6 +129,14 @@ class WavInfoReader:
 
         return next(top_chunks, None)
 
+    def _read_list_chunk_data(self, signature, from_stream) -> Optional[bytes]:
+        list_chunk = self._find_list_chunk(signature)
+        if list_chunk is None: 
+            return None 
+
+        from_stream.seek(list_chunk.start)
+        return from_stream.read(list_chunk.length)
+
     def _describe_data(self):
         data_chunk = next(c for c in self.main_list
                           if type(c) is ChunkDescriptor and c.ident == b'data')
@@ -157,11 +164,8 @@ class WavInfoReader:
                               )
 
     def _get_info(self, f, encoding):
-        finder = (chunk.signature for chunk in self.main_list
-                  if type(chunk) is ListChunkDescriptor)
-
-        if b'INFO' in finder:
-            return WavInfoChunkReader(f, encoding)
+        info_chunk = self._read_list_chunk_data(b"INFO", f)
+        return info.read(info_chunk, encoding) if info_chunk else None
 
     def _get_bext(self, f, encoding) -> Optional[bext.Bext]:
         bext_data = self._find_chunk_data(b'bext', f, default_none=True)

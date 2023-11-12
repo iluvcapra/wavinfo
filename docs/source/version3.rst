@@ -17,3 +17,10 @@ Renamed Parameters in ``WavInfoReader``
 
 * The ``path`` parameter has been renamed ``f`` to more accurately reflect
   it's function as both a ``PathLike`` and a ``IO``
+
+
+``INFO`` metadata
+-----------------
+
+* Removed non-standard ``tape`` field
+* Removed ``album`` field that was alias for ``product``
