@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import struct
 import os
-from typing import Optional, Generator, Any, NamedTuple
+from typing import Optional, Generator, Any, NamedTuple 
 
 import pathlib
 
