@@ -1,6 +1,12 @@
+"""
+ixml.py
+
+iXML
+Gallery Software
+"""
 from lxml import etree as ET
+
 import io
-# from collections import namedtuple
 from typing import Optional
 from enum import IntEnum
 from typing import NamedTuple
