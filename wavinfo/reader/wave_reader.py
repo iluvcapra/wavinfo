@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 import struct
 import os
-from typing import Optional, Generator, Any, NamedTuple 
+from typing import Optional, Generator, Any, NamedTuple
 
 import pathlib
 
 # from wavinfo.reader.wave_dbmd_reader import DolbyDigitalPlusMetadata
 
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
-from ..scopes import bext, adm, dbmd, ixml, info
-from ..scopes.wave_cues_reader import WavCuesReader
+from ..scopes import bext, adm, dbmd, ixml, info, cues
 
 
 #: Calculated statistics about the audio data.
@@ -76,7 +75,7 @@ class WavInfoReader:
         self.info: Optional[info.RiffInfo] = None
 
         #: RIFF cues markers, labels, and notes.
-        self.cues: Optional[WavCuesReader] = None
+        self.cues: Optional[cues.CueList] = None
 
         if hasattr(f, 'read'):
             self.get_wav_info(f)
@@ -96,7 +95,7 @@ class WavInfoReader:
 
     def get_wav_info(self, wavfile):
         chunks = parse_chunk(wavfile)
-        assert type(chunks) is ListChunkDescriptor
+        assert isinstance(chunks, ListChunkDescriptor)
 
         self.main_list = chunks.children
         wavfile.seek(0)
@@ -113,7 +112,7 @@ class WavInfoReader:
     def _find_chunk_data(self, ident, from_stream,
                          default_none=False) -> Optional[bytes]:
         top_chunks = (chunk for chunk in self.main_list
-                      if type(chunk) is ChunkDescriptor and
+                      if isinstance(chunk, ChunkDescriptor) and
                       chunk.ident == ident)
 
         chunk_descriptor = next(top_chunks, None) \
@@ -124,22 +123,23 @@ class WavInfoReader:
 
     def _find_list_chunk(self, signature) -> Optional[ListChunkDescriptor]:
         top_chunks = (chunk for chunk in self.main_list
-                      if type(chunk) is ListChunkDescriptor and
+                      if isinstance(chunk, ListChunkDescriptor) and
                       chunk.signature == signature)
 
         return next(top_chunks, None)
 
     def _read_list_chunk_data(self, signature, from_stream) -> Optional[bytes]:
         list_chunk = self._find_list_chunk(signature)
-        if list_chunk is None: 
-            return None 
+        if list_chunk is None:
+            return None
 
         from_stream.seek(list_chunk.start)
         return from_stream.read(list_chunk.length)
 
     def _describe_data(self):
-        data_chunk = next(c for c in self.main_list
-                          if type(c) is ChunkDescriptor and c.ident == b'data')
+        data_chunk = next(
+            c for c in self.main_list if isinstance(
+                c, ChunkDescriptor) and c.ident == b'data')
 
         assert isinstance(self.fmt, WavAudioFormat)
         return WavDataDescriptor(
@@ -184,31 +184,16 @@ class WavInfoReader:
             print(f"Assertion in file {self.url}")
             raise e
 
-    def _get_ixml(self, f):
+    def _get_ixml(self, f) -> Optional[ixml.IXml]:
         ixml_data = self._find_chunk_data(b'iXML', f, default_none=True)
         return ixml.read(ixml_data.rstrip(b'\0')) if ixml_data else None
 
-    def _get_cue(self, f):
-        cue = next((cue_chunk for cue_chunk in self.main_list if
-                    type(cue_chunk) is ChunkDescriptor and
-                    cue_chunk.ident == b'cue '), None)
+    def _get_cue(self, f) -> Optional[cues.CueList]:
+        cue_chunk = self._find_chunk_data(b'cue ', f, default_none=True)
+        adtl_chunk = self._read_list_chunk_data(b'adtl', f)
+        # breakpoint()
+        return cues.read(cue_chunk, adtl_chunk, encoding=self.info_encoding)
 
-        adtl = self._find_list_chunk(b'adtl')
-        labls = []
-        ltxts = []
-        notes = []
-        if adtl is not None:
-            labls = [c for c in adtl.children
-                     if type(c) is ChunkDescriptor and c.ident == b'labl']
-            ltxts = [c for c in adtl.children
-                     if type(c) is ChunkDescriptor and c.ident == b'ltxt']
-            notes = [c for c in adtl.children
-                     if type(c) is ChunkDescriptor and c.ident == b'note']
-
-        return WavCuesReader.read_all(f, cue, labls, ltxts, notes,
-                                      fallback_encoding=self.info_encoding)
-
-    # FIXME: this should probably be named "iter()"
     def walk(self) -> Generator[str, str, Any]:
         """
         Walk all of the available metadata fields.

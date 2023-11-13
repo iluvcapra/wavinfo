@@ -11,6 +11,11 @@ Library and Module Reorganization
 * All implementation code for specific metadata scopes has been moved into a 
   ``scopes`` folder and the names of the modules have been shortened to 
   reflect these modules now implement reader and writer methods.
+* Scope data types have been renamed and all parsing logic has been moved into 
+  correspdonding ``read()`` functions defined in the module scope. In almost 
+  all cases these data objects will have the same properties and methods as 
+  in Version 2. Deviations from Version 2 will be noted below.
+
 
 Renamed Parameters in ``WavInfoReader``
 ----------------------------------------
@@ -24,3 +29,10 @@ Renamed Parameters in ``WavInfoReader``
 
 * Removed non-standard ``tape`` field
 * Removed ``album`` field that was alias for ``product``
+
+
+``cue`` metadata
+----------------
+
+* The ``cues`` property of the ``CueList`` object is now a dictionary instead 
+  of a list that indexes cue entries by their ``name``.
