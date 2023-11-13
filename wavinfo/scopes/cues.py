@@ -1,11 +1,8 @@
 """
-Cues metadata
+Cues.py
 
-For reference on implementation of cues and related metadata see:
-August 1991, "Multimedia Programming Interface and Data Specifications 1.0",
-IBM Corporation and Microsoft Corporation
-
-https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf
+Cues
+Microsoft Corporation Multimedia Interface Specification
 """
 
 from dataclasses import dataclass
