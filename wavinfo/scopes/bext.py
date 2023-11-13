@@ -1,5 +1,5 @@
 """
-bext.py 
+bext.py
 
 Broadcast-WAVE Extension
 European Broadcasting Union
@@ -8,11 +8,12 @@ from dataclasses import dataclass
 import struct
 # from .umid_parser import UMIDParser
 
-from typing import Optional 
+from typing import Optional
 
+__all__ = ('read', 'write', 'Bext')
 
 _PACK_FORMAT = "<256s" + "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + \
-            "hhhhh" + "180s"
+    "hhhhh" + "180s"
 
 
 def read(bext_data: bytes, encoding: str) -> 'Bext':
@@ -35,10 +36,9 @@ def read(bext_data: bytes, encoding: str) -> 'Bext':
                   originator_time=_sanitize_bytes(unpacked[4]),
                   time_reference=unpacked[5],
                   coding_history=_sanitize_bytes(bext_data[rest_starts:]),
-                  version=unpacked[6], umid= None, loudness_value= None,
-                  loudness_range= None, max_true_peak= None,
-                  max_momentary_loudness= None, max_shortterm_loudness=
-                  None)
+                  version=unpacked[6], umid=None, loudness_value=None,
+                  loudness_range=None, max_true_peak=None,
+                  max_momentary_loudness=None, max_shortterm_loudness=None)
 
     if retval.version > 0:
         retval.umid = unpacked[7]
@@ -50,7 +50,8 @@ def read(bext_data: bytes, encoding: str) -> 'Bext':
         retval.max_momentary_loudness = unpacked[11] / 100.0
         retval.max_shortterm_loudness = unpacked[12] / 100.0
 
-    return retval    
+    return retval
+
 
 def write(bext: 'Bext', encoding: str) -> bytes:
 
@@ -71,7 +72,7 @@ def write(bext: 'Bext', encoding: str) -> bytes:
         fields.append(bext.umid)
     else:
         fields.append(b"\0")
-    
+
     if bext.version == 2:
         assert bext.loudness_value
         assert bext.loudness_range
@@ -85,7 +86,7 @@ def write(bext: 'Bext', encoding: str) -> bytes:
         fields.append(int(bext.max_shortterm_loudness * 100))
     else:
         fields.extend([0, 0, 0, 0, 0])
-    
+
     fields.append(b"\0")
 
     leadin = struct.pack(_PACK_FORMAT, *fields)
@@ -100,46 +101,46 @@ class Bext:
     """
     #: BEXT version
     version: int
-    
+
     #: Description. A free-text field up to 256 characters long.
     description: str
 
-    #: Originator. Usually the name of the encoding application, sometimes an 
-    #: artist name. 
+    #: Originator. Usually the name of the encoding application, sometimes an
+    #: artist name.
     originator: str
 
     #: A unique identifier for the file, a serial number.
-    originator_ref: str 
+    originator_ref: str
 
     #: Date of the recording, in the format YYYY-MM-DD.
-    originator_date: str 
-    
+    originator_date: str
+
     #: Time of the recording, in the format HH:MM:SS.
     originator_time: str
 
     #: The sample offset of the start, usually relative to midnight.
-    time_reference: int 
+    time_reference: int
 
-    #: A variable-length text field containing a list of processes and and 
+    #: A variable-length text field containing a list of processes and and
     #: conversions performed on the file.
     coding_history: str
-    
-    #: SMPTE 330M UMID of this audio file, 64 bytes are allocated though the 
+
+    #: SMPTE 330M UMID of this audio file, 64 bytes are allocated though the
     #: UMID may only be 32 bytes long.
     umid: Optional[bytes]
-    
+
     #: EBU R128 Integrated loudness, in LUFS.
     loudness_value: Optional[float]
-    
+
     #: EBU R128 Loudness range, in LUFS.
     loudness_range: Optional[float]
-    
+
     #: True peak level, in dBFS TP
     max_true_peak: Optional[float]
-    
+
     #: EBU R128 Maximum momentary loudness, in LUFS
     max_momentary_loudness: Optional[float]
-    
+
     #: EBU R128 Maximum short-term loudness, in LUFS.
     max_shortterm_loudness: Optional[float]
 
