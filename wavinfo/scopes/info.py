@@ -1,5 +1,11 @@
+"""
+info.py
+
+INFO Metadata
+Microsoft Corporation Multimedia Interface Specification
+"""
 from struct import pack
-from ..reader.riff_parser import ChunkDescriptor, parse_chunk, ListChunkDescriptor, parse_list_chunk
+from ..reader.riff_parser import ChunkDescriptor, parse_list_chunk
 from ..writer.list_writer import ListForm
 
 from io import BytesIO
@@ -12,30 +18,30 @@ __all__ = ('read', 'write', 'RiffInfo')
 
 #: All fields defined in Multimedia Interface
 FIELD_MAP = {
-        b'IARL': 'archival_location',
-        b'IART': 'artist',
-        b'ICMS': 'commissioned',
-        b'ICMT': 'comment',
-        b'ICOP': 'copyright',
-        b'ICRD': 'created_date',
-        b'ICRP': 'cropped',
-        # b'IDIM': 'dimenstions',
-        # b'IDPI': 'dots_per_inch',
-        b'IENG': 'engineer',
-        b'IGNR': 'genre',
-        b'IKEY': 'keywords',
-        # b'ILGT': 'lightness',
-        b'IMED': 'medium',
-        b'INAM': 'title',
-        # b'IPLT': 'palette_setting',
-        b'IPRD': 'product',
-        b'ISBJ': 'subject',
-        b'ISFT': 'software',
-        # b'ISHP': 'sharpness',
-        b'ISRC': 'source',
-        b'ISRF': 'source_form',
-        b'ITCH': 'technician'
-        }
+    b'IARL': 'archival_location',
+    b'IART': 'artist',
+    b'ICMS': 'commissioned',
+    b'ICMT': 'comment',
+    b'ICOP': 'copyright',
+    b'ICRD': 'created_date',
+    b'ICRP': 'cropped',
+    # b'IDIM': 'dimenstions',
+    # b'IDPI': 'dots_per_inch',
+    b'IENG': 'engineer',
+    b'IGNR': 'genre',
+    b'IKEY': 'keywords',
+    # b'ILGT': 'lightness',
+    b'IMED': 'medium',
+    b'INAM': 'title',
+    # b'IPLT': 'palette_setting',
+    b'IPRD': 'product',
+    b'ISBJ': 'subject',
+    b'ISFT': 'software',
+    # b'ISHP': 'sharpness',
+    b'ISRC': 'source',
+    b'ISRF': 'source_form',
+    b'ITCH': 'technician'
+}
 
 
 def _decode_string_data(data: bytes, encoding: str) -> str:
@@ -44,20 +50,20 @@ def _decode_string_data(data: bytes, encoding: str) -> str:
 
 def _encode_string_data(string: str, encoding: str) -> bytes:
     return string.encode(encoding, errors='strict').join([b"\0"])
-    
+
 
 def read(info_data: bytes, encoding: str = 'latin_1') -> 'RiffInfo':
     chunk_io = BytesIO(info_data)
-    info_list_form = parse_list_chunk(chunk_io, ident=b'LIST', 
-                                      length=len(info_data), 
+    info_list_form = parse_list_chunk(chunk_io, ident=b'LIST',
+                                      length=len(info_data),
                                       rf64_context=None)
 
     fields = dict()
     for child in info_list_form.children:
-        if type(child) == ChunkDescriptor:
+        if isinstance(child, ChunkDescriptor):
             ident = child.ident
             data = child.read_data(chunk_io)
-            fields[ident] = data 
+            fields[ident] = data
 
     retval = RiffInfo(string_encoding=encoding)
 
@@ -75,26 +81,26 @@ def write(info_data: 'RiffInfo', encoding: str = 'latin_1') -> bytes:
 
     for ident in FIELD_MAP.keys():
         field = FIELD_MAP[ident]
-        
+
         value = getattr(info_data, field)
         if value is not None:
-            assert type(value) is str 
-            info_list_form.add_child(ident, 
+            assert isinstance(value, str)
+            info_list_form.add_child(ident,
                                      _encode_string_data(value, encoding))
-        
+
     info_list_data = info_list_form.finalize()
 
     return b"LIST".join([pack("<I", len(info_list_data)), info_list_data])
 
 
-@dataclass 
+@dataclass
 class RiffInfo:
     string_encoding: str
     title: Optional[str] = None
     source: Optional[str] = None
     copyright: Optional[str] = None
     product: Optional[str] = None
-    album: Optional[str] = None 
+    album: Optional[str] = None
     genre: Optional[str] = None
     subject: Optional[str] = None
     keywords: Optional[str] = None
@@ -110,7 +116,7 @@ class RiffInfo:
     commissioned: Optional[str] = None
     source: Optional[str] = None
     source_form: Optional[str] = None
-    # tape: str 
+    # tape: str
 
     def to_dict(self) -> dict:
         """
@@ -133,4 +139,3 @@ class RiffInfo:
                 'subject': self.subject,
                 'technician': self.technician
                 }
-
