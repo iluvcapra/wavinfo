@@ -4,11 +4,12 @@ wave_writer.py
 """
 
 # from typing_extensions import Buffer
-from ..reader.riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
+from ..reader.riff_parser import (parse_chunk, ChunkDescriptor, 
+                                  ListChunkDescriptor)
 
 from enum import Enum
-from struct import pack
-from io import BufferedRandom, SEEK_CUR, SEEK_SET
+from struct import pack, unpack
+from io import SEEK_END, BufferedRandom, SEEK_CUR, SEEK_SET
 from typing import Tuple, Optional
 
 JUNK_IDENTS = (b'JUNK', b'FLLR', b'PAD ')
@@ -66,6 +67,7 @@ class WavInfoWriter:
 
         self.file.flush()
         self._combine_adjacent_junk()
+        self._truncate_tail_junk()
 
     def erase_list_form(self, ident: bytes, index: int):
         """
@@ -88,6 +90,7 @@ class WavInfoWriter:
 
         self.file.flush()
         self._combine_adjacent_junk()
+        self._truncate_tail_junk()
 
     def write_chunk(self, ident: bytes, data: bytes,
                     placement: Placement = Placement.FIRST_AVAILABLE):
@@ -107,6 +110,7 @@ class WavInfoWriter:
             pass
 
         self._combine_adjacent_junk()
+        self._truncate_tail_junk()
 
     def _first_available_junk(self,
                               sized_for: int) -> Optional[Tuple[int, bool]]:
@@ -185,6 +189,20 @@ class WavInfoWriter:
 
         return (junks[index].start, junks[index].length)
 
+    def _get_tail_junk(self) -> Optional[Tuple[int, int]]:
+        """
+        Returns the start and size of the last junk chunk, if nothing follows
+        if
+        """
+        self.file.seek(0, SEEK_SET)
+        main_list = parse_chunk(self.file)
+        assert isinstance(main_list, ListChunkDescriptor)
+        if len(main_list.children) == 0: return
+        if main_list.children[-1].ident in JUNK_IDENTS:
+            return (main_list.children[-1].start, 
+                    main_list.children[-1].length)
+
+
     def _overwrite_junk(self, index: int, new_ident: bytes, data: bytes):
         """
         Overwrite a ``JUNK`` chunk. The chunk overwritten must be exactly
@@ -228,6 +246,29 @@ class WavInfoWriter:
                 self.file.flush()
             else:
                 i += 1
+
+    def _truncate_tail_junk(self):
+        """
+        Deletes the final chunk from the file if it is a ``JUNK`` chunk.
+        """
+        tail_junk = self._get_tail_junk()
+        if tail_junk is None: return 
+
+        tail_junk_start, tail_junk_size = tail_junk
+
+        self.file.seek(4, SEEK_SET)
+        current_file_size = unpack("<I", self.file.read(4))[0]
+        self.file.seek(-4, SEEK_CUR)
+        self.file.write(pack("<I", 
+                             current_file_size - (tail_junk_size + 8)
+                             )
+                )
+
+        # truncate file
+        self.file.truncate(tail_junk_start - 8)
+
+
+
 
     def _optimize(self):
         """
