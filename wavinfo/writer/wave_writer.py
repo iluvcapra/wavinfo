@@ -21,16 +21,8 @@ class WavInfoWriter:
     """
 
     #: Size of initial ``JUNK`` chunk to avoid overwriting.
-    ds64_reservation_size: int = 64
     preserve_ds64_reservation: bool = True
     file: BufferedRandom
-
-    class Placement(Enum):
-        #: Place new chunk as early in the file as possible.
-        FIRST_AVAILABLE = 1
-
-        #: Place new chunk after `data`
-        AFTER_DATA = 2
 
 
     def __init__(self, f):
