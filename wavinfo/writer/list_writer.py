@@ -34,7 +34,7 @@ class ListForm:
             self.buffer += b"\0"
 
     def add_junk(self, length: int):
-        junk = b"\0" * length
+        junk = b"\0" * (length + (length % 2))
         self.add_child(b"JUNK", junk)
    
     @contextmanager 

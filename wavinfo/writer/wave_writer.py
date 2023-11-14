@@ -106,6 +106,8 @@ class WavInfoWriter:
         elif placement == self.Placement.AFTER_DATA:
             pass
 
+        self._combine_adjacent_junk()
+
     def _first_available_junk(self,
                               sized_for: int) -> Optional[Tuple[int, bool]]:
         """
@@ -144,9 +146,9 @@ class WavInfoWriter:
 
         self.file.seek(target[0] - 4, SEEK_SET)
         head_size = at + at % 2
-        tail_size = target[1] - (at + 8)
+        tail_size = target[1] - (head_size + 8)
         self.file.write(pack("<I", head_size))
-        self.file.seek(at, SEEK_CUR)
+        self.file.seek(head_size, SEEK_CUR)
         self.file.write(b"JUNK")
         self.file.write(pack("<I", tail_size))
         self.file.flush()

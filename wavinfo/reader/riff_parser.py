@@ -24,6 +24,8 @@ class ListChunkDescriptor(NamedTuple):
     def is_rf64(self) -> bool:
         return self.ident in (b"RF64", b"BW64")
 
+ 
+
 
 class ChunkDescriptor(NamedTuple):
     ident: bytes
