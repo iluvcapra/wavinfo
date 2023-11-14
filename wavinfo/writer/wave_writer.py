@@ -32,7 +32,7 @@ class WavInfoWriter:
         AFTER_DATA = 2
 
 
-    def __init__(self, f, preserve_ds64_reservation: bool = True):
+    def __init__(self, f):
         if hasattr(f, 'read') and hasattr(f, 'write'):
             self.file = f
         else:
@@ -71,7 +71,23 @@ class WavInfoWriter:
         """
         Strike-out a ``LIST`` chunk form with a signature ``ident``.
         """
-        pass
+        self.file.seek(0, SEEK_SET)
+        main_list = parse_chunk(self.file)
+        assert isinstance(main_list, ListChunkDescriptor)
+
+        i = 0
+        for chunk in main_list.children:
+            if not isinstance(chunk, ListChunkDescriptor):
+                continue
+            if chunk.signature == ident:
+                if i == index:
+                    self.file.seek(chunk.start - 8, SEEK_SET)
+                    self.file.write(b"JUNK")
+                else:
+                    i += 1
+
+        self.file.flush()
+        self._combine_adjacent_junk()
 
     def write_chunk(self, ident: bytes, data: bytes,
                     placement: Placement = Placement.FIRST_AVAILABLE):
@@ -88,8 +104,6 @@ class WavInfoWriter:
                     self._overwrite_junk(target[0], ident, data)
 
         elif placement == self.Placement.AFTER_DATA:
-            pass
-        elif placement == self.Placement.AT_END:
             pass
 
     def _first_available_junk(self,
