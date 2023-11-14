@@ -104,7 +104,7 @@ class TestWriter(unittest.TestCase):
 
         assert isinstance(ml, ListChunkDescriptor)
         assert isinstance(el, ListChunkDescriptor)
-        breakpoint()
+        # breakpoint()
         self.assert_lists_equal(ml, el)
 
     def test_erase_list(self):
