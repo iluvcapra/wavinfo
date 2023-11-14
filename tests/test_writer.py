@@ -52,6 +52,18 @@ class TestWriter(unittest.TestCase):
         w = WavInfoWriter(self.wave1)
         w.write_chunk(b"bext", b"\0".join([b"\0"] * 255), 
                       WavInfoWriter.Placement.FIRST_AVAILABLE)
+        expected = BytesIO(bytes())
+
+        with write_wave_file(expected) as e:
+            e.add_child(b"bext", b"\0" * 255)
+            e.add_junk(1245)
+            e.add_child(b"data", b"\0" * 1024)
+            e.add_junk(256)
+        
+        self.wave1.seek(0, SEEK_CUR)
+        expected.seek(0, SEEK_CUR)
+
+        self.assertEqual(expected.read(), self.wave1.read())
 
     def test_erase_list(self):
         w = WavInfoWriter(self.wave2)
