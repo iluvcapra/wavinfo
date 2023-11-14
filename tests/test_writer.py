@@ -36,8 +36,6 @@ class TestWriter(unittest.TestCase):
             w.add_child(b"data", b"\0" * 1024)
             w.add_junk(256)
 
-        self.wave1.seek(0, SEEK_CUR)
-
         self.wave2 = BytesIO(bytes())
 
         with write_wave_file(self.wave2) as w:
@@ -47,7 +45,15 @@ class TestWriter(unittest.TestCase):
                 info.add_child(b"ICMT", b"\0" * 144)
             w.add_child(b"data", b"\0" * 1000)
 
-        self.wave2.seek(0, SEEK_CUR)
+        self.wave3 = BytesIO(bytes())
+
+        with write_wave_file(self.wave3) as w:
+            w.add_child(b"fmt ", b"\0" * 32)
+            w.add_child(b"data", b"\0" * 1000)
+
+        self.wave1.seek(0, SEEK_SET)
+        self.wave2.seek(0, SEEK_SET)
+        self.wave3.seek(0, SEEK_SET)
 
     def test_erase_chunk_and_parse(self):
         w = WavInfoWriter(self.wave1)
@@ -60,8 +66,7 @@ class TestWriter(unittest.TestCase):
 
     def test_insert_chunk(self):
         w = WavInfoWriter(self.wave1)
-        w.write_chunk(b"bext", b"\0" * 255,
-                      WavInfoWriter.Placement.FIRST_AVAILABLE)
+        w.write_chunk(b"bext", b"\0" * 255)
 
         # breakpoint()
         expected = BytesIO(bytes())
@@ -80,6 +85,27 @@ class TestWriter(unittest.TestCase):
         assert isinstance(made_list, ListChunkDescriptor)
         assert isinstance(expected_list, ListChunkDescriptor)
         self.assert_lists_equal(made_list, expected_list)
+
+    def test_insert_chunk_at_end(self):
+        w = WavInfoWriter(self.wave3)
+        w.write_chunk(b"axml", b"\0" * 14002)
+
+        expected = BytesIO(bytes())
+
+        with write_wave_file(expected) as e:
+            e.add_child(b"fmt ", b"\0" * 32)
+            e.add_child(b"data", b"\0" * 1000)
+            e.add_child(b"axml", b"\0" * 14002)
+
+        self.wave3.seek(0)
+        expected.seek(0)
+
+        ml, el = parse_chunk(self.wave3), parse_chunk(expected)
+
+        assert isinstance(ml, ListChunkDescriptor)
+        assert isinstance(el, ListChunkDescriptor)
+        breakpoint()
+        self.assert_lists_equal(ml, el)
 
     def test_erase_list(self):
         w = WavInfoWriter(self.wave2)

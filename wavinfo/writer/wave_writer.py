@@ -65,9 +65,9 @@ class WavInfoWriter:
                 else:
                     i += 1
 
-        self.file.flush()
         self._combine_adjacent_junk()
         self._truncate_tail_junk()
+        self.file.flush()
 
     def erase_list_form(self, ident: bytes, index: int):
         """
@@ -88,29 +88,30 @@ class WavInfoWriter:
                 else:
                     i += 1
 
-        self.file.flush()
         self._combine_adjacent_junk()
         self._truncate_tail_junk()
+        self.file.flush()
 
-    def write_chunk(self, ident: bytes, data: bytes,
-                    placement: Placement = Placement.FIRST_AVAILABLE):
+    def write_chunk(self, ident: bytes, data: bytes):
         """
         Writes a new chunk
         """
-        if placement == self.Placement.FIRST_AVAILABLE:
-            target = self._first_available_junk(sized_for=len(data))
-            if target is not None:
-                if target[1] is True:
-                    self._overwrite_junk(target[0], ident, data)
-                else:
-                    self._split_junk(target[0], len(data))
-                    self._overwrite_junk(target[0], ident, data)
+        self._combine_adjacent_junk()
+        self._truncate_tail_junk()
 
-        elif placement == self.Placement.AFTER_DATA:
-            pass
+        target = self._first_available_junk(sized_for=len(data))
+        if target is not None:
+            if target[1] is True:
+                self._overwrite_junk(target[0], ident, data)
+            else:
+                self._split_junk(target[0], len(data))
+                self._overwrite_junk(target[0], ident, data)
+        else:
+            self._append_chunk(ident, data)
 
         self._combine_adjacent_junk()
         self._truncate_tail_junk()
+        self.file.flush()
 
     def _first_available_junk(self,
                               sized_for: int) -> Optional[Tuple[int, bool]]:
@@ -226,7 +227,14 @@ class WavInfoWriter:
         self.file.seek(0, SEEK_SET)
         main_list = parse_chunk(self.file)
         assert isinstance(main_list, ListChunkDescriptor)
-        assert False, "Implementation in progress"  # FIXME
+        self.file.seek(0, SEEK_END)
+        self.file.write(new_ident)
+        self.file.write(pack("<I", len(data)))
+        self.file.write(data)
+        if len(data) % 2 == 1:
+            self.file.write(b"\0")
+
+        self._update_riff_size(len(data) + 8 + (len(data) % 2))
 
     def _combine_adjacent_junk(self):
         """
@@ -255,20 +263,16 @@ class WavInfoWriter:
         if tail_junk is None: return 
 
         tail_junk_start, tail_junk_size = tail_junk
-
-        self.file.seek(4, SEEK_SET)
-        current_file_size = unpack("<I", self.file.read(4))[0]
-        self.file.seek(-4, SEEK_CUR)
-        self.file.write(pack("<I", 
-                             current_file_size - (tail_junk_size + 8)
-                             )
-                )
+        self._update_riff_size(-(tail_junk_size + 8))
 
         # truncate file
         self.file.truncate(tail_junk_start - 8)
 
-
-
+    def _update_riff_size(self, delta: int):
+        self.file.seek(4, SEEK_SET)
+        current_file_size = unpack("<I", self.file.read(4))[0]
+        self.file.seek(-4, SEEK_CUR)
+        self.file.write(pack("<I", current_file_size + delta))
 
     def _optimize(self):
         """
