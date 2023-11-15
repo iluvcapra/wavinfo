@@ -25,11 +25,11 @@ source for all WAVE file metadata.
 * [iXML][ixml] production recorder metadata, including project, scene, and 
   take tags, recorder notes and file family information.
   * iXML `STEINBERG` sound library attributes.
-* Wave embedded [cue markers][cues], cue marker labels, notes and timed ranges as used
-  by Zoom, iZotope RX, etc.
+* Wave embedded [cue markers][cues], cue marker labels, notes and timed ranges 
+  as used by Zoom, iZotope RX, etc.
 * [RIFF INFO][info-tags] metadata fields.
-* The [wav format][format] is also parsed, so you can access the basic sample rate 
-  and channel count information.
+* The [wav format][format] is also parsed, so you can access the basic sample 
+  rate and channel count information.
 
 
 [format]:https://wavinfo.readthedocs.io/en/latest/classes.html#wavinfo.wave_reader.WavAudioFormat
