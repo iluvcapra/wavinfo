@@ -2,12 +2,12 @@
 .SH NAME 
 wavinfo \- WAVE file metadata
 .SH SYNOPSIS
-Everything you ever wated to know about WAVE metadata but were afraid to ask. 
+Everything you ever wanted to know about WAVE metadata but were afraid to ask. 
 .SH DESCRIPTION 
 .PP
 The WAVE file format is forwards-compatible. Apart from audio data, it can 
-hold arbitrary blocks of bytes which clients will automatically ignore 
-unless they recognize them and know how to read them.
+hold arbitrary blocks of bytes which clients can elect to ignore unless they 
+recognize them and know how to read them.
 .PP
 Without saying too much about the structure and parsing of WAVE files 
 themselves \- a subject beyond the scope of this document \- WAVE files are 
@@ -29,7 +29,7 @@ or
 .IR bext ,
 are optional, and optional chunks usually hold metadata. 
 .PP
-Chunks can also nest inside other chunks, a special identifier 
+Chunks can also nest inside other chunks, a special four-cc 
 .I LIST 
 is used to indicate these. A WAVE file is a recursive list: a top level 
 list of chunks, where chunks may contain a list of chunks themselves.
@@ -40,6 +40,10 @@ them appearing in any order. However, authorities give guidance on where chunks
 should be placed when creating a new WAVE file.
 .PP
 .IP 1)
+Every authority agrees that the 
+.I fmt
+chunk must precede the data chunk.
+.IP 2)
 For all new WAVE files, clients should always place an empty chunk, a
 so-called
 .I JUNK
@@ -50,11 +54,11 @@ chunk record. This will allow clients to upgrade the file to a RF64
 WAVE file 
 .BR in-place ,
 without having to re-write the file or audio data.
-.IP 2)
-Older authorites recommend placing metadata before the audio data, so clients
+.IP 3)
+Older sources recommend placing metadata before the audio data, so clients
 reading the file sequentially will hit it before having to seek through the
 audio. This may improve metadata read performance on certain architectures.
-.IP 3)
+.IP 4)
 Older authorities also recommend inserting 
 .I JUNK
 before the 
@@ -64,7 +68,7 @@ chunk, sized so that the first byte of the
 payload lands immediately at 0x1000 (4096), because this was a common factor of
 the page boundaries of many operating systems and architectures. This may
 optimize the audio I/O performance in certain situations. 
-.IP 4)
+.IP 5)
 Modern implementations (we're looking at 
 .B Pro Tools
 here) tend to place the Broadcast-WAVE
@@ -92,7 +96,7 @@ chunk and
 chunk into their program. This is something that should always be checked when
 evaluating a new tool, just to make sure the developer didn't do this. Many
 coding examples and WAVE file explainers from the 90s and early aughts give the
-basic layout of a WAVE file, and naive devs go along with it.
+basic layout of a WAVE file, and naive implementations go along with it.
 .SS Encoding and Decoding Text Metadata
 .\" .PP
 .\" Modern metadata systems, anything developed since the late aughts, will defer
@@ -124,8 +128,8 @@ basic layout of a WAVE file, and naive devs go along with it.
 .\" Internet became mainstream, when Unicode was still a twinkle in the eye, and
 .\" two years before Ariana Grande was born.   
 .PP
-The safest assumption, and the mandate of Microsoft, is that all text metadata,
-by default, be encoded in 
+The safest assumption (and Microsoft's mandate) is that all text metadata, by 
+default, be encoded in 
 .B Windows codepage 819, 
 a.k.a. ISO Latin alphabet 1, or ISO 8859-1. This covers most Western European
 scripts but excludes all of Asia, Russia, most of the European Near East, the
@@ -143,12 +147,12 @@ never seen a WAVE file with a
 .I cest 
 chunk.
 .IP 2)
-Certain RIFF chunks allow the writing client to override the default encoding.
+Certain RIFF chunks allow the writer to override the default encoding.
 Relevant to audio files are the 
 .I ltxt 
-chunk, which encodes a country, language, dialect and codepage along with a
-time range text note. We have never seen the text field on one of these 
-filled-out either, clients we've see use 
+chunk, which encodes a country, language, dialect and codepage selection 
+along with a time range text note. We have never seen the text field on one 
+of these filled-out either, clients we've see use 
 .IR labl " and " note 
 chunks for text annotations, exclusively.
 .PP 
@@ -184,6 +188,16 @@ alignment and other data. May take an "extended" form, with additional data
 the file or if it is a compressed format.
 .IP data 
 The audio data itself. PCM audio data is always stored as interleaved samples.
+Individual audio samples are stored little-endian, and if there are more than
+one channels the samples for each channel are stored together as an array. An
+array of simultaneous samples is a 
+.B frame
+and the length of the frame (in bytes) is known as the 
+.BR "block alignmnent" 
+of the audio data. With perhaps the exception of mono 8-bit PCM WAVEs, block 
+alignments of WAVE files are required to be multiples of 2. This has some 
+implications for oddball encodings, like stereo 20-bit PCM which can (and in 
+some obscure codecs, is) stored in five-byte blocks.
 .SS Optional WAVE Chunks
 .IP JUNK 
 A region of the file not currently in use. Clients sometimes add these before
@@ -210,8 +224,8 @@ by chunks of the standard key-length-data form, which may themselves be
 LISTs that themselves contain child chunks. WAVE files don't tend to have a 
 very deep heirarchy of chunks, compared to AVI files.
 .SS RIFF Metadata 
-The RIFF container format has a metadata system common to all RIFF files, WAVE
-being the most common at present, AVI being another very common format
+The RIFF container format defines a metadata system common to all RIFF files, 
+WAVE being the most common at present, AVI being another very common format
 historically.
 .IP "LIST form INFO"
 A flat list of chunks, each containing text metadata. The role
@@ -261,12 +275,12 @@ Broadcast-WAVE is a set of extensions to WAVE files to facilitate media
 production maintained by the EBU.
 .IP bext
 A multi-field structure containing mostly fixed-width text data capturing
-essential production information: a 256 character free description field,
-originator name and a unique reference, recording date and time, a frame-based
-timestamp for sample-accurate recording time, and a coding history record. The
-extended form of the structure can hold a SMPTE UMID (a kind of UUID, which 
-may also contain timestamp and geolocation data) and pre-computed program 
-loudness measurements. 
+essential production information: a 256 byte ASCII free description field,
+32 byte originator name and a unique reference, recording date and time, a 
+frame-based timestamp for sample-accurate recording time, and a coding history 
+record. The extended form of the structure can hold a SMPTE UMID (a kind of 
+UUID, which may also contain timestamp and geolocation data) and pre-computed 
+program loudness measurements. 
 .IP peak
 A binary data structure containing the peak envelope for the audio data, for 
 use by clients to generate a waveform overview.
