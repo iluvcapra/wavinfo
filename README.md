@@ -23,12 +23,12 @@ source for all WAVE file metadata.
   loudness, coding history and [SMPTE UMID][smpte_330m2011].
 * [iXML][ixml] production recorder metadata, including project, scene, and 
   take tags, recorder notes and file family information.
+  * iXML `STEINBERG` sound library attributes.
 * All known [RIFF INFO][info-tags] metadata fields.
 * [Audio Definition Model (ADM)][adm] track metadata and schema, including 
   channel, pack formats, 
   object, content and programme, including [Dolby Digital Plus][ebu3285s6]
   and Dolby Atmos `dbmd` metadata for re-renders and mixdowns.
-  * iXML `STEINBERG` sound library attributes.
 * Wave embedded [cue markers][cues], cue marker labels, notes and timed ranges as used
   by Zoom, iZotope RX, etc.
 * The [wav format][format] is also parsed, so you can access the basic sample rate 
