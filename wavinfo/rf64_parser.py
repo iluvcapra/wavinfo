@@ -31,12 +31,13 @@ def parse_rf64(stream, signature=b'RF64') -> RF64Context:
 
     bigchunk_table = {}
     chunksize64format = "<4sL"
-    # chunksize64size = struct.calcsize(chunksize64format)
+    chunksize64size = struct.calcsize(chunksize64format)
 
-    for _ in range(length_lookup_table):
+    for t in range(length_lookup_table):
+        entryoffset = ds64_field_size + chuncksize64size * t
         bigname, bigsize = struct.unpack_from(chunksize64format,
                                               ds64_data,
-                                              offset=ds64_fields_size)
+                                              offset=entryoffset)
         bigchunk_table[bigname] = bigsize
 
     bigchunk_table[b'data'] = data_size
