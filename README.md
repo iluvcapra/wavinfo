@@ -7,8 +7,6 @@
 
 # wavinfo
 
-__See the [note below](#version-3-coming-soon) about version 3.__
-
 The `wavinfo` package allows you to probe WAVE and [RF64/WAVE files][eburf64] 
 and extract extended metadata. `wavinfo` has an emphasis on film, video and 
 professional music production but can read many other kinds.
@@ -68,15 +66,6 @@ The package also installs a shell command:
 ```sh
 $ wavinfo test_files/A101_1.WAV
 ```
-
-## Version 3 Coming Soon!
-
-Version 3 is under active development and will be released in the near future. 
-Version 3 will support editing of Broadcast-WAVE and INFO metadata, 
-with more formats to be added.
-
-There will be some minor breaking changes with the interface which is why I'm
-bumping to version 3, these will be documented and should be easy to update for.
 
 ## Contributions!
 
