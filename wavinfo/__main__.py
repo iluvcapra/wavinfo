@@ -7,12 +7,15 @@ import os
 import json
 from enum import Enum
 import importlib.metadata
+from base64 import b64encode
 
 
 class MyJSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, Enum):
             return o._name_
+        elif isinstance(o, bytes):
+            return b64encode(o).decode('ascii')
         else:
             return super().default(o)
 
