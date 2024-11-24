@@ -8,7 +8,7 @@ class WaveSmplLoop(NamedTuple):
     loop_type: int
     start: int
     end: int
-    fraction: int
+    detune_cents: int
     repetition_count: int
 
     def loop_type_desc(self):
@@ -30,7 +30,7 @@ class WaveSmplLoop(NamedTuple):
             'loop_type_description': self.loop_type_desc(),
             'start_samples': self.start,
             'end_samples': self.end,
-            'fraction': self.fraction,
+            'detune_cents': self.detune_cents,
             'repetition_count': self.repetition_count,
         }
 
@@ -42,7 +42,7 @@ class WavSmplReader:
         Read sampler metadata from smpl chunk.
         """
 
-        header_field_fmt = "<IIIIIIbbbbII"
+        header_field_fmt = "<IIIIiIbbbbII"
         loop_field_fmt = "<IIIIII"
         header_size = struct.calcsize(header_field_fmt)
         loop_size = struct.calcsize(loop_field_fmt)
@@ -65,7 +65,7 @@ class WavSmplReader:
         self.midi_note: int = unpacked_data[3]
 
         #: The number of semitones above the MIDI note the loops tune for.
-        self.midi_pitch_fraction_semis: int = unpacked_data[4]
+        self.midi_pitch_detune_cents: int = unpacked_data[4]
 
         #: SMPTE timecode format, one of (0, 24, 25, 29, 30)
         self.smpte_format: int = unpacked_data[5]
@@ -89,7 +89,7 @@ class WavSmplReader:
                 loop_type=unpacked_loop[1],
                 start=unpacked_loop[2],
                 end=unpacked_loop[3],
-                fraction=unpacked_loop[4],
+                detune_cents=unpacked_loop[4],
                 repetition_count=unpacked_loop[5]))
 
         #: Sampler-specific user data.
@@ -103,7 +103,7 @@ class WavSmplReader:
             'product': self.product,
             'sample_period_ns': self.sample_period_ns,
             'midi_note': self.midi_note,
-            'midi_pitch_fraction_semis': self.midi_pitch_fraction_semis,
+            'midi_pitch_detune_cents': self.midi_pitch_detune_cents,
             'smpte_format': self.smpte_format,
             'smpte_offset': "%02i:%02i:%02i:%02i" % self.smpte_offset,
             'loops': [x.to_dict() for x in self.sample_loops],
