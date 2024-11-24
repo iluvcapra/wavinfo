@@ -43,7 +43,7 @@ class WavSmplReader:
         """
 
         header_field_fmt = "<IIIIiIbbbbII"
-        loop_field_fmt = "<IIIIII"
+        loop_field_fmt = "<IIIIiI"
         header_size = struct.calcsize(header_field_fmt)
         loop_size = struct.calcsize(loop_field_fmt)
 
