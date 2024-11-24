@@ -16,6 +16,8 @@ from .wave_cues_reader import WavCuesReader
 from .wave_smpl_reader import WavSmplReader
 
 #: Calculated statistics about the audio data.
+
+
 class WavDataDescriptor(NamedTuple):
     byte_count: int
     frame_count: int
@@ -81,7 +83,7 @@ class WavInfoReader:
         #: RIFF cues markers, labels, and notes.
         self.cues: Optional[WavCuesReader] = None
 
-        #: Sampler `smpl` metadata 
+        #: Sampler `smpl` metadata
         self.smpl: Optional[WavSmplReader] = None
 
         if hasattr(path, 'read'):

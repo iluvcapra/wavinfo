@@ -25,14 +25,14 @@ class WaveSmplLoop(NamedTuple):
 
     def to_dict(self):
         return {
-                'ident': self.ident,
-                'loop_type': self.loop_type,
-                'loop_type_description': self.loop_type_desc(),
-                'start_samples': self.start,
-                'end_samples': self.end,
-                'fraction': self.fraction,
-                'repetition_count': self.repetition_count,
-                }
+            'ident': self.ident,
+            'loop_type': self.loop_type,
+            'loop_type_description': self.loop_type_desc(),
+            'start_samples': self.start,
+            'end_samples': self.end,
+            'fraction': self.fraction,
+            'repetition_count': self.repetition_count,
+        }
 
 
 class WavSmplReader:
@@ -99,13 +99,13 @@ class WavSmplReader:
 
     def to_dict(self):
         return {
-                'manufactuer': self.manufacturer,
-                'product': self.product,
-                'sample_period_ns': self.sample_period_ns,
-                'midi_note': self.midi_note,
-                'midi_pitch_fraction_semis': self.midi_pitch_fraction_semis,
-                'smpte_format': self.smpte_format,
-                'smpte_offset': "%02i:%02i:%02i:%02i" % self.smpte_offset,
-                'loops': [x.to_dict() for x in self.sample_loops],
-                'sampler_user_data': self.sampler_udata,
-                }
+            'manufactuer': self.manufacturer,
+            'product': self.product,
+            'sample_period_ns': self.sample_period_ns,
+            'midi_note': self.midi_note,
+            'midi_pitch_fraction_semis': self.midi_pitch_fraction_semis,
+            'smpte_format': self.smpte_format,
+            'smpte_offset': "%02i:%02i:%02i:%02i" % self.smpte_offset,
+            'loops': [x.to_dict() for x in self.sample_loops],
+            'sampler_user_data': self.sampler_udata,
+        }

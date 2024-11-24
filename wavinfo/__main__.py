@@ -8,6 +8,7 @@ import json
 from enum import Enum
 from base64 import b64encode
 
+
 class MyJSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, Enum):
@@ -57,7 +58,7 @@ def main():
                     'run_date': datetime.datetime.now().isoformat(),
                     'application': "wavinfo " + __version__,
                     'scopes': {}
-                    }
+                }
                 for scope, name, value in this_file.walk():
                     if scope not in ret_dict['scopes'].keys():
                         ret_dict['scopes'][scope] = {}
