@@ -1,6 +1,5 @@
 import datetime
 from . import WavInfoReader
-from . import __version__
 
 from optparse import OptionParser
 import sys
@@ -53,7 +52,7 @@ def main():
                 ret_dict = {
                     'filename': arg,
                     'run_date': datetime.datetime.now().isoformat(),
-                    'application': "wavinfo " + __version__,
+                    # 'application': "wavinfo " + __version__,
                     'scopes': {}
                     }
                 for scope, name, value in this_file.walk():
