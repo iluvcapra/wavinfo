@@ -14,7 +14,7 @@ class MyJSONEncoder(json.JSONEncoder):
         if isinstance(o, Enum):
             return o._name_
         elif isinstance(o, bytes):
-            return b64encode(o).decode('ascii')
+            return 'base64:' + b64encode(o).decode('ascii')
         else:
             return super().default(o)
 
