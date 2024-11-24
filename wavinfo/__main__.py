@@ -7,6 +7,11 @@ import json
 from enum import Enum
 
 
+import importlib.metadata
+
+version = importlib.metadata.version('wavinfo')
+
+
 class MyJSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, Enum):
@@ -52,7 +57,7 @@ def main():
                 ret_dict = {
                     'filename': arg,
                     'run_date': datetime.datetime.now().isoformat(),
-                    # 'application': "wavinfo " + __version__,
+                    'application': "wavinfo " + version,
                     'scopes': {}
                     }
                 for scope, name, value in this_file.walk():
