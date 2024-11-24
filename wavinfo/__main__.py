@@ -27,10 +27,10 @@ def main():
 
     parser.usage = 'wavinfo (--adm | --ixml) <FILE> +'
 
-    parser.add_option('--install-manpages', 
-                      help="Install manual pages for wavinfo",
-                      default=False,
-                      action='store_true')
+    # parser.add_option('--install-manpages', 
+    #                   help="Install manual pages for wavinfo",
+    #                   default=False,
+    #                   action='store_true')
 
     parser.add_option('--man', 
                       help="Read the manual",
@@ -49,10 +49,10 @@ def main():
 
     (options, args) = parser.parse_args(sys.argv)
 
-    if options.install_manpages:
-        print("Installing manpages...")
-        print(f"Docfiles at {__file__}")
-        return
+    # if options.install_manpages:
+    #     print("Installing manpages...")
+    #     print(f"Docfiles at {__file__}")
+    #     return
     
     if options.man:
         print("Which man page?")
