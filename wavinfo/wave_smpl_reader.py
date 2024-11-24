@@ -1,6 +1,5 @@
 import struct
 
-from enum import IntEnum
 from typing import Tuple, NamedTuple, List
 
 
@@ -28,8 +27,8 @@ class WaveSmplReader:
         unpacked_data = struct.unpack(header_field_fmt,
                                       smpl_data[0:header_size])
 
-        #: The MIDI Manufacturer's Association code for the sampler manufactuer,
-        #: or 0 if not specific.
+        #: The MIDI Manufacturer's Association code for the sampler 
+        #: manufactuer, or 0 if not specific.
         self.manufacturer: int = unpacked_data[0]
 
         #: The manufacturer-assigned code for their specific sampler model, or
