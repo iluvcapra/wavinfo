@@ -1,15 +1,11 @@
-import datetime
 from . import WavInfoReader
 
+import datetime
 from optparse import OptionParser
-import sys
+import sys, os
 import json
 from enum import Enum
-
-
 import importlib.metadata
-
-version = importlib.metadata.version('wavinfo')
 
 
 class MyJSONEncoder(json.JSONEncoder):
@@ -25,10 +21,22 @@ class MissingDataError(RuntimeError):
 
 
 def main():
+    version = importlib.metadata.version('wavinfo')
+    manpath = os.path.dirname(__file__) + "/man"
     parser = OptionParser()
 
     parser.usage = 'wavinfo (--adm | --ixml) <FILE> +'
 
+    parser.add_option('--install-manpages', 
+                      help="Install manual pages for wavinfo",
+                      default=False,
+                      action='store_true')
+
+    parser.add_option('--man', 
+                      help="Read the manual",
+                      default=False,
+                      action='store_true')
+        
     parser.add_option('--adm', dest='adm',
                       help='Output ADM XML',
                       default=False,
@@ -40,6 +48,25 @@ def main():
                       action='store_true')
 
     (options, args) = parser.parse_args(sys.argv)
+
+    if options.install_manpages:
+        print("Installing manpages...")
+        print(f"Docfiles at {__file__}")
+        return
+    
+    if options.man:
+        print("Which man page?")
+        print("1) wavinfo usage")
+        print("7) General info on Wave file metadata")
+        m = input("?> ")
+
+        if m.startswith("1"):
+            os.system(f"man -M {manpath} 1 wavinfo")
+        elif m.startswith("7"):
+            os.system(f"man -M {manpath} 7 wavinfo")
+
+        return
+
     for arg in args[1:]:
         try:
             this_file = WavInfoReader(path=arg)
@@ -57,7 +84,7 @@ def main():
                 ret_dict = {
                     'filename': arg,
                     'run_date': datetime.datetime.now().isoformat(),
-                    'application': "wavinfo " + version,
+                    'application': f"wavinfo {version}",
                     'scopes': {}
                     }
                 for scope, name, value in this_file.walk():

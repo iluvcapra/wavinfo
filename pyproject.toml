@@ -38,9 +38,6 @@ keywords = [
     'film', 
     'broadcast' 
 ]
-include = [
-  { path = "data/", format = ["sdist", "wheel"] },
-]
 
 [tool.poetry.extras]
 doc = ['sphinx', 'sphinx_rtd_theme']
