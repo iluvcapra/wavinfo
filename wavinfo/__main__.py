@@ -2,7 +2,8 @@ from . import WavInfoReader
 
 import datetime
 from optparse import OptionParser
-import sys, os
+import sys
+import os
 import json
 from enum import Enum
 import importlib.metadata
@@ -27,16 +28,16 @@ def main():
 
     parser.usage = 'wavinfo (--adm | --ixml) <FILE> +'
 
-    # parser.add_option('--install-manpages', 
+    # parser.add_option('--install-manpages',
     #                   help="Install manual pages for wavinfo",
     #                   default=False,
     #                   action='store_true')
 
-    parser.add_option('--man', 
+    parser.add_option('--man',
                       help="Read the manual",
                       default=False,
                       action='store_true')
-        
+
     parser.add_option('--adm', dest='adm',
                       help='Output ADM XML',
                       default=False,
@@ -53,7 +54,7 @@ def main():
     #     print("Installing manpages...")
     #     print(f"Docfiles at {__file__}")
     #     return
-    
+
     if options.man:
         print("Which man page?")
         print("1) wavinfo usage")
@@ -86,7 +87,7 @@ def main():
                     'run_date': datetime.datetime.now().isoformat(),
                     'application': f"wavinfo {version}",
                     'scopes': {}
-                    }
+                }
                 for scope, name, value in this_file.walk():
                     if scope not in ret_dict['scopes'].keys():
                         ret_dict['scopes'][scope] = {}
