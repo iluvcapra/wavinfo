@@ -27,7 +27,7 @@ class WaveSmplReader:
         unpacked_data = struct.unpack(header_field_fmt,
                                       smpl_data[0:header_size])
 
-        #: The MIDI Manufacturer's Association code for the sampler 
+        #: The MIDI Manufacturer's Association code for the sampler
         #: manufactuer, or 0 if not specific.
         self.manufacturer: int = unpacked_data[0]
 
