@@ -93,7 +93,7 @@ class WavSmplReader:
                 repetition_count=unpacked_loop[5]))
 
         #: Sampler-specific user data.
-        self.sampler_udata: bytes | None = None 
+        self.sampler_udata: bytes | None = None
 
         if sampler_udata_length > 0:
             self.sampler_udata = smpl_data[
