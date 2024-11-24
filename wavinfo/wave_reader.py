@@ -5,6 +5,7 @@ from typing import Optional, Generator, Any, NamedTuple
 
 import pathlib
 
+
 from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
 from .wave_ixml_reader import WavIXMLFormat
 from .wave_bext_reader import WavBextReader
@@ -12,7 +13,7 @@ from .wave_info_reader import WavInfoChunkReader
 from .wave_adm_reader import WavADMReader
 from .wave_dbmd_reader import WavDolbyMetadataReader
 from .wave_cues_reader import WavCuesReader
-
+from .wave_smpl_reader import WavSmplReader
 
 #: Calculated statistics about the audio data.
 class WavDataDescriptor(NamedTuple):
@@ -80,6 +81,9 @@ class WavInfoReader:
         #: RIFF cues markers, labels, and notes.
         self.cues: Optional[WavCuesReader] = None
 
+        #: Sampler `smpl` metadata 
+        self.smpl: Optional[WavSmplReader] = None
+
         if hasattr(path, 'read'):
             self.get_wav_info(path)
             self.url = 'about:blank'
@@ -110,6 +114,7 @@ class WavInfoReader:
         self.info = self._get_info(wavfile, encoding=self.info_encoding)
         self.dolby = self._get_dbmd(wavfile)
         self.cues = self._get_cue(wavfile)
+        self.smpl = self._get_sampler_loops(wavfile)
         self.data = self._describe_data()
 
     def _find_chunk_data(self, ident, from_stream,
@@ -203,6 +208,10 @@ class WavInfoReader:
         return WavCuesReader.read_all(f, cue, labls, ltxts, notes,
                                       fallback_encoding=self.info_encoding)
 
+    def _get_sampler_loops(self, f):
+        sampler_data = self._find_chunk_data(b'smpl', f, default_none=True)
+        return WavSmplReader(sampler_data) if sampler_data else None
+
     # FIXME: this should probably be named "iter()"
     def walk(self) -> Generator[str, str, Any]:
         """
@@ -210,11 +219,12 @@ class WavInfoReader:
 
         :yields: tuples of the *scope*, *key*, and *value* of
             each metadatum. The *scope* value will be one of
-            "fmt", "data", "ixml", "bext", "info", "dolby", "cues" or "adm".
+            "fmt", "data", "ixml", "bext", "info", "dolby", "cues", "adm" or
+            "smpl".
         """
 
         scopes = ('fmt', 'data', 'ixml', 'bext', 'info', 'adm', 'cues',
-                  'dolby')
+                  'dolby', 'smpl')
 
         for scope in scopes:
             if scope in ['fmt', 'data']:
@@ -223,10 +233,10 @@ class WavInfoReader:
                     yield scope, field, attr.__getattribute__(field)
 
             else:
-                dict = self.__getattribute__(scope).to_dict(
+                mdict = self.__getattribute__(scope).to_dict(
                 ) if self.__getattribute__(scope) else {}
-                for key in dict.keys():
-                    yield scope, key, dict[key]
+                for key in mdict.keys():
+                    yield scope, key, mdict[key]
 
     def __repr__(self):
         return 'WavInfoReader({}, {}, {})'.format(self.path,
