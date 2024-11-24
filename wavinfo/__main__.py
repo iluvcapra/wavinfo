@@ -34,7 +34,7 @@ def main():
     #                   action='store_true')
 
     parser.add_option('--man',
-                      help="Read the manual",
+                      help="Read the manual and exit.",
                       default=False,
                       action='store_true')
 
@@ -56,16 +56,17 @@ def main():
     #     return
 
     if options.man:
+        import shlex
         print("Which man page?")
         print("1) wavinfo usage")
         print("7) General info on Wave file metadata")
         m = input("?> ")
 
-        if m.startswith("1"):
-            os.system(f"man -M {manpath} 1 wavinfo")
-        elif m.startswith("7"):
-            os.system(f"man -M {manpath} 7 wavinfo")
+        args = ["man", "-M", manpath, "1", "wavinfo"]
+        if m.startswith("7"):
+            args[3] = "7"
 
+        os.system(shlex.join(args))
         return
 
     for arg in args[1:]:
