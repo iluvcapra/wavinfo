@@ -1,4 +1,4 @@
-from .riff_parser import ChunkDescriptor, parse_chunk, ListChunkDescriptor
+from .riff_parser import parse_chunk, ListChunkDescriptor
 
 from typing import Optional
 
