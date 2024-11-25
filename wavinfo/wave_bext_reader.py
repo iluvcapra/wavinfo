@@ -89,7 +89,7 @@ class WavBextReader:
         #     umid_str = umid_parsed.basic_umid_to_str()
         # else:
 
-        umid_str = None
+        # umid_str = None
 
         return {'description': self.description,
                 'originator': self.originator,
@@ -98,7 +98,7 @@ class WavBextReader:
                 'originator_time': self.originator_time,
                 'time_reference': self.time_reference,
                 'version': self.version,
-                'umid': umid_str,
+                'umid': self.umid,
                 'coding_history': self.coding_history,
                 'loudness_value': self.loudness_value,
                 'loudness_range': self.loudness_range,
