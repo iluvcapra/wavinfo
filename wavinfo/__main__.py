@@ -9,7 +9,7 @@ from enum import Enum
 from base64 import b64encode
 from cmd import Cmd
 from shlex import split
-from typing import List, Dict
+from typing import List, Dict, Union
 
 
 class MyJSONEncoder(json.JSONEncoder):
@@ -29,7 +29,7 @@ class MissingDataError(RuntimeError):
 class MetaBrowser(Cmd):
     prompt = "(wavinfo) "
 
-    metadata: List | Dict
+    metadata: Union[List, Dict]
     path: List[str] = []
 
     @property
