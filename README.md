@@ -31,6 +31,7 @@ it is not supported, please submit an issue!
   and Dolby Atmos `dbmd` metadata for re-renders and mixdowns.
 * Wave embedded [cue markers][cues], cue marker labels, notes and timed ranges as used
   by Zoom, iZotope RX, etc.
+* Wave embedded [sampler][smpl] and sample loop metadata.
 * The [wav format][format] is also parsed, so you can access the basic sample rate 
   and channel count information.
 
@@ -38,6 +39,7 @@ it is not supported, please submit an issue!
 [format]:https://wavinfo.readthedocs.io/en/latest/classes.html#wavinfo.wave_reader.WavAudioFormat
 [cues]:https://wavinfo.readthedocs.io/en/latest/scopes/cue.html
 [bext]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html
+[smpl]:https://wavinfo.readthedocs.io/en/latest/scopes/smpl.html
 [smpte_330m2011]:https://wavinfo.readthedocs.io/en/latest/scopes/bext.html#wavinfo.wave_bext_reader.WavBextReader.umid
 [adm]:https://wavinfo.readthedocs.io/en/latest/scopes/adm.html
 [ebu3285s6]:https://wavinfo.readthedocs.io/en/latest/scopes/dolby.html
