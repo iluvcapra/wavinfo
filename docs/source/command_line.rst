@@ -6,20 +6,22 @@ from the command line and output metadata to stdout.
 
 .. code-block:: shell
 
-    $ wavinfo [--ixml | --adm] INFILE +
+    $ wavinfo [[-i] | [--ixml | --adm]] INFILE +
 
-By default, `wavinfo` will output a JSON dictionary for each file argument.
 
 
 Options
 -------
 
-Two option flags will change the behavior of the command:
+By default, `wavinfo` will output a JSON dictionary for each file argument.
+
+Two option flags will change the behavior of the command in non-interactive 
+mode:
 
 ``--ixml``
-    The *\-\-ixml* flag will cause `wavinfo` to output the iXML metadata payload
-    of each input wave file, or will emit an error message to stderr if iXML 
-    metadata is not present.
+    The *\-\-ixml* flag will cause `wavinfo` to output the iXML metadata
+    payload of each input wave file, or will emit an error message to stderr if
+    iXML metadata is not present.
 
 ``--adm``
     The *\-\-adm* flag will cause `wavinfo` to output the ADM XML metadata 
@@ -27,6 +29,31 @@ Two option flags will change the behavior of the command:
     ADM XML metadata is not present.
 
 These options are mutually-exclusive, with `\-\-adm` taking precedence. 
+
+If ``-i`` is given, `wavinfo` will run in `interactive mode`_.
+
+
+Interactive Mode 
+-----------------
+
+In interactive mode, `wavinfo` will present a command prompt which allows you
+to query the files provided on the command line and explore the metadata tree 
+interactively. Each file on the command line is scanned and presented as a 
+tree of metadata records.
+
+Commands include:
+
+``ls``
+    List the available metadata keys at the current level.
+
+``cd``
+    Traverse to a metadata key in the current level (or enter `..` to go up 
+    to the prevvious level).
+
+``bye``
+    Exit to the shell.
+
+Type `help` or `?` at the prompt to get a full list of commands.
 
 
 Example Output
