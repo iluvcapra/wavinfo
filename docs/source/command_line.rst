@@ -6,89 +6,135 @@ from the command line and output metadata to stdout.
 
 .. code-block:: shell
 
-    $ wavinfo [--ixml | --adm] INFILE +
-
-By default, `wavinfo` will output a JSON dictionary for each file argument.
+    $ wavinfo [[-i] | [--ixml | --adm]] INFILE +
 
 
 Options
 -------
 
-Two option flags will change the behavior of the command:
+By default, `wavinfo` will output a JSON dictionary for each file argument.
+
+``-i`` 
+    `wavinfo` will run in `interactive mode`_.
+
+Two option flags will change the behavior of the command in non-interactive 
+mode:
 
 ``--ixml``
-    The *\-\-ixml* flag will cause `wavinfo` to output the iXML metadata payload
-    of each input wave file, or will emit an error message to stderr if iXML 
-    metadata is not present.
+    The *\-\-ixml* flag will cause `wavinfo` to output the iXML metadata
+    payload of each input wave file, or will emit an error message to stderr if
+    iXML metadata is not present.
 
 ``--adm``
     The *\-\-adm* flag will cause `wavinfo` to output the ADM XML metadata 
     payload of each input wave file, or will emit an error message to stderr if
     ADM XML metadata is not present.
 
-These options are mutually-exclusive, with `\-\-adm` taking precedence. 
+These options are mutually-exclusive, with `\-\-adm` taking precedence. The 
+``--ixml`` and ``--adm`` flags futher take precedence over ``-i``.
+
+
+Interactive Mode 
+-----------------
+
+In interactive mode, `wavinfo` will present a command prompt which allows you
+to query the files provided on the command line and explore the metadata tree 
+interactively. Each file on the command line is scanned and presented as a 
+tree of metadata records.
+
+Commands include:
+
+``ls``
+    List the available metadata keys at the current level.
+
+``cd``
+    Traverse to a metadata key in the current level (or enter `..` to go up 
+    to the prevvious level).
+
+``bye``
+    Exit to the shell.
+
+Type `help` or `?` at the prompt to get a full list of commands.
 
 
 Example Output
 --------------
 
+.. attention::
+
+   Metadata fields containing binary data, such as the Broadcast-WAV UMID, will 
+   be included in the JSON output as a base-64 encoded string, preceded by the
+   marker "base64:".
+
 .. code-block:: javascript
 
-    {
-    "filename": "tests/test_files/sounddevices/A101_1.WAV",
-    "run_date": "2022-11-26T17:56:38.342935",
-    "application": "wavinfo 2.1.0",
-    "scopes": {
-        "fmt": {
-        "audio_format": 1,
-        "channel_count": 2,
-        "sample_rate": 48000,
-        "byte_rate": 288000,
-        "block_align": 6,
-        "bits_per_sample": 24
+  {
+  "filename": "../tests/test_files/nuendo/wavinfo Test Project - Audio - 1OA.wav",
+  "run_date": "2024-11-25T10:26:11.280053",
+  "application": "wavinfo 3.0.0",
+  "scopes": {
+    "fmt": {
+      "audio_format": 65534,
+      "channel_count": 4,
+      "sample_rate": 48000,
+      "byte_rate": 576000,
+      "block_align": 12,
+      "bits_per_sample": 24
+    },
+    "data": {
+      "byte_count": 576000,
+      "frame_count": 48000
+    },
+    "ixml": {
+      "track_list": [
+        {
+          "channel_index": "1",
+          "interleave_index": "1",
+          "name": "",
+          "function": "ACN0-FOA"
         },
-        "data": {
-        "byte_count": 1441434,
-        "frame_count": 240239
+        {
+          "channel_index": "2",
+          "interleave_index": "2",
+          "name": "",
+          "function": "ACN1-FOA"
         },
-        "ixml": {
-        "track_list": [
-            {
-            "channel_index": "1",
-            "interleave_index": "1",
-            "name": "MKH516 A",
-            "function": ""
-            },
-            {
-            "channel_index": "2",
-            "interleave_index": "2",
-            "name": "Boom",
-            "function": ""
-            }
-        ],
-        "project": "BMH",
-        "scene": "A101",
-        "take": "1",
-        "tape": "18Y12M31",
-        "family_uid": "USSDVGR1112089007124001008206300",
-        "family_name": null
+        {
+          "channel_index": "3",
+          "interleave_index": "3",
+          "name": "",
+          "function": "ACN2-FOA"
         },
-        "bext": {
-        "description": "sSPEED=023.976-ND\r\nsTAKE=1\r\nsUBITS=$12311801\r\nsSWVER=2.67\r\nsPROJECT=BMH\r\nsSCENE=A101\r\nsFILENAME=A101_1.WAV\r\nsTAPE=18Y12M31\r\nsTRK1=MKH516 A\r\nsTRK2=Boom\r\nsNOTE=\r\n",
-        "originator": "Sound Dev: 702T S#GR1112089007",
-        "originator_ref": "USSDVGR1112089007124001008206301",
-        "originator_date": "2018-12-31",
-        "originator_time": "12:40:00",
-        "time_reference": 2190940753,
-        "version": 1,
-        "umid": "0000000000000000000000000000000000000000000000000000000000000000",
-        "coding_history": "A=PCM,F=48000,W=24,M=stereo,R=48000,T=2 Ch\r\n",
-        "loudness_value": null,
-        "loudness_range": null,
-        "max_true_peak": null,
-        "max_momentary_loudness": null,
-        "max_shortterm_loudness": null
+        {
+          "channel_index": "4",
+          "interleave_index": "4",
+          "name": "",
+          "function": "ACN3-FOA"
         }
+      ],
+      "project": "wavinfo Test Project",
+      "scene": null,
+      "take": null,
+      "tape": null,
+      "family_uid": "E5DDE719B9484A758162FF7B652383A3",
+      "family_name": null
+    },
+    "bext": {
+      "description": "wavinfo Test Project Nuendo output",
+      "originator": "Nuendo",
+      "originator_ref": "USJPHNNNNNNNNN202829RRRRRRRRR",
+      "originator_date": "2022-12-02",
+      "originator_time": "10:21:06",
+      "time_reference": 172800000,
+      "version": 2,
+      "umid": "base64:k/zr4qE4RiaXyd/fO7GuCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "coding_history": "A=PCM,F=48000,W=24,T=Nuendo\r\n",
+      "loudness_value": 327.67,
+      "loudness_range": 327.67,
+      "max_true_peak": 327.67,
+      "max_momentary_loudness": 327.67,
+      "max_shortterm_loudness": 327.67
     }
-    }
+  }
+}
 

@@ -8,6 +8,9 @@ import json
 from enum import Enum
 import importlib.metadata
 from base64 import b64encode
+from cmd import Cmd
+from shlex import split
+from typing import List, Dict, Union
 
 
 class MyJSONEncoder(json.JSONEncoder):
@@ -22,6 +25,85 @@ class MyJSONEncoder(json.JSONEncoder):
 
 class MissingDataError(RuntimeError):
     pass
+
+
+class MetaBrowser(Cmd):
+    prompt = "(wavinfo) "
+
+    metadata: Union[List, Dict]
+    path: List[str] = []
+
+    @property
+    def cwd(self):
+        root: List | Dict = self.metadata
+        for key in self.path:
+            if isinstance(root, list):
+                root = root[int(key)]
+            else:
+                root = root[key]
+
+        return root
+
+    @staticmethod
+    def print_value(collection, key):
+        val = collection[key]
+        if isinstance(val, int):
+            print(f" - {key}: {val}")
+        elif isinstance(val, str):
+            print(f" - {key}: \"{val}\"")
+        elif isinstance(val, dict):
+            print(f" - {key}: Dict ({len(val)} keys)")
+        elif isinstance(val, list):
+            print(f" - {key}: List ({len(val)} keys)")
+        elif isinstance(val, bytes):
+            print(f" - {key}: ({len(val)} bytes)")
+        elif val is None:
+            print(f" - {key}: (NO VALUE)")
+        else:
+            print(f" - {key}: Unknown")
+
+    def do_ls(self, _):
+        'List items at the current node: LS'
+        root = self.cwd
+
+        if isinstance(root, list):
+            print("List:")
+            for i in range(len(root)):
+                self.print_value(root, i)
+
+        elif isinstance(root, dict):
+            print("Dictionary:")
+            for key in root:
+                self.print_value(root, key)
+
+        else:
+            print("Cannot print node, is not a list or dictionary.")
+
+    def do_cd(self, args):
+        'Switch to a different node: CD node-name | ".."'
+        argv = split(args)
+        if argv[0] == "..":
+            self.path = self.path[0:-1]
+        else:
+            if isinstance(self.cwd, list):
+                if int(argv[0]) < len(self.cwd):
+                    self.path = self.path + [argv[0]]
+                else:
+                    print(f"Index {argv[0]} does not exist")
+            elif isinstance(self.cwd, dict):
+                if argv[0] in self.cwd.keys():
+                    self.path = self.path + [argv[0]]
+                else:
+                    print(f"Key \"{argv[0]}\" does not exist")
+
+        if len(self.path) > 0:
+            self.prompt = "(" + "/".join(self.path) + ") "
+        else:
+            self.prompt = "(wavinfo) "
+
+    def do_bye(self, _):
+        'Exit the interactive browser: BYE'
+        return True
 
 
 def main():
@@ -51,7 +133,14 @@ def main():
                       default=False,
                       action='store_true')
 
+    parser.add_option('-i',
+                      help='Read metadata with an interactive prompt',
+                      default=False,
+                      action='store_true')
+
     (options, args) = parser.parse_args(sys.argv)
+
+    interactive_dict = []
 
     # if options.install_manpages:
     #     print("Installing manpages...")
@@ -98,13 +187,23 @@ def main():
 
                     ret_dict['scopes'][scope][name] = value
 
-                json.dump(ret_dict, cls=MyJSONEncoder, fp=sys.stdout, indent=2)
+                if options.i:
+                    interactive_dict.append(ret_dict)
+                else:
+                    json.dump(ret_dict, cls=MyJSONEncoder, fp=sys.stdout,
+                              indent=2)
+
         except MissingDataError as e:
             print("MissingDataError: Missing metadata (%s) in file %s" %
                   (e, arg), file=sys.stderr)
             continue
         except Exception as e:
             raise e
+
+        if len(interactive_dict) > 0:
+            cli = MetaBrowser()
+            cli.metadata = interactive_dict
+            cli.cmdloop()
 
 
 if __name__ == "__main__":
