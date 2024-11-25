@@ -142,7 +142,6 @@ def main():
 
     interactive_dict = []
 
-
     # if options.install_manpages:
     #     print("Installing manpages...")
     #     print(f"Docfiles at {__file__}")
