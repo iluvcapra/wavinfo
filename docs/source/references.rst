@@ -36,6 +36,11 @@ iXML
 * `Gallery Software iXML Specification <http://www.gallery.co.uk/ixml/>`_
 
 
+Sampler Metadata
+----------------
+
+* `RecordingBlogs.com — Sample chunk (of a Wave file)<https://www.recordingblogs.com/wiki/sample-chunk-of-a-wave-file>`_
+
 RIFF Metadata
 -------------
 * `1991. Multimedia Programming Interface and Data Specifications 1.0 <https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf>`_
