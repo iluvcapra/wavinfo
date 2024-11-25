@@ -45,38 +45,38 @@ class MetaBrowser(Cmd):
 
     @staticmethod
     def print_value(collection, key):
-                val = collection[key]
-                if isinstance(val, int):
-                    print(f" - {key}: {val}")
-                elif isinstance(val, str):
-                    print(f" - {key}: \"{val}\"")
-                elif isinstance(val, dict):
-                    print(f" - {key}: Dict ({len(val)} keys)")
-                elif isinstance(val, list):
-                    print(f" - {key}: List ({len(val)} keys)")
-                elif isinstance(val, bytes):
-                    print(f" - {key}: ({len(val)} bytes)")
-                elif val == None:
-                    print(f" - {key}: (NO VALUE)")
-                else:
-                    print(f" - {key}: Unknown")
+        val = collection[key]
+        if isinstance(val, int):
+            print(f" - {key}: {val}")
+        elif isinstance(val, str):
+            print(f" - {key}: \"{val}\"")
+        elif isinstance(val, dict):
+            print(f" - {key}: Dict ({len(val)} keys)")
+        elif isinstance(val, list):
+            print(f" - {key}: List ({len(val)} keys)")
+        elif isinstance(val, bytes):
+            print(f" - {key}: ({len(val)} bytes)")
+        elif val is None:
+            print(f" - {key}: (NO VALUE)")
+        else:
+            print(f" - {key}: Unknown")
 
     def do_ls(self, _):
         'List items at the current node: LS'
-        root = self.cwd 
+        root = self.cwd
 
         if isinstance(root, list):
-            print(f"List:")
+            print("List:")
             for i in range(len(root)):
                 self.print_value(root, i)
 
         elif isinstance(root, dict):
-            print(f"Dictionary:")
+            print("Dictionary:")
             for key in root:
                 self.print_value(root, key)
 
         else:
-            print(f"Cannot print node, is not a list or dictionary.")
+            print("Cannot print node, is not a list or dictionary.")
 
     def do_cd(self, args):
         'Switch to a different node: CD node-name | ".."'
@@ -172,7 +172,6 @@ def main():
             cli = MetaBrowser()
             cli.metadata = interactive_dict
             cli.cmdloop()
-
 
 
 if __name__ == "__main__":
