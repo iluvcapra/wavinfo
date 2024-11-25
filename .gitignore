@@ -110,3 +110,5 @@ venv_docs/
 .DS_Store
 
 .vscode/
+
+poetry.lock
