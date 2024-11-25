@@ -1,13 +1,16 @@
-[build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+# https://python-poetry.org/docs/pyproject/
 
-[project]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
 name = "wavinfo"
-authors = [{name = "Jamie Hardt", email = "jamiehardt@me.com"}]
+version = "3.0.1"
+description = "Probe WAVE files for all metadata"
+authors = ["Jamie Hardt <jamiehardt@me.com>"]
+license = "MIT" 
 readme = "README.md"
-dynamic = ["version", "description"]
-requires-python = "~=3.8"
 classifiers = [
     'Development Status :: 5 - Production/Stable',
     'License :: OSI Approved :: MIT License',
@@ -20,9 +23,10 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13"
 ]
-dependencies = [
-    "lxml ~= 5.3.0"
-]
+homepage = "https://github.com/iluvcapra/wavinfo"
+repository = "https://github.com/iluvcapra/wavinfo.git"
+documentation = "https://wavinfo.readthedocs.io/"
+urls.Tracker = 'https://github.com/iluvcapra/wavinfo/issues' 
 keywords = [
     'waveform', 
     'metadata', 
@@ -35,29 +39,17 @@ keywords = [
     'broadcast' 
 ]
 
-[tool.flit.module]
-name = "wavinfo"
+[tool.poetry.extras]
+doc = ['sphinx', 'sphinx_rtd_theme']
 
-[project.optional-dependencies]
-doc = [
-    'sphinx >= 5.3.0',
-    'sphinx_rtd_theme >= 1.1.1',
-]
-
-[project.urls]
-Home = "https://github.com/iluvcapra/wavinfo"
-Documentation = "https://wavinfo.readthedocs.io/"
-Source = "https://github.com/iluvcapra/wavinfo.git"
-Issues = 'https://github.com/iluvcapra/wavinfo/issues' 
-
-[project.entry_points.console_scripts]
+[tool.poetry.scripts]
 wavinfo = 'wavinfo.__main__:main'
 
-[project.scripts]
-wavinfo = "wavinfo.__main__:main"
-
-[tool.flit.external-data]
-directory = "data"
+[tool.poetry.dependencies]
+python = "^3.8"
+lxml = "~= 5.3.0"
+sphinx_rtd_theme = {version= '>= 1.1.1', optional=true}
+sphinx = {version= '>= 5.3.0', optional=true}
 
 [tool.pyright]
 typeCheckingMode = "basic"

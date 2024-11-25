@@ -39,7 +39,7 @@ iXML
 Sampler Metadata
 ----------------
 
-* `RecordingBlogs.com — Sample chunk (of a Wave file)<https://www.recordingblogs.com/wiki/sample-chunk-of-a-wave-file>`_
+* `RecordingBlogs.com — Sample chunk (of a Wave file) <https://www.recordingblogs.com/wiki/sample-chunk-of-a-wave-file>`_
 
 RIFF Metadata
 -------------
