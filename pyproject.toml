@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "wavinfo"
-version = "3.0.1"
+version = "3.1.0"
 description = "Probe WAVE files for all metadata"
 authors = ["Jamie Hardt <jamiehardt@me.com>"]
 license = "MIT" 
