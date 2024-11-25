@@ -9,11 +9,13 @@ from the command line and output metadata to stdout.
     $ wavinfo [[-i] | [--ixml | --adm]] INFILE +
 
 
-
 Options
 -------
 
 By default, `wavinfo` will output a JSON dictionary for each file argument.
+
+``-i`` 
+    `wavinfo` will run in `interactive mode`_.
 
 Two option flags will change the behavior of the command in non-interactive 
 mode:
@@ -28,9 +30,8 @@ mode:
     payload of each input wave file, or will emit an error message to stderr if
     ADM XML metadata is not present.
 
-These options are mutually-exclusive, with `\-\-adm` taking precedence. 
-
-If ``-i`` is given, `wavinfo` will run in `interactive mode`_.
+These options are mutually-exclusive, with `\-\-adm` taking precedence. The 
+``--ixml`` and ``--adm`` flags futher take precedence over ``-i``.
 
 
 Interactive Mode 

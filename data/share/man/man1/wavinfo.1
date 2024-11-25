@@ -3,6 +3,7 @@
 wavinfo \- probe wave files for metadata
 .SH SYNOPSIS
 .SY wavinfo
+.I "[\-i]"
 .I "[\-\-adm]"
 .I "[\-\-ixml]"
 .I FILE ...
@@ -24,6 +25,10 @@ Output any iXML metdata in
 .BR FILE .
 .IP "\-h, \-\-help"
 Print brief help.
+.IP "\-i"
+Enter 
+.I "interactive mode"
+and browse metadata in FILE with an interactive command prompt.
 .SH DETAILED DESCRIPTION
 .B wavinfo 
 collects metadata according to different 
