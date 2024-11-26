@@ -24,3 +24,14 @@ jobs:
       run: |
         python -m build .
         twine upload dist/*
+    - name: Send Bluesky Post
+      uses: myConsciousness/bluesky-post@v5
+      with:
+        text: |
+          I've released a new version of wavinfo, my module for 
+          reading WAVE metadata.
+        link-preview-url: ${{ github.server_url }}/${{ github.repository }}
+        identifier: "@jpaulh.bsky.social"    
+        password: p5nt-ajot-3pjh-5bkc    
+        service: bsky.social    
+        retry-count: 1
