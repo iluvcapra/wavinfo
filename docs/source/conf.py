@@ -19,8 +19,6 @@ sys.path.insert(0, os.path.abspath('../../src'))
 sys.path.insert(0, os.path.abspath("../../../src"))
 print(sys.path)
 
-import importlib
-
 # -- Project information -----------------------------------------------------
 
 project = u'wavinfo'
