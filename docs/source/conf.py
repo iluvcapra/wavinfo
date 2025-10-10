@@ -24,7 +24,7 @@ import importlib
 # -- Project information -----------------------------------------------------
 
 project = u'wavinfo'
-copyright = u'2018-2024, Jamie Hardt'
+copyright = u'2018-2025, Jamie Hardt'
 author = u'Jamie Hardt'
 
 # The short X.Y version
