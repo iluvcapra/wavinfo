@@ -2,7 +2,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/iluvcapra/wavinfo) [![Documentation Status](https://readthedocs.org/projects/wavinfo/badge/?version=latest)](https://wavinfo.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/github/license/iluvcapra/wavinfo.svg)
 
 [![Tests](https://github.com/iluvcapra/wavinfo/actions/workflows/python-package.yml/badge.svg)](https://github.com/iluvcapra/wavinfo/actions/workflows/python-package.yml)
-[![Flake8](https://github.com/iluvcapra/wavinfo/actions/workflows/python-flake8.yml/badge.svg)](https://github.com/iluvcapra/wavinfo/actions/workflows/python-flake8.yml)
+[![Ruff](https://github.com/iluvcapra/wavinfo/actions/workflows/python-ruff.yml/badge.svg)](https://github.com/iluvcapra/wavinfo/actions/workflows/python-ruff.yml)
 [![codecov](https://codecov.io/gh/iluvcapra/wavinfo/branch/master/graph/badge.svg?token=9DZQfZENYv)](https://codecov.io/gh/iluvcapra/wavinfo)
 
 # wavinfo

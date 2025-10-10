@@ -44,6 +44,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pytest>=8.3.5",
     "ruff>=0.14.0",
 ]
 doc = [
