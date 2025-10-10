@@ -16,6 +16,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+    - name: Setup uv and Handle Its Cache
+      # You may pin to the exact commit or the version.
+      # uses: hynek/setup-cached-uv@757bedc3f972eb7227a1aa657651f15a8527c817
+      uses: hynek/setup-cached-uv@v2.3.0          
     - name: Build 
       run: |
         uv build --wheel
