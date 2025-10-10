@@ -17,6 +17,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
     - name: Build 
+      run: |
         uv build --wheel
     - name: Publish to Pypi
       uses: pypa/gh-action-pypi-publish@v1.13.0
