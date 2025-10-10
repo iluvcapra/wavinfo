@@ -12,7 +12,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import importlib
+# import importlib
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../src'))
@@ -26,9 +26,10 @@ copyright = u'2018-2025, Jamie Hardt'
 author = u'Jamie Hardt'
 
 # The short X.Y version
-version = "3.1"
+version = "4.0"
 # The full version, including alpha/beta/rc tags
-release = importlib.metadata.version("wavinfo")
+release = "4.0.0"
+# release = importlib.metadata.version("wavinfo")
 
 
 # -- General configuration ---------------------------------------------------
