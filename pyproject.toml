@@ -42,7 +42,7 @@ dependencies = [
 ]
 
 [project.scripts]
-ptulsconv = "ptulsconv:__main__.main"
+wavinfo = "wavinfo:__main__.main"
 
 [tool.pyright]
 typeCheckingMode = "basic"
