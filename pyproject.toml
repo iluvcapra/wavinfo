@@ -1,16 +1,15 @@
-# https://python-poetry.org/docs/pyproject/
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.8.18,<0.9.0"]
+build-backend = "uv_build"
 
-[tool.poetry]
+[project]
 name = "wavinfo"
 version = "3.1.0"
 description = "Probe WAVE files for all metadata"
-authors = ["Jamie Hardt <jamiehardt@me.com>"]
+authors = [{ name = "Jamie Hardt", email = "jamiehardt@me.com"}]
 license = "MIT" 
 readme = "README.md"
+requires-python = ">=3.8"
 classifiers = [
     'Development Status :: 5 - Production/Stable',
     'License :: OSI Approved :: MIT License',
@@ -38,18 +37,12 @@ keywords = [
     'film', 
     'broadcast' 
 ]
+dependencies = [
+    "lxml>=6.0.2",
+]
 
-[tool.poetry.extras]
-doc = ['sphinx', 'sphinx_rtd_theme']
-
-[tool.poetry.scripts]
-wavinfo = 'wavinfo.__main__:main'
-
-[tool.poetry.dependencies]
-python = "^3.8"
-lxml = "~= 5.3.0"
-sphinx_rtd_theme = {version= '>= 1.1.1', optional=true}
-sphinx = {version= '>= 5.3.0', optional=true}
+[project.scripts]
+ptulsconv = "ptulsconv:__main__.main"
 
 [tool.pyright]
 typeCheckingMode = "basic"
@@ -64,4 +57,13 @@ disable = [
     "R0903", # (too-few-public-methods)
     "R0913", # (too-many-arguments)
     "W0105", # (pointless-string-statement)
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.0",
+]
+doc = [
+    "sphinx>=7.1.2",
+    "sphinx-rtd-theme>=3.0.2",
 ]
