@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "wavinfo"
-version = "3.1.0"
+version = "3.1.1"
 description = "Probe WAVE files for all metadata"
 authors = [{ name = "Jamie Hardt", email = "jamiehardt@me.com"}]
 license = "MIT" 
@@ -37,8 +37,18 @@ keywords = [
     'film', 
     'broadcast' 
 ]
+
 dependencies = [
     "lxml>=6.0.2",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.0",
+]
+doc = [
+    "sphinx>=7.1.2",
+    "sphinx-rtd-theme>=3.0.2",
 ]
 
 [project.scripts]
@@ -59,11 +69,3 @@ disable = [
     "W0105", # (pointless-string-statement)
 ]
 
-[dependency-groups]
-dev = [
-    "ruff>=0.14.0",
-]
-doc = [
-    "sphinx>=7.1.2",
-    "sphinx-rtd-theme>=3.0.2",
-]
