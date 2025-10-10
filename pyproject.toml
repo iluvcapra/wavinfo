@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "wavinfo"
-version = "3.1.1"
+version = "4.0.0"
 description = "Probe WAVE files for all metadata"
 authors = [{ name = "Jamie Hardt", email = "jamiehardt@me.com"}]
 license = "MIT" 
