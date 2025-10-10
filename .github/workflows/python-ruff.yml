@@ -30,4 +30,4 @@ jobs:
         python -m pip install .
     - name: Lint with ruff 
       run: |
-        ruff src
+        ruff check src
