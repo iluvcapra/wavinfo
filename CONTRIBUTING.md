@@ -13,4 +13,4 @@ If you discover a bug or would like better support for a feature, please do the 
    review it as soon as I can. There's a `.devcontainer` available so you can creates commits 
    on this project in a GitHub codespace.
 
-Contributions made by machine learning systems are politely declined.
+Contributions made by Large Language Models are politely declined.
