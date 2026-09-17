@@ -65,7 +65,6 @@ indent-width = 4
 [tool.ruff.lint]
 fixable = ['ALL']
 ignore = [
-    # 'FA100', #Add `from __future__ import annotations` to simplify `typing.Optional`
     'UP031', #Use format specifiers instead of percent format
 ]
 
