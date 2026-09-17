@@ -31,7 +31,11 @@ class MetaBrowser(Cmd):
     prompt = "(wavinfo) "
 
     metadata: Union[List, Dict]
-    path: List[str] = []
+    path: List[str]
+
+    def preloop(self) -> None:
+        self.path = []
+        return super().preloop()
 
     @property
     def cwd(self):
@@ -91,7 +95,7 @@ class MetaBrowser(Cmd):
                 else:
                     print(f"Index {argv[0]} does not exist")
             elif isinstance(self.cwd, dict):
-                if argv[0] in self.cwd.keys():
+                if argv[0] in self.cwd:
                     self.path = self.path + [argv[0]]
                 else:
                     print(f'Key "{argv[0]}" does not exist')
@@ -177,12 +181,14 @@ def main():
             else:
                 ret_dict = {
                     "filename": arg,
-                    "run_date": datetime.datetime.now().isoformat(),
+                    "run_date": datetime.datetime.now(
+                        tz=datetime.timezone.utc
+                    ).isoformat(),
                     "application": f"wavinfo {version}",
                     "scopes": {},
                 }
                 for scope, name, value in this_file.walk():
-                    if scope not in ret_dict["scopes"].keys():
+                    if scope not in ret_dict["scopes"]:
                         ret_dict["scopes"][scope] = {}
 
                     ret_dict["scopes"][scope][name] = value
@@ -198,8 +204,6 @@ def main():
                 file=sys.stderr,
             )
             continue
-        except Exception as e:
-            raise e
 
         if len(interactive_dict) > 0:
             cli = MetaBrowser()

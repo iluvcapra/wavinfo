@@ -178,21 +178,15 @@ class DolbyDigitalPlusMetadata:
         Per ATSC/A52 § 5.4.2.12, this is not in use and always 0xFF.
         """
 
-        pass
-
     class MixLevel(int):
         """
         § 4.3.6.2
         """
 
-        pass
-
     class DialnormLevel(int):
         """
         § 4.3.4.4
         """
-
-        pass
 
     class RoomType(Enum):
         """
