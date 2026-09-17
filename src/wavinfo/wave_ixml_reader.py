@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import io
 from enum import IntEnum
 
 # from collections import namedtuple
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 
 from lxml import etree as ET
 
@@ -76,7 +78,7 @@ class SteinbergMetadata:
         self.parsed = xml.find(self.Steinberg_xpath)
 
     @property
-    def audio_speaker_arrangement(self) -> Optional[AudioSpeakerArrangement]:
+    def audio_speaker_arrangement(self) -> AudioSpeakerArrangement | None:
         """
         `AudioSpeakerArrangement` property
         """
@@ -87,7 +89,7 @@ class SteinbergMetadata:
             return type(self).AudioSpeakerArrangement(int(val.text))
 
     @property
-    def sample_format_size(self) -> Optional[int]:
+    def sample_format_size(self) -> int | None:
         """
         AudioSampleFormatSize
         """
@@ -96,7 +98,7 @@ class SteinbergMetadata:
             return int(val.text)
 
     @property
-    def media_company(self) -> Optional[str]:
+    def media_company(self) -> str | None:
         """
         MediaCompany
         """
@@ -105,7 +107,7 @@ class SteinbergMetadata:
             return val.text
 
     @property
-    def media_drop_frames(self) -> Optional[bool]:
+    def media_drop_frames(self) -> bool | None:
         """
         MediaDropFrames
         """
@@ -114,7 +116,7 @@ class SteinbergMetadata:
             return val.text == "1"
 
     @property
-    def media_duration(self) -> Optional[float]:
+    def media_duration(self) -> float | None:
         """
         MediaDuration
         """
@@ -122,33 +124,29 @@ class SteinbergMetadata:
         if val is not None:
             return float(val.text)
 
-    @property
-    def media_start_time(self) -> Optional[float]:
-        """
-        MediaStartTime
-        """
-        pass
+    # @property
+    # def media_start_time(self) -> float | None:
+    #     """
+    #     MediaStartTime
+    #     """
 
-    @property
-    def media_track_title(self) -> Optional[str]:
-        """
-        MediaTrackTitle
-        """
-        pass
+    # @property
+    # def media_track_title(self) -> str | None:
+    #     """
+    #     MediaTrackTitle
+    #     """
 
-    @property
-    def program_name(self) -> Optional[str]:
-        """
-        ProgramName
-        """
-        pass
+    # @property
+    # def program_name(self) -> str | None:
+    #     """
+    #     ProgramName
+    #     """
 
-    @property
-    def program_version(self) -> Optional[str]:
-        """
-        ProgramVersion
-        """
-        pass
+    # @property
+    # def program_version(self) -> str | None:
+    #     """
+    #     ProgramVersion
+    #     """
 
 
 class WavIXMLFormat:
@@ -166,7 +164,7 @@ class WavIXMLFormat:
         parser = ET.XMLParser(recover=True)
         self.parsed: ET.ElementTree = ET.parse(xml_bytes, parser=parser)
 
-    def _get_text_value(self, xpath) -> Optional[str]:
+    def _get_text_value(self, xpath) -> str | None:
         e = self.parsed.find("./" + xpath)
         if e is not None:
             return e.text
@@ -200,35 +198,35 @@ class WavIXMLFormat:
                 )
 
     @property
-    def project(self) -> Optional[str]:
+    def project(self) -> str | None:
         """
         The project/film name entered for the recording.
         """
         return self._get_text_value("PROJECT")
 
     @property
-    def scene(self) -> Optional[str]:
+    def scene(self) -> str | None:
         """
         Scene/slate.
         """
         return self._get_text_value("SCENE")
 
     @property
-    def take(self) -> Optional[str]:
+    def take(self) -> str | None:
         """
         Take number.
         """
         return self._get_text_value("TAKE")
 
     @property
-    def tape(self) -> Optional[str]:
+    def tape(self) -> str | None:
         """
         Tape name.
         """
         return self._get_text_value("TAPE")
 
     @property
-    def family_uid(self) -> Optional[str]:
+    def family_uid(self) -> str | None:
         """
         The globally-unique ID for this file family. This may be in the format
         of a GUID, or an EBU Rec 9 source identifier, or some other dumb
@@ -237,14 +235,14 @@ class WavIXMLFormat:
         return self._get_text_value("FILE_SET/FAMILY_UID")
 
     @property
-    def family_name(self) -> Optional[str]:
+    def family_name(self) -> str | None:
         """
         The name of this file's file family.
         """
         return self._get_text_value("FILE_SET/FAMILY_NAME")
 
     @property
-    def steinberg(self) -> Optional[SteinbergMetadata]:
+    def steinberg(self) -> SteinbergMetadata | None:
         """
         Steinberg vendor iXML metadata if present.
         """
@@ -254,12 +252,12 @@ class WavIXMLFormat:
             return None
 
     def to_dict(self):
-        return dict(
-            track_list=list(map(lambda x: x._asdict(), self.track_list)),
-            project=self.project,
-            scene=self.scene,
-            take=self.take,
-            tape=self.tape,
-            family_uid=self.family_uid,
-            family_name=self.family_name,
-        )
+        return {
+            "track_list": [x._asdict() for x in self.track_list],
+            "project": self.project,
+            "scene": self.scene,
+            "take": self.take,
+            "tape": self.tape,
+            "family_uid": self.family_uid,
+            "family_name": self.family_name,
+        }

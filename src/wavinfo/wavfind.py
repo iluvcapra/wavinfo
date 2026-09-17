@@ -1,5 +1,8 @@
-""" """
+"""
+wavfind.py
 
+Under construction! Do Not Use!
+"""
 import sys
 from optparse import OptionGroup, OptionParser
 
@@ -21,7 +24,7 @@ def main():
 
     primaries.add_option("--desc", help="Search descriptions", metavar="DESC")
 
-    (options, args) = parser.parse_args(sys.argv)
+    (_options, _args) = parser.parse_args(sys.argv)
 
 
 if __name__ == "__main__":

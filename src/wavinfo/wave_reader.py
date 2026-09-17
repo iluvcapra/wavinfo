@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import os
 import pathlib
 import struct
-from typing import Any, Generator, NamedTuple, Optional
+from typing import Any, Generator, NamedTuple
 
 from .riff_parser import ChunkDescriptor, ListChunkDescriptor, parse_chunk
 from .wave_adm_reader import WavADMReader
@@ -58,31 +59,31 @@ class WavInfoReader:
         self.bext_encoding = bext_encoding
 
         #: Wave audio data format.
-        self.fmt: Optional[WavAudioFormat] = None
+        self.fmt: WavAudioFormat | None = None
 
         #: Statistics of the `data` section.
-        self.data: Optional[WavDataDescriptor] = None
+        self.data: WavDataDescriptor | None = None
 
         #: Broadcast-Wave metadata.
-        self.bext: Optional[WavBextReader] = None
+        self.bext: WavBextReader | None = None
 
         #: iXML metadata.
-        self.ixml: Optional[WavIXMLFormat] = None
+        self.ixml: WavIXMLFormat | None = None
 
         #: ADM Audio Definiton Model metadata.
-        self.adm: Optional[WavADMReader] = None
+        self.adm: WavADMReader | None = None
 
         #: Dolby bitstream metadata.
-        self.dolby: Optional[WavDolbyMetadataReader] = None
+        self.dolby: WavDolbyMetadataReader | None = None
 
         #: RIFF INFO metadata.
-        self.info: Optional[WavInfoChunkReader] = None
+        self.info: WavInfoChunkReader | None = None
 
         #: RIFF cues markers, labels, and notes.
-        self.cues: Optional[WavCuesReader] = None
+        self.cues: WavCuesReader | None = None
 
         #: Sampler `smpl` metadata
-        self.smpl: Optional[WavSmplReader] = None
+        self.smpl: WavSmplReader | None = None
 
         if hasattr(path, "read"):
             self.get_wav_info(path)
@@ -97,8 +98,8 @@ class WavInfoReader:
 
             self.path = absolute_path
 
-            with open(path, "rb") as path:
-                self.get_wav_info(path)
+            with open(path, "rb") as file:
+                self.get_wav_info(file)
 
     def get_wav_info(self, wavfile):
         chunks = parse_chunk(wavfile)
@@ -117,9 +118,7 @@ class WavInfoReader:
         self.smpl = self._get_sampler_loops(wavfile)
         self.data = self._describe_data()
 
-    def _find_chunk_data(
-        self, ident, from_stream, default_none=False
-    ) -> Optional[bytes]:
+    def _find_chunk_data(self, ident, from_stream, default_none=False) -> bytes | None:
         top_chunks = (
             chunk
             for chunk in self.main_list
@@ -130,7 +129,7 @@ class WavInfoReader:
 
         return chunk_descriptor.read_data(from_stream) if chunk_descriptor else None
 
-    def _find_list_chunk(self, signature) -> Optional[ListChunkDescriptor]:
+    def _find_list_chunk(self, signature) -> ListChunkDescriptor | None:
         top_chunks = (
             chunk
             for chunk in self.main_list
@@ -261,10 +260,8 @@ class WavInfoReader:
                     if self.__getattribute__(scope)
                     else {}
                 )
-                for key in mdict.keys():
+                for key in mdict:
                     yield scope, key, mdict[key]
 
     def __repr__(self):
-        return "WavInfoReader({}, {}, {})".format(
-            self.path, self.info_encoding, self.bext_encoding
-        )
+        return f"WavInfoReader({self.path}, {self.info_encoding}, {self.bext_encoding})"

@@ -1,7 +1,6 @@
 import json
 import os.path
 import subprocess
-import sys
 from subprocess import PIPE
 
 FFPROBE = "ffprobe"
@@ -9,23 +8,12 @@ FFPROBE = "ffprobe"
 
 def ffprobe(path):
     arguments = [FFPROBE, "-of", "json", "-show_format", "-show_streams", path]
-    if int(sys.version[0]) < 3:
-        process = subprocess.Popen(arguments, stdout=PIPE)
-        process.wait()
-        if process.returncode == 0:
-            output = process.communicate()[0]
-            if output:
-                output_str = output.decode("utf-8")
-                return json.loads(output_str)
-        else:
-            return None
+    process = subprocess.run(arguments, stdin=None, stdout=PIPE, stderr=PIPE, check=True)
+    if process.returncode == 0:
+        output_str = process.stdout.decode("utf-8")
+        return json.loads(output_str)
     else:
-        process = subprocess.run(arguments, stdin=None, stdout=PIPE, stderr=PIPE)
-        if process.returncode == 0:
-            output_str = process.stdout.decode("utf-8")
-            return json.loads(output_str)
-        else:
-            return None
+        return None
 
 
 def all_files():

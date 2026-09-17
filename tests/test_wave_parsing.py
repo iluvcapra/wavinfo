@@ -14,7 +14,7 @@ class TestWaveInfo(TestCase):
             info = wavinfo.WavInfoReader(wav_file)
             self.assertEqual(
                 info.__repr__(),
-                "WavInfoReader({}, latin_1, ascii)".format(os.path.abspath(wav_file)),
+                f"WavInfoReader({os.path.abspath(wav_file)}, latin_1, ascii)",
             )
             self.assertIsNotNone(info)
 

@@ -11,12 +11,10 @@ class TestWalk(unittest.TestCase):
 
         tested_data, tested_format = False, False
         for scope, key, value in info.walk():
-            if scope == "fmt":
-                if key == "channel_count":
+            if scope == "fmt" and key == "channel_count":
                     tested_format = True
                     self.assertEqual(value, 2)
-            if scope == "data":
-                if key == "frame_count":
+            if scope == "data" and key == "frame_count":
                     tested_data = True
                     self.assertEqual(value, 144140)
 
@@ -26,11 +24,11 @@ class TestWalk(unittest.TestCase):
         for file in glob.glob("tests/test_files/**/*.wav"):
             info = wavinfo.WavInfoReader(file)
 
-            try:
-                for _, _, _ in info.walk():
-                    pass
-            except Exception as e:
-                self.fail(f"Failed to walk metadata in file {file}: {e}")
+            # try:
+            for _, _, _ in info.walk():
+                pass
+            # except Exception as e:
+                # self.fail(f"Failed to walk metadata in file {file}: {e}")
 
 
 if __name__ == "__main__":

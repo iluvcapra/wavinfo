@@ -42,12 +42,14 @@ class TestADMWave(TestCase):
         adm = info.adm
         assert adm is not None
         t1 = adm.track_info(0)
-        self.assertTrue("channel_format_name" in t1.keys())
+        assert t1 is not None
+        self.assertTrue("channel_format_name" in t1)
         self.assertEqual("RoomCentricLeft", t1["channel_format_name"])
 
-        self.assertTrue("pack_format_name" in t1.keys())
+        self.assertTrue("pack_format_name" in t1)
         self.assertEqual("AtmosCustomPackFormat1", t1["pack_format_name"])
 
         t10 = adm.track_info(10)
-        self.assertTrue("content_name" in t10.keys())
+        assert t10 is not None
+        self.assertTrue("content_name" in t10)
         self.assertEqual("Dialog", t10["content_name"])

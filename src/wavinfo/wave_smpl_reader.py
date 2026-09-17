@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import struct
-from typing import List, NamedTuple, Tuple
+from typing import NamedTuple
 
 
 class WaveSmplLoop(NamedTuple):
@@ -69,13 +71,13 @@ class WavSmplReader:
 
         #: The SMPTE offset to apply, as a tuple of four ints representing
         #: hh, mm, ss, ff
-        self.smpte_offset: Tuple[int, int, int, int] = unpacked_data[6:10]
+        self.smpte_offset: tuple[int, int, int, int] = unpacked_data[6:10]
 
         loop_count = unpacked_data[10]
         sampler_udata_length = unpacked_data[11]
 
         #: List of loops in the file.
-        self.sample_loops: List[WaveSmplLoop] = []
+        self.sample_loops: list[WaveSmplLoop] = []
 
         loop_buffer = smpl_data[header_size : header_size + loop_size * loop_count]
 
