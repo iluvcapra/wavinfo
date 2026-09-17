@@ -1,16 +1,16 @@
-from . import WavInfoReader
-
 import datetime
-from optparse import OptionParser
-import sys
-import os
-import json
-from enum import Enum
 import importlib.metadata
+import json
+import os
+import sys
 from base64 import b64encode
 from cmd import Cmd
+from enum import Enum
+from optparse import OptionParser
 from shlex import split
-from typing import List, Dict, Union
+from typing import Dict, List, Union
+
+from . import WavInfoReader
 
 
 class MyJSONEncoder(json.JSONEncoder):
@@ -18,7 +18,7 @@ class MyJSONEncoder(json.JSONEncoder):
         if isinstance(o, Enum):
             return o._name_
         elif isinstance(o, bytes):
-            return 'base64:' + b64encode(o).decode('ascii')
+            return "base64:" + b64encode(o).decode("ascii")
         else:
             return super().default(o)
 
@@ -31,7 +31,11 @@ class MetaBrowser(Cmd):
     prompt = "(wavinfo) "
 
     metadata: Union[List, Dict]
-    path: List[str] = []
+    path: List[str]
+
+    def preloop(self) -> None:
+        self.path = []
+        return super().preloop()
 
     @property
     def cwd(self):
@@ -50,7 +54,7 @@ class MetaBrowser(Cmd):
         if isinstance(val, int):
             print(f" - {key}: {val}")
         elif isinstance(val, str):
-            print(f" - {key}: \"{val}\"")
+            print(f' - {key}: "{val}"')
         elif isinstance(val, dict):
             print(f" - {key}: Dict ({len(val)} keys)")
         elif isinstance(val, list):
@@ -63,7 +67,7 @@ class MetaBrowser(Cmd):
             print(f" - {key}: Unknown")
 
     def do_ls(self, _):
-        'List items at the current node: LS'
+        "List items at the current node: LS"
         root = self.cwd
 
         if isinstance(root, list):
@@ -91,10 +95,10 @@ class MetaBrowser(Cmd):
                 else:
                     print(f"Index {argv[0]} does not exist")
             elif isinstance(self.cwd, dict):
-                if argv[0] in self.cwd.keys():
+                if argv[0] in self.cwd:
                     self.path = self.path + [argv[0]]
                 else:
-                    print(f"Key \"{argv[0]}\" does not exist")
+                    print(f'Key "{argv[0]}" does not exist')
 
         if len(self.path) > 0:
             self.prompt = "(" + "/".join(self.path) + ") "
@@ -102,41 +106,40 @@ class MetaBrowser(Cmd):
             self.prompt = "(wavinfo) "
 
     def do_bye(self, _):
-        'Exit the interactive browser: BYE'
+        "Exit the interactive browser: BYE"
         return True
 
 
 def main():
-    version = importlib.metadata.version('wavinfo')
+    version = importlib.metadata.version("wavinfo")
     manpath = os.path.dirname(__file__) + "/man"
     parser = OptionParser()
 
-    parser.usage = 'wavinfo (--adm | --ixml) <FILE> +'
+    parser.usage = "wavinfo (--adm | --ixml) <FILE> +"
 
     # parser.add_option('--install-manpages',
     #                   help="Install manual pages for wavinfo",
     #                   default=False,
     #                   action='store_true')
 
-    parser.add_option('--man',
-                      help="Read the manual and exit.",
-                      default=False,
-                      action='store_true')
+    parser.add_option(
+        "--man", help="Read the manual and exit.", default=False, action="store_true"
+    )
 
-    parser.add_option('--adm', dest='adm',
-                      help='Output ADM XML',
-                      default=False,
-                      action='store_true')
+    parser.add_option(
+        "--adm", dest="adm", help="Output ADM XML", default=False, action="store_true"
+    )
 
-    parser.add_option('--ixml', dest='ixml',
-                      help='Output iXML',
-                      default=False,
-                      action='store_true')
+    parser.add_option(
+        "--ixml", dest="ixml", help="Output iXML", default=False, action="store_true"
+    )
 
-    parser.add_option('-i',
-                      help='Read metadata with an interactive prompt',
-                      default=False,
-                      action='store_true')
+    parser.add_option(
+        "-i",
+        help="Read metadata with an interactive prompt",
+        default=False,
+        action="store_true",
+    )
 
     (options, args) = parser.parse_args(sys.argv)
 
@@ -149,6 +152,7 @@ def main():
 
     if options.man:
         import shlex
+
         print("Which man page?")
         print("1) wavinfo usage")
         print("7) General info on Wave file metadata")
@@ -176,29 +180,30 @@ def main():
                     raise MissingDataError("ixml")
             else:
                 ret_dict = {
-                    'filename': arg,
-                    'run_date': datetime.datetime.now().isoformat(),
-                    'application': f"wavinfo {version}",
-                    'scopes': {}
+                    "filename": arg,
+                    "run_date": datetime.datetime.now(
+                        tz=datetime.timezone.utc
+                    ).isoformat(),
+                    "application": f"wavinfo {version}",
+                    "scopes": {},
                 }
                 for scope, name, value in this_file.walk():
-                    if scope not in ret_dict['scopes'].keys():
-                        ret_dict['scopes'][scope] = {}
+                    if scope not in ret_dict["scopes"]:
+                        ret_dict["scopes"][scope] = {}
 
-                    ret_dict['scopes'][scope][name] = value
+                    ret_dict["scopes"][scope][name] = value
 
                 if options.i:
                     interactive_dict.append(ret_dict)
                 else:
-                    json.dump(ret_dict, cls=MyJSONEncoder, fp=sys.stdout,
-                              indent=2)
+                    json.dump(ret_dict, cls=MyJSONEncoder, fp=sys.stdout, indent=2)
 
         except MissingDataError as e:
-            print("MissingDataError: Missing metadata (%s) in file %s" %
-                  (e, arg), file=sys.stderr)
+            print(
+                "MissingDataError: Missing metadata (%s) in file %s" % (e, arg),
+                file=sys.stderr,
+            )
             continue
-        except Exception as e:
-            raise e
 
         if len(interactive_dict) > 0:
             cli = MetaBrowser()

@@ -1,34 +1,30 @@
 """
+wavfind.py
 
+Under construction! Do Not Use!
 """
-
-from optparse import OptionParser, OptionGroup
 import sys
+from optparse import OptionGroup, OptionParser
 
 
 def main():
     parser = OptionParser()
 
-    parser.usage = ("wavfind [--scene=SCENE] [--take=TAKE] [--desc=DESC] "
-                    "<PATH> +")
+    parser.usage = "wavfind [--scene=SCENE] [--take=TAKE] [--desc=DESC] <PATH> +"
 
-    primaries = OptionGroup(parser, title="Search Predicates",
-                            description="Argument values can be globs, "
-                            "and are logically-AND'ed.")
+    primaries = OptionGroup(
+        parser,
+        title="Search Predicates",
+        description="Argument values can be globs, and are logically-AND'ed.",
+    )
 
-    primaries.add_option("--scene",
-                         help='Search for this scene',
-                         metavar='SCENE')
+    primaries.add_option("--scene", help="Search for this scene", metavar="SCENE")
 
-    primaries.add_option("--take",
-                         help='Search for this take',
-                         metavar='TAKE')
+    primaries.add_option("--take", help="Search for this take", metavar="TAKE")
 
-    primaries.add_option("--desc",
-                         help='Search descriptions',
-                         metavar='DESC')
+    primaries.add_option("--desc", help="Search descriptions", metavar="DESC")
 
-    (options, args) = parser.parse_args(sys.argv)
+    (_options, _args) = parser.parse_args(sys.argv)
 
 
 if __name__ == "__main__":

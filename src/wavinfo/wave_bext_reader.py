@@ -1,6 +1,6 @@
 import struct
-# from .umid_parser import UMIDParser
 
+# from .umid_parser import UMIDParser
 from typing import Optional
 
 
@@ -13,16 +13,18 @@ class WavBextReader:
             the BEXT metadata scope. According to EBU Rec 3285 this shall be
             ASCII.
         """
-        packstring = "<256s" + "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + \
-            "hhhhh" + "180s"
+        packstring = (
+            "<256s" + "32s" + "32s" + "10s" + "8s" + "QH" + "64s" + "hhhhh" + "180s"
+        )
 
         rest_starts = struct.calcsize(packstring)
         unpacked = struct.unpack(packstring, bext_data[:rest_starts])
 
         def sanitize_bytes(b: bytes) -> str:
             # honestly can't remember why I'm stripping nulls this way
-            first_null = next((index for index, byte in enumerate(b)
-                               if byte == 0), None)
+            first_null = next(
+                (index for index, byte in enumerate(b) if byte == 0), None
+            )
             trimmed = b if first_null is None else b[:first_null]
             decoded = trimmed.decode(encoding)
             return decoded
@@ -91,18 +93,19 @@ class WavBextReader:
 
         # umid_str = None
 
-        return {'description': self.description,
-                'originator': self.originator,
-                'originator_ref': self.originator_ref,
-                'originator_date': self.originator_date,
-                'originator_time': self.originator_time,
-                'time_reference': self.time_reference,
-                'version': self.version,
-                'umid': self.umid,
-                'coding_history': self.coding_history,
-                'loudness_value': self.loudness_value,
-                'loudness_range': self.loudness_range,
-                'max_true_peak': self.max_true_peak,
-                'max_momentary_loudness': self.max_momentary_loudness,
-                'max_shortterm_loudness': self.max_shortterm_loudness
-                }
+        return {
+            "description": self.description,
+            "originator": self.originator,
+            "originator_ref": self.originator_ref,
+            "originator_date": self.originator_date,
+            "originator_time": self.originator_time,
+            "time_reference": self.time_reference,
+            "version": self.version,
+            "umid": self.umid,
+            "coding_history": self.coding_history,
+            "loudness_value": self.loudness_value,
+            "loudness_range": self.loudness_range,
+            "max_true_peak": self.max_true_peak,
+            "max_momentary_loudness": self.max_momentary_loudness,
+            "max_shortterm_loudness": self.max_shortterm_loudness,
+        }

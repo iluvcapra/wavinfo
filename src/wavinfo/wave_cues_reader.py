@@ -7,11 +7,12 @@ IBM Corporation and Microsoft Corporation
 
 https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf
 """
-from dataclasses import dataclass
-from .riff_parser import ChunkDescriptor
 
-from struct import unpack, calcsize
-from typing import Optional, Tuple,  NamedTuple, List, Dict, Any, Generator
+from dataclasses import dataclass
+from struct import calcsize, unpack
+from typing import Any, Dict, Generator, List, NamedTuple, Optional, Tuple
+
+from .riff_parser import ChunkDescriptor
 
 #: Country Codes used in the RIFF standard to resolve locale. These codes
 #: appear in CSET and LTXT metadata.
@@ -100,6 +101,7 @@ class CueEntry(NamedTuple):
     """
     A ``cue`` element structure.
     """
+
     #: Cue "name" or id number
     name: int
     #: Cue position, as a frame count in the play order of the WAVE file. In
@@ -118,29 +120,37 @@ class CueEntry(NamedTuple):
         return calcsize(cls.Format)
 
     @classmethod
-    def read(cls, data: bytes) -> 'CueEntry':
-        assert len(data) == cls.format_size(), \
-            (f"cue data size incorrect, expected {calcsize(cls.Format)} "
-             "found {len(data)}")
+    def read(cls, data: bytes) -> "CueEntry":
+        assert len(data) == cls.format_size(), (
+            f"cue data size incorrect, expected {calcsize(cls.Format)} "
+            "found {len(data)}"
+        )
 
         parsed = unpack(cls.Format, data)
 
-        return cls(name=parsed[0], position=parsed[1], chunk_id=parsed[2],
-                   chunk_start=parsed[3], block_start=parsed[4],
-                   sample_offset=parsed[5])
+        return cls(
+            name=parsed[0],
+            position=parsed[1],
+            chunk_id=parsed[2],
+            chunk_start=parsed[3],
+            block_start=parsed[4],
+            sample_offset=parsed[5],
+        )
 
 
 class LabelEntry(NamedTuple):
     """
     A ``labl`` structure.
     """
+
     name: int
     text: str
 
     @classmethod
     def read(cls, data: bytes, encoding: str):
-        return cls(name=unpack("<I", data[0:4])[0],
-                   text=data[4:].decode(encoding).rstrip("\0"))
+        return cls(
+            name=unpack("<I", data[0:4])[0], text=data[4:].decode(encoding).rstrip("\0")
+        )
 
 
 NoteEntry = LabelEntry
@@ -150,6 +160,7 @@ class RangeLabel(NamedTuple):
     """
     A ``ltxt`` structure.
     """
+
     name: int
     length: int
     purpose: str
@@ -162,21 +173,26 @@ class RangeLabel(NamedTuple):
     @classmethod
     def read(cls, data: bytes, fallback_encoding: str):
         leader_struct_fmt = "<II4sHHHH"
-        parsed = unpack(leader_struct_fmt, data[0:calcsize(leader_struct_fmt)])
-        text_data = data[calcsize(leader_struct_fmt):]
+        parsed = unpack(leader_struct_fmt, data[0 : calcsize(leader_struct_fmt)])
+        text_data = data[calcsize(leader_struct_fmt) :]
 
         if data[6] != 0:
             fallback_encoding = f"cp{data[6]}"
 
-        return cls(name=parsed[0], length=parsed[1], purpose=parsed[2],
-                   country=parsed[3], language=parsed[4],
-                   dialect=parsed[5], codepage=parsed[6],
-                   text=text_data.decode(fallback_encoding))
+        return cls(
+            name=parsed[0],
+            length=parsed[1],
+            purpose=parsed[2],
+            country=parsed[3],
+            language=parsed[4],
+            dialect=parsed[5],
+            codepage=parsed[6],
+            text=text_data.decode(fallback_encoding),
+        )
 
 
 @dataclass
 class WavCuesReader:
-
     #: Every ``cue`` entry in the file
     cues: List[CueEntry]
 
@@ -190,13 +206,15 @@ class WavCuesReader:
     notes: List[NoteEntry]
 
     @classmethod
-    def read_all(cls, f,
-                 cues: Optional[ChunkDescriptor],
-                 labls: List[ChunkDescriptor],
-                 ltxts: List[ChunkDescriptor],
-                 notes: List[ChunkDescriptor],
-                 fallback_encoding: str) -> 'WavCuesReader':
-
+    def read_all(
+        cls,
+        f,
+        cues: Optional[ChunkDescriptor],
+        labls: List[ChunkDescriptor],
+        ltxts: List[ChunkDescriptor],
+        notes: List[ChunkDescriptor],
+        fallback_encoding: str,
+    ) -> "WavCuesReader":
         cue_list = []
         if cues is not None:
             cues_data = cues.read_data(f)
@@ -205,33 +223,31 @@ class WavCuesReader:
             cues_count = unpack("<I", cues_data[0:offset])
 
             for _ in range(cues_count[0]):
-                cue_bytes = cues_data[offset: offset + CueEntry.format_size()]
+                cue_bytes = cues_data[offset : offset + CueEntry.format_size()]
                 cue_list.append(CueEntry.read(cue_bytes))
                 offset += CueEntry.format_size()
 
         label_list = []
         for labl in labls:
             label_list.append(
-                LabelEntry.read(labl.read_data(f),
-                                encoding=fallback_encoding)
+                LabelEntry.read(labl.read_data(f), encoding=fallback_encoding)
             )
 
         range_list = []
         for r in ltxts:
             range_list.append(
-                RangeLabel.read(r.read_data(f),
-                                fallback_encoding=fallback_encoding)
+                RangeLabel.read(r.read_data(f), fallback_encoding=fallback_encoding)
             )
 
         note_list = []
         for note in notes:
             note_list.append(
-                NoteEntry.read(note.read_data(f),
-                               encoding=fallback_encoding)
+                NoteEntry.read(note.read_data(f), encoding=fallback_encoding)
             )
 
-        return WavCuesReader(cues=cue_list, labels=label_list,
-                             ranges=range_list, notes=note_list)
+        return WavCuesReader(
+            cues=cue_list, labels=label_list, ranges=range_list, notes=note_list
+        )
 
     def each_cue(self) -> Generator[Tuple[int, int], None, None]:
         """
@@ -242,8 +258,7 @@ class WavCuesReader:
         for cue in self.cues:
             yield (cue.name, cue.sample_offset)
 
-    def label_and_note(self, cue_ident: int) -> Tuple[Optional[str],
-                                                      Optional[str]]:
+    def label_and_note(self, cue_ident: int) -> Tuple[Optional[str], Optional[str]]:
         """
         Get the label and note (extended comment) for a cue.
 
@@ -251,10 +266,10 @@ class WavCuesReader:
         :returns: a tuple of the the cue's label (if present) and note (if
             present)
         """
-        label = next((label.text for label in self.labels
-                      if label.name == cue_ident), None)
-        note = next((n.text for n in self.notes
-                     if n.name == cue_ident), None)
+        label = next(
+            (label.text for label in self.labels if label.name == cue_ident), None
+        )
+        note = next((n.text for n in self.notes if n.name == cue_ident), None)
         return (label, note)
 
     def range(self, cue_ident: int) -> Optional[int]:
@@ -264,23 +279,22 @@ class WavCuesReader:
         :param cue_ident: the cue's name, its unique identifying number
         :returns: the length of the marker's range, or `None`
         """
-        return next((r.length for r in self.ranges
-                     if r.name == cue_ident), None)
+        return next((r.length for r in self.ranges if r.name == cue_ident), None)
 
     def to_dict(self) -> Dict[str, Any]:
         retval = dict()
 
         for n, t in self.each_cue():
             retval[n] = dict()
-            retval[n]['frame'] = t
+            retval[n]["frame"] = t
             label, note = self.label_and_note(n)
             r = self.range(n)
 
             if label is not None:
-                retval[n]['label'] = label
+                retval[n]["label"] = label
             if note is not None:
-                retval[n]['note'] = note
+                retval[n]["note"] = note
             if r is not None:
-                retval[n]['length'] = r
+                retval[n]["length"] = r
 
         return retval

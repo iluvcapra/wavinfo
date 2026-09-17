@@ -1,7 +1,8 @@
-from unittest import TestCase
 from glob import glob
+from unittest import TestCase
 
 import wavinfo
+
 
 class TestSmpl(TestCase):
     def setUp(self) -> None:
