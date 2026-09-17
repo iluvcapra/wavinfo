@@ -683,8 +683,8 @@ class WavDolbyMetadataReader:
         ]
 
     def to_dict(self) -> dict:
-        ddp = map(lambda x: asdict(x), self.dolby_digital_plus())
-        atmos = map(lambda x: asdict(x), self.dolby_atmos())
+        ddp = [asdict(x) for x in self.dolby_digital_plus()]
+        atmos = [asdict(x) for x in self.dolby_atmos()]
         # atmos_sup = map(lambda x: asdict(x), self.dolby_atmos_supplemental())
 
         return dict(dolby_digital_plus=list(ddp), dolby_atmos=list(atmos))

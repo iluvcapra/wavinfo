@@ -207,6 +207,6 @@ class WavADMReader:
             return rd
 
         return dict(
-            channel_entries=list(map(lambda z: make_entry(z), self.channel_uids)),
+            channel_entries=[make_entry(z) for z in self.channel_uids],
             programme=self.programme(),
         )
