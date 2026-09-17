@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 import importlib.metadata
 import json
@@ -8,7 +10,6 @@ from cmd import Cmd
 from enum import Enum
 from optparse import OptionParser
 from shlex import split
-from typing import Dict, List, Union
 
 from . import WavInfoReader
 
@@ -30,8 +31,8 @@ class MissingDataError(RuntimeError):
 class MetaBrowser(Cmd):
     prompt = "(wavinfo) "
 
-    metadata: Union[List, Dict]
-    path: List[str]
+    metadata: list | dict
+    path: list[str]
 
     def preloop(self) -> None:
         self.path = []
@@ -39,7 +40,7 @@ class MetaBrowser(Cmd):
 
     @property
     def cwd(self):
-        root: List | Dict = self.metadata
+        root: list | dict = self.metadata
         for key in self.path:
             if isinstance(root, list):
                 root = root[int(key)]
