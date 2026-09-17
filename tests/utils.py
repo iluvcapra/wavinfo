@@ -1,14 +1,13 @@
 import json
 import os.path
 import subprocess
-from subprocess import PIPE
 
 FFPROBE = "ffprobe"
 
 
 def ffprobe(path):
     arguments = [FFPROBE, "-of", "json", "-show_format", "-show_streams", path]
-    process = subprocess.run(arguments, stdin=None, stdout=PIPE, stderr=PIPE, check=True)
+    process = subprocess.run(arguments, check=True, capture_output=True)
     if process.returncode == 0:
         output_str = process.stdout.decode("utf-8")
         return json.loads(output_str)
