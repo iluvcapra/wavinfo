@@ -176,13 +176,15 @@ class RangeLabel(NamedTuple):
         parsed = unpack(leader_struct_fmt, data[0 : calcsize(leader_struct_fmt)])
         text_data = data[calcsize(leader_struct_fmt) :]
 
+        purpose_str = parsed[2].decode('ascii')
+
         if data[6] != 0:
             fallback_encoding = f"cp{data[6]}"
 
         return cls(
             name=parsed[0],
             length=parsed[1],
-            purpose=parsed[2],
+            purpose=purpose_str,
             country=parsed[3],
             language=parsed[4],
             dialect=parsed[5],
@@ -282,10 +284,10 @@ class WavCuesReader:
         return next((r.length for r in self.ranges if r.name == cue_ident), None)
 
     def to_dict(self) -> Dict[str, Any]:
-        retval = dict()
+        retval = {}
 
         for n, t in self.each_cue():
-            retval[n] = dict()
+            retval[n] = {}
             retval[n]["frame"] = t
             label, note = self.label_and_note(n)
             r = self.range(n)

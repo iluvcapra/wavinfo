@@ -69,19 +69,8 @@ ignore = [
     'UP022', # Prefer `capture_output` over sending `stdout` and `stderr` to `PIPE`
     'SIM115', # Use a context manager for opening files
     'UP031', #Use format specifiers instead of percent format
-    'C408', # Unnecessary `dict()` call (rewrite as a literal)
+    # 'C408', # Unnecessary `dict()` call (rewrite as a literal)
     # 'C417' # Unnecessary `map()` usage (rewrite using a generator expression)
 ]
 
-# [tool.pylint]
-# max-line-length = 88
-# disable = [
-#     "C0103", # (invalid-name)
-#     "C0114", # (missing-module-docstring)
-#     "C0115", # (missing-class-docstring)
-#     "C0116", # (missing-function-docstring)
-#     "R0903", # (too-few-public-methods)
-#     "R0913", # (too-many-arguments)
-#     "W0105", # (pointless-string-statement)
-# ]
 

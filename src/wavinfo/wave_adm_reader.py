@@ -57,7 +57,7 @@ class WavADMReader:
         Read the ADM `audioProgramme` data structure and some of its reference
         properties.
         """
-        ret_dict = dict()
+        ret_dict = {}
 
         nsmap = self.axml.getroot().nsmap
 
@@ -71,7 +71,7 @@ class WavADMReader:
         ret_dict["contents"] = []
 
         for content_ref in program.findall("audioContentIDRef", namespaces=nsmap):
-            content_dict = dict()
+            content_dict = {}
             content_dict["content_id"] = cid = content_ref.text
             content = afext.find(
                 "audioContent[@audioContentID='%s']" % cid, namespaces=nsmap
@@ -80,7 +80,7 @@ class WavADMReader:
             content_dict["objects"] = []
 
             for object_ref in content.findall("audioObjectIDRef", namespaces=nsmap):
-                object_dict = dict()
+                object_dict = {}
                 object_dict["object_id"] = oid = object_ref.text
                 object = afext.find(
                     "audioObject[@audioObjectID='%s']" % oid, namespaces=nsmap
@@ -206,7 +206,7 @@ class WavADMReader:
             rd.update(self.track_info(channel_uid_rec.track_index))
             return rd
 
-        return dict(
-            channel_entries=[make_entry(z) for z in self.channel_uids],
-            programme=self.programme(),
-        )
+        return {
+            'channel_entries': [make_entry(z) for z in self.channel_uids],
+            'programme': self.programme(),
+        }
