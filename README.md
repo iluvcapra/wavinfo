@@ -3,7 +3,6 @@
 
 [![Tests](https://github.com/iluvcapra/wavinfo/actions/workflows/python-package.yml/badge.svg)](https://github.com/iluvcapra/wavinfo/actions/workflows/python-package.yml)
 [![Ruff](https://github.com/iluvcapra/wavinfo/actions/workflows/python-ruff.yml/badge.svg)](https://github.com/iluvcapra/wavinfo/actions/workflows/python-ruff.yml)
-[![codecov](https://codecov.io/gh/iluvcapra/wavinfo/branch/master/graph/badge.svg?token=9DZQfZENYv)](https://codecov.io/gh/iluvcapra/wavinfo)
 
 # wavinfo
 
