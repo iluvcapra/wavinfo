@@ -134,13 +134,17 @@ class WavADMReader:
             ("audioStreamFormat[@audioStreamFormatID='%s']"
              "/audioChannelFormatIDRef") % stream_id,
             namespaces=nsmap)
-        channelformat_id = channelformatref_elem.text
+
+        if channelformatref_elem:
+            channelformat_id = channelformatref_elem.text
 
         packformatref_elem = afext.find(
             ("audioStreamFormat[@audioStreamFormatID='%s']"
              "/audioPackFormatIDRef") % stream_id,
             namespaces=nsmap)
-        packformat_id = packformatref_elem.text
+
+        if packformatref_elem:
+            packformat_id = packformatref_elem.text
 
         channelformat_elem = afext\
             .find("audioChannelFormat[@audioChannelFormatID='%s']"
