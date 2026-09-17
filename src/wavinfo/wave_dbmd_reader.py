@@ -7,12 +7,11 @@ Unless otherwise stated, all § references here are to
 .. _EBU Tech 3285 Supplement 6: https://tech.ebu.ch/docs/tech/tech3285s6.pdf
 """
 
-from enum import IntEnum, Enum
-from struct import unpack
-from dataclasses import dataclass, asdict
-from typing import List, Tuple, Any, Union
-
+from dataclasses import asdict, dataclass
+from enum import Enum, IntEnum
 from io import BytesIO
+from struct import unpack
+from typing import Any, List, Tuple, Union
 
 
 class SegmentType(IntEnum):

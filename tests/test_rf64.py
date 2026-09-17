@@ -1,12 +1,11 @@
 # import os.path
 import gzip
 from glob import glob
-# from typing import Dict, Any, cast
 
+# from typing import Dict, Any, cast
 from unittest import TestCase
 
 # from .utils import all_files, ffprobe
-
 import wavinfo
 
 

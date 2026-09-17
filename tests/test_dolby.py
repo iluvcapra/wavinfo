@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 import wavinfo
-from wavinfo.wave_dbmd_reader import SegmentType, DolbyDigitalPlusMetadata
+from wavinfo.wave_dbmd_reader import DolbyDigitalPlusMetadata, SegmentType
 
 
 class TestDolby(TestCase):

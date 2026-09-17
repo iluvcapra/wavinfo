@@ -1,8 +1,8 @@
-import os.path
-import sys
-import subprocess
-from subprocess import PIPE
 import json
+import os.path
+import subprocess
+import sys
+from subprocess import PIPE
 
 FFPROBE = "ffprobe"
 

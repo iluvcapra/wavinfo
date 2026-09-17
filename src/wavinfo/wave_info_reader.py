@@ -1,6 +1,6 @@
-from .riff_parser import parse_chunk, ListChunkDescriptor
-
 from typing import Optional
+
+from .riff_parser import ListChunkDescriptor, parse_chunk
 
 
 class WavInfoChunkReader:

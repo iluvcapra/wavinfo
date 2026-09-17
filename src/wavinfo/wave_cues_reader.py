@@ -9,10 +9,10 @@ https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf
 """
 
 from dataclasses import dataclass
-from .riff_parser import ChunkDescriptor
+from struct import calcsize, unpack
+from typing import Any, Dict, Generator, List, NamedTuple, Optional, Tuple
 
-from struct import unpack, calcsize
-from typing import Optional, Tuple, NamedTuple, List, Dict, Any, Generator
+from .riff_parser import ChunkDescriptor
 
 #: Country Codes used in the RIFF standard to resolve locale. These codes
 #: appear in CSET and LTXT metadata.

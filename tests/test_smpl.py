@@ -1,5 +1,5 @@
-from unittest import TestCase
 from glob import glob
+from unittest import TestCase
 
 import wavinfo
 

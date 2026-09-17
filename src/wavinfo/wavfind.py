@@ -1,7 +1,7 @@
 """ """
 
-from optparse import OptionParser, OptionGroup
 import sys
+from optparse import OptionGroup, OptionParser
 
 
 def main():

@@ -1,7 +1,7 @@
 import struct
 
 # from collections import namedtuple
-from typing import NamedTuple, Dict
+from typing import Dict, NamedTuple
 
 from . import riff_parser
 

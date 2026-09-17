@@ -1,16 +1,16 @@
-from . import WavInfoReader
-
 import datetime
-from optparse import OptionParser
-import sys
-import os
-import json
-from enum import Enum
 import importlib.metadata
+import json
+import os
+import sys
 from base64 import b64encode
 from cmd import Cmd
+from enum import Enum
+from optparse import OptionParser
 from shlex import split
-from typing import List, Dict, Union
+from typing import Dict, List, Union
+
+from . import WavInfoReader
 
 
 class MyJSONEncoder(json.JSONEncoder):

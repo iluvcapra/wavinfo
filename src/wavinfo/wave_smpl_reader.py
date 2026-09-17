@@ -1,6 +1,5 @@
 import struct
-
-from typing import Tuple, NamedTuple, List
+from typing import List, NamedTuple, Tuple
 
 
 class WaveSmplLoop(NamedTuple):

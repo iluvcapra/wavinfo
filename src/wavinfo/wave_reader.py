@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
-import struct
 import os
-from typing import Optional, Generator, Any, NamedTuple
-
 import pathlib
+import struct
+from typing import Any, Generator, NamedTuple, Optional
 
-
-from .riff_parser import parse_chunk, ChunkDescriptor, ListChunkDescriptor
-from .wave_ixml_reader import WavIXMLFormat
-from .wave_bext_reader import WavBextReader
-from .wave_info_reader import WavInfoChunkReader
+from .riff_parser import ChunkDescriptor, ListChunkDescriptor, parse_chunk
 from .wave_adm_reader import WavADMReader
-from .wave_dbmd_reader import WavDolbyMetadataReader
+from .wave_bext_reader import WavBextReader
 from .wave_cues_reader import WavCuesReader
+from .wave_dbmd_reader import WavDolbyMetadataReader
+from .wave_info_reader import WavInfoChunkReader
+from .wave_ixml_reader import WavIXMLFormat
 from .wave_smpl_reader import WavSmplReader
 
 #: Calculated statistics about the audio data.

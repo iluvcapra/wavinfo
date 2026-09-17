@@ -1,10 +1,10 @@
-from lxml import etree as ET
 import io
+from enum import IntEnum
 
 # from collections import namedtuple
-from typing import Optional
-from enum import IntEnum
-from typing import NamedTuple
+from typing import NamedTuple, Optional
+
+from lxml import etree as ET
 
 
 class IXMLTrack(NamedTuple):

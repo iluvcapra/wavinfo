@@ -1,7 +1,8 @@
 # from optparse import Option
 import struct
-from .rf64_parser import parse_rf64, RF64Context
-from typing import NamedTuple, Union, List, Optional
+from typing import List, NamedTuple, Optional, Union
+
+from .rf64_parser import RF64Context, parse_rf64
 
 
 class WavInfoEOFError(EOFError):

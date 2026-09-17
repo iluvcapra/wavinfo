@@ -1,7 +1,7 @@
-import unittest
-import wavinfo
-
 import glob
+import unittest
+
+import wavinfo
 
 
 class TestWalk(unittest.TestCase):
@@ -29,8 +29,8 @@ class TestWalk(unittest.TestCase):
             try:
                 for _, _, _ in info.walk():
                     pass
-            except:
-                self.fail(f"Failed to walk metadata in file {file}")
+            except Exception as e:
+                self.fail(f"Failed to walk metadata in file {file}: {e}")
 
 
 if __name__ == "__main__":
