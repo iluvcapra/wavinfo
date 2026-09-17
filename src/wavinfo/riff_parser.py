@@ -1,6 +1,7 @@
-# from optparse import Option
+from __future__ import annotations
+
 import struct
-from typing import List, NamedTuple, Optional, Union
+from typing import NamedTuple
 
 from .rf64_parser import RF64Context, parse_rf64
 
@@ -13,14 +14,14 @@ class WavInfoEOFError(EOFError):
 
 class ListChunkDescriptor(NamedTuple):
     signature: bytes
-    children: List[Union["ChunkDescriptor", "ListChunkDescriptor"]]
+    children: list[ChunkDescriptor | ListChunkDescriptor]
 
 
 class ChunkDescriptor(NamedTuple):
     ident: bytes
     start: int
     length: int
-    rf64_context: Optional[RF64Context]
+    rf64_context: RF64Context | None
 
     def read_data(self, from_stream) -> bytes:
         from_stream.seek(self.start)

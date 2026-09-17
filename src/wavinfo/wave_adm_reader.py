@@ -1,11 +1,11 @@
 """
 ADM Reader
 """
+from __future__ import annotations
 
 from collections import namedtuple
 from io import BytesIO
 from struct import calcsize, unpack, unpack_from
-from typing import Optional
 
 from lxml import etree as ET
 
@@ -57,7 +57,7 @@ class WavADMReader:
         Read the ADM `audioProgramme` data structure and some of its reference
         properties.
         """
-        ret_dict = dict()
+        ret_dict = {}
 
         nsmap = self.axml.getroot().nsmap
 
@@ -71,7 +71,7 @@ class WavADMReader:
         ret_dict["contents"] = []
 
         for content_ref in program.findall("audioContentIDRef", namespaces=nsmap):
-            content_dict = dict()
+            content_dict = {}
             content_dict["content_id"] = cid = content_ref.text
             content = afext.find(
                 "audioContent[@audioContentID='%s']" % cid, namespaces=nsmap
@@ -80,7 +80,7 @@ class WavADMReader:
             content_dict["objects"] = []
 
             for object_ref in content.findall("audioObjectIDRef", namespaces=nsmap):
-                object_dict = dict()
+                object_dict = {}
                 object_dict["object_id"] = oid = object_ref.text
                 object = afext.find(
                     "audioObject[@audioObjectID='%s']" % oid, namespaces=nsmap
@@ -101,7 +101,7 @@ class WavADMReader:
 
         return ret_dict
 
-    def track_info(self, index) -> Optional[dict]:
+    def track_info(self, index) -> dict | None:
         """
         Information about a track in the WAV file.
 
@@ -206,7 +206,7 @@ class WavADMReader:
             rd.update(self.track_info(channel_uid_rec.track_index))
             return rd
 
-        return dict(
-            channel_entries=list(map(lambda z: make_entry(z), self.channel_uids)),
-            programme=self.programme(),
-        )
+        return {
+            'channel_entries': [make_entry(z) for z in self.channel_uids],
+            'programme': self.programme(),
+        }

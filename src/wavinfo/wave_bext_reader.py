@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import struct
 
 # from .umid_parser import UMIDParser
-from typing import Optional
 
 
 class WavBextReader:
@@ -58,22 +59,22 @@ class WavBextReader:
 
         #: SMPTE 330M UMID of this audio file, 64 bytes are allocated though
         #: the UMID may only be 32 bytes long.
-        self.umid: Optional[bytes] = None
+        self.umid: bytes | None = None
 
         #: EBU R128 Integrated loudness, in LUFS.
-        self.loudness_value: Optional[float] = None
+        self.loudness_value: float | None = None
 
         #: EBU R128 Loudness range, in LUFS.
-        self.loudness_range: Optional[float] = None
+        self.loudness_range: float | None = None
 
         #: True peak level, in dBFS TP
-        self.max_true_peak: Optional[float] = None
+        self.max_true_peak: float | None = None
 
         #: EBU R128 Maximum momentary loudness, in LUFS
-        self.max_momentary_loudness: Optional[float] = None
+        self.max_momentary_loudness: float | None = None
 
         #: EBU R128 Maximum short-term loudness, in LUFS.
-        self.max_shortterm_loudness: Optional[float] = None
+        self.max_shortterm_loudness: float | None = None
 
         if self.version > 0:
             self.umid = unpacked[7]

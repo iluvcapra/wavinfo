@@ -7,11 +7,13 @@ Unless otherwise stated, all § references here are to
 .. _EBU Tech 3285 Supplement 6: https://tech.ebu.ch/docs/tech/tech3285s6.pdf
 """
 
+from __future__ import annotations
+
 from dataclasses import asdict, dataclass
 from enum import Enum, IntEnum
 from io import BytesIO
 from struct import unpack
-from typing import Any, List, Tuple, Union
+from typing import Any
 
 
 class SegmentType(IntEnum):
@@ -339,8 +341,10 @@ class DolbyDigitalPlusMetadata:
 
     @staticmethod
     def load(buffer: bytes):
-        assert len(buffer) == 96, "Dolby Digital Plus segment incorrect size, "
-        "expected 96 got %i" % len(buffer)
+        assert len(buffer) == 96, (
+            "Dolby Digital Plus segment incorrect size, "
+            "expected 96 got %i" % len(buffer)
+        )
 
         def program_id(b) -> int:
             return b
@@ -409,7 +413,7 @@ class DolbyDigitalPlusMetadata:
             return DolbyDigitalPlusMetadata.RFCompressionProfile(b)
 
         def dynrng1(b):
-            DolbyDigitalPlusMetadata.RFCompressionProfile(b)
+            return DolbyDigitalPlusMetadata.RFCompressionProfile(b)
 
         def ddplus_reserved3(_):
             pass
@@ -504,7 +508,7 @@ class DolbyAtmosMetadata:
         NOT_INDICATED = 0x04
 
     tool_name: str
-    tool_version: Tuple[int, int, int]
+    tool_version: tuple[int, int, int]
     warp_mode: WarpMode
 
     SEGMENT_LENGTH = 248
@@ -555,8 +559,8 @@ class DolbyAtmosSupplementalMetadata:
         NOT_INDICATED = 0x04
 
     object_count: int
-    render_modes: List["DolbyAtmosSupplementalMetadata.BinauralRenderMode"]
-    trim_modes: List[int]
+    render_modes: list[DolbyAtmosSupplementalMetadata.BinauralRenderMode]
+    trim_modes: list[int]
 
     MAGIC = 0xF8726FBD
     TRIM_CONFIG_COUNT = 9
@@ -603,9 +607,9 @@ class WavDolbyMetadataReader:
     #: indicating if the segment's checksum was valid, and the
     #: segment's parsed dataclass (or a `bytes` array if it was
     #: not recognized).
-    segment_list: List[Tuple[Union[SegmentType, int], bool, Any]]
+    segment_list: list[tuple[SegmentType | int, bool, Any]]
 
-    version: Tuple[int, int, int, int]
+    version: tuple[int, int, int, int]
 
     @staticmethod
     def segment_checksum(bs: bytes, size: int):
@@ -654,7 +658,7 @@ class WavDolbyMetadataReader:
                     (stype, checksum == expected_checksum, segment)
                 )
 
-    def dolby_digital_plus(self) -> List[DolbyDigitalPlusMetadata]:
+    def dolby_digital_plus(self) -> list[DolbyDigitalPlusMetadata]:
         """
         Every valid Dolby Digital Plus metadata segment in the file.
         """
@@ -664,7 +668,7 @@ class WavDolbyMetadataReader:
             if x[0] == SegmentType.DolbyDigitalPlus and x[1]
         ]
 
-    def dolby_atmos(self) -> List[DolbyAtmosMetadata]:
+    def dolby_atmos(self) -> list[DolbyAtmosMetadata]:
         """
         Every valid Dolby Atmos metadata segment in the file.
         """
@@ -672,7 +676,7 @@ class WavDolbyMetadataReader:
             x[2] for x in self.segment_list if x[0] == SegmentType.DolbyAtmos and x[1]
         ]
 
-    def dolby_atmos_supplemental(self) -> List[DolbyAtmosSupplementalMetadata]:
+    def dolby_atmos_supplemental(self) -> list[DolbyAtmosSupplementalMetadata]:
         """
         Every valid Dolby Atmos Supplemental metadata segment in the file.
         """
@@ -683,8 +687,8 @@ class WavDolbyMetadataReader:
         ]
 
     def to_dict(self) -> dict:
-        ddp = map(lambda x: asdict(x), self.dolby_digital_plus())
-        atmos = map(lambda x: asdict(x), self.dolby_atmos())
+        ddp = [asdict(x) for x in self.dolby_digital_plus()]
+        atmos = [asdict(x) for x in self.dolby_atmos()]
         # atmos_sup = map(lambda x: asdict(x), self.dolby_atmos_supplemental())
 
-        return dict(dolby_digital_plus=list(ddp), dolby_atmos=list(atmos))
+        return {"dolby_digital_plus": ddp, "dolby_atmos": atmos}
