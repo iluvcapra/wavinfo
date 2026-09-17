@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 from .riff_parser import ListChunkDescriptor, parse_chunk
 
@@ -22,40 +22,40 @@ class WavInfoChunkReader:
         )
 
         #: 'ICOP' Copyright
-        self.copyright: Optional[str] = self._get_field(f, b"ICOP")
+        self.copyright: str | None = self._get_field(f, b"ICOP")
         #: 'IPRD' Product
-        self.product: Optional[str] = self._get_field(f, b"IPRD")
-        self.album: Optional[str] = self.product
+        self.product: str | None = self._get_field(f, b"IPRD")
+        self.album: str | None = self.product
         #: 'IGNR' Genre
-        self.genre: Optional[str] = self._get_field(f, b"IGNR")
+        self.genre: str | None = self._get_field(f, b"IGNR")
         #: 'ISBJ' Subject
-        self.subject: Optional[str] = self._get_field(f, b"ISBJ")
+        self.subject: str | None = self._get_field(f, b"ISBJ")
         #: 'IART' Artist, composer, author
-        self.artist: Optional[str] = self._get_field(f, b"IART")
+        self.artist: str | None = self._get_field(f, b"IART")
         #: 'ICMT' Comment
-        self.comment: Optional[str] = self._get_field(f, b"ICMT")
+        self.comment: str | None = self._get_field(f, b"ICMT")
         #: 'ISFT' Software, encoding application
-        self.software: Optional[str] = self._get_field(f, b"ISFT")
+        self.software: str | None = self._get_field(f, b"ISFT")
         #: 'ICRD' Created date
-        self.created_date: Optional[str] = self._get_field(f, b"ICRD")
+        self.created_date: str | None = self._get_field(f, b"ICRD")
         #: 'IENG' Engineer
-        self.engineer: Optional[str] = self._get_field(f, b"IENG")
+        self.engineer: str | None = self._get_field(f, b"IENG")
         #: 'ITCH' Technician
-        self.technician: Optional[str] = self._get_field(f, b"ITCH")
+        self.technician: str | None = self._get_field(f, b"ITCH")
         #: 'IKEY' Keywords, keyword list
-        self.keywords: Optional[str] = self._get_field(f, b"IKEY")
+        self.keywords: str | None = self._get_field(f, b"IKEY")
         #: 'INAM' Name, title
-        self.title: Optional[str] = self._get_field(f, b"INAM")
+        self.title: str | None = self._get_field(f, b"INAM")
         #: 'ISRC' Source
-        self.source: Optional[str] = self._get_field(f, b"ISRC")
+        self.source: str | None = self._get_field(f, b"ISRC")
         #: 'TAPE' Tape
-        self.tape: Optional[str] = self._get_field(f, b"TAPE")
+        self.tape: str | None = self._get_field(f, b"TAPE")
         #: 'IARL' Archival Location
-        self.archival_location: Optional[str] = self._get_field(f, b"IARL")
+        self.archival_location: str | None = self._get_field(f, b"IARL")
         #: 'ICSM' Commissioned
-        self.commissioned: Optional[str] = self._get_field(f, b"ICMS")
+        self.commissioned: str | None = self._get_field(f, b"ICMS")
 
-    def _get_field(self, f, field_ident) -> Optional[str]:
+    def _get_field(self, f, field_ident) -> str | None:
         search = next(
             (
                 (chunk.start, chunk.length)

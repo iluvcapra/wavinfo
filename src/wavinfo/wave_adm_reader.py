@@ -1,11 +1,11 @@
 """
 ADM Reader
 """
+from __future__ import annotations
 
 from collections import namedtuple
 from io import BytesIO
 from struct import calcsize, unpack, unpack_from
-from typing import Optional
 
 from lxml import etree as ET
 
@@ -101,7 +101,7 @@ class WavADMReader:
 
         return ret_dict
 
-    def track_info(self, index) -> Optional[dict]:
+    def track_info(self, index) -> dict | None:
         """
         Information about a track in the WAV file.
 

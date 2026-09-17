@@ -8,9 +8,11 @@ IBM Corporation and Microsoft Corporation
 https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from struct import calcsize, unpack
-from typing import Any, Dict, Generator, List, NamedTuple, Optional, Tuple
+from typing import Any, Generator, NamedTuple
 
 from .riff_parser import ChunkDescriptor
 
@@ -120,7 +122,7 @@ class CueEntry(NamedTuple):
         return calcsize(cls.Format)
 
     @classmethod
-    def read(cls, data: bytes) -> "CueEntry":
+    def read(cls, data: bytes) -> CueEntry:
         assert len(data) == cls.format_size(), (
             f"cue data size incorrect, expected {calcsize(cls.Format)} "
             "found {len(data)}"
@@ -196,27 +198,27 @@ class RangeLabel(NamedTuple):
 @dataclass
 class WavCuesReader:
     #: Every ``cue`` entry in the file
-    cues: List[CueEntry]
+    cues: list[CueEntry]
 
     #: Every ``labl`` in the file
-    labels: List[LabelEntry]
+    labels: list[LabelEntry]
 
     #: Every ``ltxt`` in the file
-    ranges: List[RangeLabel]
+    ranges: list[RangeLabel]
 
     #: Every ``note`` in the file
-    notes: List[NoteEntry]
+    notes: list[NoteEntry]
 
     @classmethod
     def read_all(
         cls,
         f,
-        cues: Optional[ChunkDescriptor],
-        labls: List[ChunkDescriptor],
-        ltxts: List[ChunkDescriptor],
-        notes: List[ChunkDescriptor],
+        cues: ChunkDescriptor | None,
+        labls: list[ChunkDescriptor],
+        ltxts: list[ChunkDescriptor],
+        notes: list[ChunkDescriptor],
         fallback_encoding: str,
-    ) -> "WavCuesReader":
+    ) -> WavCuesReader:
         cue_list = []
         if cues is not None:
             cues_data = cues.read_data(f)
@@ -251,7 +253,7 @@ class WavCuesReader:
             cues=cue_list, labels=label_list, ranges=range_list, notes=note_list
         )
 
-    def each_cue(self) -> Generator[Tuple[int, int], None, None]:
+    def each_cue(self) -> Generator[tuple[int, int], None, None]:
         """
         Iterate through each cue.
 
@@ -260,7 +262,7 @@ class WavCuesReader:
         for cue in self.cues:
             yield (cue.name, cue.sample_offset)
 
-    def label_and_note(self, cue_ident: int) -> Tuple[Optional[str], Optional[str]]:
+    def label_and_note(self, cue_ident: int) -> tuple[str | None, str | None]:
         """
         Get the label and note (extended comment) for a cue.
 
@@ -274,7 +276,7 @@ class WavCuesReader:
         note = next((n.text for n in self.notes if n.name == cue_ident), None)
         return (label, note)
 
-    def range(self, cue_ident: int) -> Optional[int]:
+    def range(self, cue_ident: int) -> int | None:
         """
         Get the length of the time range for a cue, if it has one.
 
@@ -283,7 +285,7 @@ class WavCuesReader:
         """
         return next((r.length for r in self.ranges if r.name == cue_ident), None)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         retval = {}
 
         for n, t in self.each_cue():

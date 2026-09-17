@@ -1,14 +1,14 @@
-import struct
+from __future__ import annotations
 
-# from collections import namedtuple
-from typing import Dict, NamedTuple
+import struct
+from typing import NamedTuple
 
 from . import riff_parser
 
 
 class RF64Context(NamedTuple):
     sample_count: int
-    bigchunk_table: Dict[str, int]
+    bigchunk_table: dict[str, int]
 
 
 def parse_rf64(stream, signature=b"RF64") -> RF64Context:

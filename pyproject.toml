@@ -65,12 +65,8 @@ indent-width = 4
 [tool.ruff.lint]
 fixable = ['ALL']
 ignore = [
-    'FA100', #Add `from __future__ import annotations` to simplify `typing.Optional`
-    # 'UP022', # Prefer `capture_output` over sending `stdout` and `stderr` to `PIPE`
-    # 'SIM115', # Use a context manager for opening files
+    # 'FA100', #Add `from __future__ import annotations` to simplify `typing.Optional`
     'UP031', #Use format specifiers instead of percent format
-    # 'C408', # Unnecessary `dict()` call (rewrite as a literal)
-    # 'C417' # Unnecessary `map()` usage (rewrite using a generator expression)
 ]
 
 
