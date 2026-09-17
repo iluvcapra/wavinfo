@@ -15,8 +15,6 @@ class TestRf64(TestCase):
 
     def test_open(self):
         for path in glob("tests/test_files/rf64/*.wav.gz"):
-            gz = gzip.open(path)
-            wav_info = wavinfo.WavInfoReader(gz)
-
-            self.assertIsNotNone(wav_info)
-            # self.assertIsNotNone(wav_info.bext)
+            with gzip.open(path) as gz:
+                wav_info = wavinfo.WavInfoReader(gz)
+                self.assertIsNotNone(wav_info)
