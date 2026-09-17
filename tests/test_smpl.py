@@ -3,6 +3,7 @@ from glob import glob
 
 import wavinfo
 
+
 class TestSmpl(TestCase):
     def setUp(self) -> None:
         self.test_files = glob("tests/test_files/smpl/*.wav")

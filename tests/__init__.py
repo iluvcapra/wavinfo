@@ -19,7 +19,7 @@ from contextlib import contextmanager
 
 #     @property
 #     def arch_path(self):
-#         return os.path.join(self.base_path, self.test_file_arch_name)        
+#         return os.path.join(self.base_path, self.test_file_arch_name)
 
 #     @contextmanager
 #     def open(self, name) -> Generator[BytesIO]:
@@ -40,5 +40,3 @@ from contextlib import contextmanager
 #                         p = os.path.join(root, name)
 #                         zip.write(p)
 #                         os.unlink(p)
-
-

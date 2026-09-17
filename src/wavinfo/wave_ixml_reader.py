@@ -1,5 +1,6 @@
 from lxml import etree as ET
 import io
+
 # from collections import namedtuple
 from typing import Optional
 from enum import IntEnum
@@ -22,6 +23,7 @@ class SteinbergMetadata:
         """
         Steinberg speaker format enumeration.
         """
+
         MONO = 0
         STEREO = 1
         LRC = 10
@@ -79,7 +81,8 @@ class SteinbergMetadata:
         `AudioSpeakerArrangement` property
         """
         val = self.parsed.find(
-            "./ATTR_LIST/ATTR[NAME = 'AudioSpeakerArrangement']/VALUE")
+            "./ATTR_LIST/ATTR[NAME = 'AudioSpeakerArrangement']/VALUE"
+        )
         if val is not None:
             return type(self).AudioSpeakerArrangement(int(val.text))
 
@@ -88,8 +91,7 @@ class SteinbergMetadata:
         """
         AudioSampleFormatSize
         """
-        val = self.parsed.find(
-            "./ATTR_LIST/ATTR[NAME = 'AudioSampleFormatSize']/VALUE")
+        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'AudioSampleFormatSize']/VALUE")
         if val is not None:
             return int(val.text)
 
@@ -98,8 +100,7 @@ class SteinbergMetadata:
         """
         MediaCompany
         """
-        val = self.parsed.find(
-            "./ATTR_LIST/ATTR[NAME = 'MediaCompany']/VALUE")
+        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'MediaCompany']/VALUE")
         if val is not None:
             return val.text
 
@@ -108,8 +109,7 @@ class SteinbergMetadata:
         """
         MediaDropFrames
         """
-        val = self.parsed.find(
-            "./ATTR_LIST/ATTR[NAME = 'MediaDropFrames']/VALUE")
+        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'MediaDropFrames']/VALUE")
         if val is not None:
             return val.text == "1"
 
@@ -118,8 +118,7 @@ class SteinbergMetadata:
         """
         MediaDuration
         """
-        val = self.parsed.find(
-            "./ATTR_LIST/ATTR[NAME = 'MediaDuration']/VALUE")
+        val = self.parsed.find("./ATTR_LIST/ATTR[NAME = 'MediaDuration']/VALUE")
         if val is not None:
             return float(val.text)
 
@@ -192,13 +191,12 @@ class WavIXMLFormat:
         :yields: `IXMLTrack` for each track.
         """
         for track in self.parsed.find("./TRACK_LIST").iter():
-            if track.tag == 'TRACK':
+            if track.tag == "TRACK":
                 yield IXMLTrack(
-                    channel_index=track.xpath('string(CHANNEL_INDEX/text())'),
-                    interleave_index=track.xpath(
-                        'string(INTERLEAVE_INDEX/text())'),
-                    name=track.xpath('string(NAME/text())'),
-                    function=track.xpath('string(FUNCTION/text())')
+                    channel_index=track.xpath("string(CHANNEL_INDEX/text())"),
+                    interleave_index=track.xpath("string(INTERLEAVE_INDEX/text())"),
+                    name=track.xpath("string(NAME/text())"),
+                    function=track.xpath("string(FUNCTION/text())"),
                 )
 
     @property
@@ -258,6 +256,10 @@ class WavIXMLFormat:
     def to_dict(self):
         return dict(
             track_list=list(map(lambda x: x._asdict(), self.track_list)),
-            project=self.project, scene=self.scene, take=self.take,
-            tape=self.tape, family_uid=self.family_uid,
-            family_name=self.family_name)
+            project=self.project,
+            scene=self.scene,
+            take=self.take,
+            tape=self.tape,
+            family_uid=self.family_uid,
+            family_name=self.family_name,
+        )
